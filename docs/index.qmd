@@ -5,7 +5,19 @@ format:
     toc: false
 ---
 
-Bluesky Comments is a Quarto shortcode extension that enables embedding Bluesky post comments in your documents. This extension fetches and displays comments from Bluesky posts, allowing you to integrate social discussions directly into your Quarto documents.
+> Enable Bluesky social discussions in your Quarto documents
+
+Bluesky Comments is a Quarto shortcode extension that seamlessly integrates Bluesky post comments into your documents. This extension dynamically fetches and displays threaded conversations from Bluesky, creating an interactive bridge between your content and social discussions.
+
+As an example, let's use the following [Bluesky post](https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26). Feel free to join the conversation by commenting on the post - your comment will appear below when you refresh the page!
+
+{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
+
+The comment section above is live and interactive:
+
+- 💬 Click the post link to add your own comment
+- 🔄 Refresh the page to see new comments
+- ❤️ Engage with the discussion directly through Bluesky
 
 ## Installation
 
@@ -30,39 +42,45 @@ To embed comments from a Bluesky post, use the `bluesky-comments` shortcode in y
 {{{< bluesky-comments uri="at://did.plc/rkey" >}}}
 ````
 
-Replace `did.plc` with the author's DID and `rkey` with the post's record key. You can get these from any Bluesky post URL by using the following [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html) tool.
+### Converting Bluesky URLs to AT Protocol URIs
 
-For example, if your Bluesky post URL is `https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26`, the tool would provide the following AT-URI: `at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26`. 
+To get the correct URI format, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html).
 
-In this case, your shortcode would look like:
+For example:
 
-````markdown
-{{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
-````
+1. **Original URL:**
+   ```
+   https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
+   ```
 
-This will render the comments section of the post in your document. Feel free to reply to the [post](https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26) and, then, refresh the page to see the new comment appear!
+2. **Converted AT-URI:**
+   ```
+   at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
+   ```
 
-{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
+3. **Final shortcode:**
+   ````markdown
+   {{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
+   ````
 
 ## Styling
 
-The extension comes with default styling that matches Bluesky's aesthetic. You can customize the appearance by overriding the CSS classes defined in [`_extensions/bluesky-comments/styles.css`](_extensions/bluesky-comments/styles.css).
+Modify the extension's appearance by overriding CSS classes in:
 
-## Technical Details
-
-The extension works by:
-
-1. Making requests to the public Bluesky API (`public.api.bsky.app`)
-2. Fetching thread data for the specified post
-3. Rendering comments in a responsive layout
-4. Automatically handling pagination through the "Show more" button
+```defaults
+_extensions/bluesky-comments/styles.css
+```
 
 ## Limitations
 
 - Only works in HTML output formats with JavaScript enabled
-- Requires an internet connection to fetch comments
 - Subject to Bluesky's API rate limits and availability
 
 ## Acknowledgements
 
-This extension is based off of the work of [Emily Liu](https://emilyliu.me/blog/comments) ([Original tweet? that caught my attention](https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i)) and [Samuel Newman](https://bsky.app/profile/samuel.bsky.team) ([Original blog post](https://graysky.app/blog/2024-02-05-adding-blog-comments)). 
+This extension builds upon the innovative work of:
+
+- [Emily Liu](https://emilyliu.me/blog/comments) - [Original concept](https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i)
+- [Samuel Newman](https://bsky.app/profile/samuel.bsky.team) - [Implementation details](https://graysky.app/blog/2024-02-05-adding-blog-comments)
+
+
