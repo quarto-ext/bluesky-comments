@@ -1,4 +1,4 @@
-# Bluesky Comments Extension for Quarto
+# Bluesky Comments Extension for Quarto <img src="https://github.com/user-attachments/assets/260e97ce-6941-4f3a-8dc8-b7125522ebc0" align ="right" alt="Logo: A a butterfly in the blue sky with comments" width ="150"/>
 
 Bluesky Comments is a Quarto shortcode extension that enables embedding Bluesky post comments in your documents. This extension fetches and displays comments from Bluesky posts, allowing you to integrate social discussions directly into your Quarto documents.
 

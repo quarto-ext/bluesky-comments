@@ -7,7 +7,7 @@ website:
   repo-url: https://github.com/coatless-quarto/bluesky-comments/
   repo-actions: [edit, issue]
   sidebar:
-    logo: "https://github.com/user-attachments/assets/2b293570-727a-4ca2-85e6-0c308108772a"
+    logo: "https://github.com/user-attachments/assets/260e97ce-6941-4f3a-8dc8-b7125522ebc0"
     logo-alt: "A hexagon logo for the BlueSky Comments Quarto extension."
     style: "floating"
     search: true
