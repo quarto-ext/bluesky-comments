@@ -45,7 +45,7 @@ For example:
 
 3. **Final shortcode:**
    ````markdown
-   {{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
+   {{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
    ````
 
 ## Styling

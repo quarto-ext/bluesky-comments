@@ -13,12 +13,6 @@ As an example, let's use the following [Bluesky post](https://bsky.app/profile/c
 
 {{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
 
-The comment section above is live and interactive:
-
-- 💬 Click the post link to add your own comment
-- 🔄 Refresh the page to see new comments
-- ❤️ Engage with the discussion directly through Bluesky
-
 ## Installation
 
 You can install this extension using Quarto's extension management system:
