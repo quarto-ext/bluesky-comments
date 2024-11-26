@@ -1,0 +1,7 @@
+title: bluesky-comments
+author: James Joseph Balamuta
+version: 0.0.0-dev.1
+quarto-required: ">=1.5.0"
+contributes:
+  shortcodes:
+    - bluesky-comments.lua
