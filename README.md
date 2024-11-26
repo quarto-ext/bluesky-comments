@@ -32,7 +32,7 @@ For example, if your Bluesky post URL is `https://bsky.app/profile/coatless.bsky
 In this case, your shortcode would look like:
 
 ````markdown
-{{{< bluesky-comments uri="at://did:plc:example.bsky.social/app.bsky.feed.post/abcd1234" >}}}
+{{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
 ````
 
 ## Styling
