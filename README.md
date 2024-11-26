@@ -1,25 +1,59 @@
-# Quarto Extension Development with Lua in a Devcontainer
+# Bluesky Comments Extension for Quarto
 
-This repository houses a devcontainer that setups a [Quarto extension development environment](https://quarto.org/docs/extensions/lua.html). The container is setup to work with [GitHub Codespaces](https://github.com/features/codespaces) to instantly have a cloud-based developer workflow.
+Bluesky Comments is a Quarto shortcode extension that enables embedding Bluesky post comments in your documents. This extension fetches and displays comments from Bluesky posts, allowing you to integrate social discussions directly into your Quarto documents.
 
-You can try out the Codespace by clicking on the following button:
+## Installation
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/coatless-devcontainer/quarto-extension-dev?quickstart=1)
+You can install this extension using Quarto's extension management system:
 
-**Note:** Codespaces are available to Students and Teachers for free [up to 180 core hours per month](https://docs.github.com/en/education/manage-coursework-with-github-classroom/integrate-github-classroom-with-an-ide/using-github-codespaces-with-github-classroom#about-github-codespaces) through [GitHub Education](https://education.github.com/). Otherwise, you will have [up to 60 core hours and 15 GB free per month](https://github.com/features/codespaces#pricing).
+```bash
+quarto add coatless-quarto/bluesky-comments
+```
 
-The devcontainer contains:
+This will install the extension under the `_extensions` directory of your Quarto project.
 
-- The latest [pre-release](https://quarto.org/docs/download/prerelease) version of Quarto.
-- [Quarto VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
-- [Lua LSP VS Code Extension](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) for Lua code intelligence.
-- [GitHub copilot VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot).
-- `R` and `Python`
-- `knitr` and `jupyter`
+### Requirements
 
-## References
+- Quarto version 1.5.0 or higher
+- A web browser with JavaScript enabled
 
-- [Quarto: Lua API Reference](https://quarto.org/docs/extensions/lua-api.html)
-- [Quarto: Lua Development](https://quarto.org/docs/extensions/lua.html)
-- [Pandoc: Lua Filters](https://pandoc.org/lua-filters.html)
-- [Lua: Manual](https://www.lua.org/manual/5.4/)
+## Usage
+
+To embed comments from a Bluesky post, use the `bluesky-comments` shortcode in your Quarto document:
+
+````markdown
+{{{< bluesky-comments uri="at://did.plc/rkey" >}}}
+````
+
+Replace `did.plc` with the author's DID and `rkey` with the post's record key. You can get these from any Bluesky post URL by using the following [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html) tool.
+
+For example, if your Bluesky post URL is `https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26`, the tool would provide the following AT-URI: `at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26`. 
+
+In this case, your shortcode would look like:
+
+````markdown
+{{{< bluesky-comments uri="at://did:plc:example.bsky.social/app.bsky.feed.post/abcd1234" >}}}
+````
+
+## Styling
+
+The extension comes with default styling that matches Bluesky's aesthetic. You can customize the appearance by overriding the CSS classes defined in [`_extensions/bluesky-comments/styles.css`](_extensions/bluesky-comments/styles.css).
+
+## Technical Details
+
+The extension works by:
+
+1. Making requests to the public Bluesky API (`public.api.bsky.app`)
+2. Fetching thread data for the specified post
+3. Rendering comments in a responsive layout
+4. Automatically handling pagination through the "Show more" button
+
+## Limitations
+
+- Only works in HTML output formats with JavaScript enabled
+- Requires an internet connection to fetch comments
+- Subject to Bluesky's API rate limits and availability
+
+## Acknowledgements
+
+This extension is based off of the work of [Emily Liu](https://emilyliu.me/blog/comments) ([Original tweet? that caught my attention](https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i)) and [Samuel Newman](https://bsky.app/profile/samuel.bsky.team) ([Original blog post](https://graysky.app/blog/2024-02-05-adding-blog-comments)). 
