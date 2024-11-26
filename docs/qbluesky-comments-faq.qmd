@@ -1,0 +1,104 @@
+---
+title: Bluesky Comments Extension FAQ
+---
+
+## What is the Bluesky Comments extension?
+
+The Bluesky Comments extension allows you to embed Bluesky post comments in your Quarto documents. This creates an interactive comment section that pulls live data from Bluesky, displaying threaded conversations, engagement metrics, and user profiles.
+
+## How do I install the extension?
+
+To install the Bluesky Comments extension, run the following command in your Quarto project directory:
+
+```bash
+quarto add coatless-quarto/bluesky-comments
+```
+
+This will add the extension to your project's `_extensions` directory. If you're using version control, make sure to commit this directory.
+
+## What are the prerequisites?
+
+To use the Bluesky Comments extension, you need the following:
+
+- Quarto >= 1.4.0
+- A web browser with JavaScript enabled
+
+No authentication is required as the extension uses Bluesky's public API endpoints.
+
+## How do I add comments to my document?
+
+Add the following shortcode to your Quarto document where you want the comments to appear:
+
+```markdown
+{{< bluesky-comments uri="at://did.plc/app.bsky.feed.post/threadid" >}}
+```
+
+## Where do I find the URI for a Bluesky post?
+
+1. Go to the Bluesky post you want to embed
+2. The URL will look like: `https://bsky.app/profile/username.bsky.social/post/threadid`
+3. Convert this to the AT protocol format: `at://did.plc/app.bsky.feed.post/threadid` by using [Bluesky/AT Protocol
+URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html).
+
+You can find the DID (Decentralized Identifier) by viewing the profile of the post author.
+
+## Can I customize the appearance?
+
+Yes, you can override the default styles by adding custom CSS to your Quarto document:
+
+```css
+.bluesky-comments-container {
+  /* Your custom styles */
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.comment {
+  /* Customize comment appearance */
+  background: #f5f5f5;
+  padding: 1rem;
+}
+```
+
+Or, you can modify the extension's CSS file directly in the `_extensions/bluesky-comments` directory. Be aware that changes to the extension's files may be overwritten when updating the extension.
+
+## How many comments are shown initially?
+
+The extension shows 3 comments initially, sorted by likes (most liked first). Users can click "Show more" to load 5 additional comments at a time.
+
+
+## Why aren't the comments loading?
+
+If the comments aren't loading, try the following troubleshooting steps:
+
+1. Check that the URI is correct and properly formatted
+2. Ensure JavaScript is enabled in your browser
+3. Check the browser console for error messages
+4. Verify that the post exists and is public
+5. Check if the Bluesky API is accessible from your location
+
+## I'm getting a 404 error
+
+Most likely the URI format is incorrect. Ensure you're using the AT protocol format:
+
+- Correct: `at://did.plc/app.bsky.feed.post/threadid`
+- Incorrect: `https://bsky.app/profile/...`
+
+Please use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html) to convert the URL to the correct format.
+
+## How do I debug issues?
+
+The extension logs errors to the browser console. Open your browser's developer tools (usually F12) and check the console for error messages.
+
+## What APIs are being used?
+
+The extension uses Bluesky's **public API** endpoint to fetch comments for a post thread: [`app.bsky.feed.getPostThread`](https://docs.bsky.app/docs/api/app-bsky-feed-get-post-thread).
+
+## Does it affect page load performance?
+
+Comments are loaded asynchronously after the page loads, so they don't block page rendering. The extension uses minimal JavaScript and has no external dependencies.
+
+## Is authentication required?
+
+No, the extension uses Bluesky's public API endpoints and doesn't require authentication. However, users need a Bluesky account to post comments.
+

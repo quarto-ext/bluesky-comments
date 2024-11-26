@@ -1,0 +1,32 @@
+project:
+  type: website
+
+website:
+  title: "BlueSky Comments"
+  reader-mode: true
+  repo-url: https://github.com/coatless-quarto/bluesky-comments/
+  repo-actions: [edit, issue]
+  sidebar:
+    logo: "https://github.com/user-attachments/assets/2b293570-727a-4ca2-85e6-0c308108772a"
+    logo-alt: "A hexagon logo for the BlueSky Comments Quarto extension."
+    style: "floating"
+    search: true
+    tools:
+      - icon: github
+        href: https://github.com/coatless-quarto/bluesky-comments/
+    contents: 
+      - text: "Home"
+        file: index.qmd
+      - section: "Support"
+        contents:
+        - text: "FAQ"
+          href: qbluesky-comments-faq.qmd
+        - text: "Submit an issue"
+          href: https://github.com/coatless-quarto/bluesky-comments/issues/new/choose
+      - section: "Extra"
+        contents:
+        - qbluesky-comments-release-notes.qmd
+
+format: 
+  html:
+    toc: true

@@ -1,0 +1,15 @@
+---
+title: "Release Notes"
+date: "11-24-2024"
+date-modified: last-modified
+engine: markdown
+format: 
+  html:
+    toc: true
+---
+
+# 0.0.0-dev.1: ?? (??-??-????)
+
+## Features
+
+- Retrieve bluesky comments from a thread and display them in your document
