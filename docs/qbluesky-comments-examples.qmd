@@ -1,0 +1,48 @@
+---
+title: "Bluesky Comments Example"
+format: html
+---
+
+This document shows an example of the Bluesky Comments extension in Quarto embedding comments from multiple Bluesky posts in a single document.
+
+## Basic Usage
+
+To embed comments from a Bluesky post, use the `{{{< bluesky-comments >}}}` shortcode with a `uri` parameter. The URI should be in the format `at://did/app.bsky.feed.post/rkey`. To get the correct URI format, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html) to move from a Bluesky URL to an AT-URI for a post.
+
+
+## Multiple Comment Sections
+
+You can embed multiple comment sections in your document:
+
+### Discussion Topic 1
+
+**Post URL:**  https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i
+
+**Converted AT-URI:** `at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i`
+
+**Shortcode:**
+
+```markdown
+{{{< bluesky-comments uri="at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i" >}}}
+```
+
+**Live:**
+
+{{< bluesky-comments uri="at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i" >}}
+
+### Discussion Topic 2
+
+**Post URL:**  <https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26>
+
+**Converted AT-URI:** `at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26`
+
+**Shortcode:**
+
+```markdown
+{{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
+```
+
+**Live:**
+
+{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
+
