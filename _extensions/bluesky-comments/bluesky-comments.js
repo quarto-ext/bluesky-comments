@@ -75,19 +75,33 @@ document.addEventListener('DOMContentLoaded', function() {
       if (this.config.muteUsers?.includes(comment.post.author.did)) {
         return true;
       }
-
+    
       // Check muted patterns
       const text = comment.post.record.text;
-      if (this.config.mutePatterns?.some(pattern => text.includes(pattern))) {
+      if (this.config.mutePatterns?.some(pattern => {
+        try {
+          // Check if pattern is a regex string (enclosed in /)
+          if (pattern.startsWith('/') && pattern.endsWith('/')) {
+            const regexStr = pattern.slice(1, -1); // Remove the slashes
+            const regex = new RegExp(regexStr);
+            return regex.test(text);
+          }
+          // Fall back to simple string includes for non-regex patterns
+          return text.includes(pattern);
+        } catch (err) {
+          console.error('Invalid regex pattern:', pattern, err);
+          return false;
+        }
+      })) {
         return true;
       }
-
+    
       // Check empty/spam replies
       if (this.config.filterEmptyReplies && 
           (!text.trim() || text.length < 2)) {
         return true;
       }
-
+    
       return false;
     }
 
