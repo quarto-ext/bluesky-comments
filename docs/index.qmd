@@ -57,6 +57,36 @@ For example:
    {{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
    ````
 
+## Configuration
+
+The extension can be configured through your document's YAML frontmatter or the `_quarto.yml` configuration file. Add configuration options under the `bluesky-comments` key:
+
+```yaml
+---
+title: "My Document"
+bluesky-comments:
+  mute-patterns: 
+    - "📌"
+    - "🔥"
+    - "/\\bspam\\b/i"  # regex pattern
+  mute-users:
+    - "did:plc:1234abcd"
+  filter-empty-replies: true
+  visible-comments: 3
+  visible-subcomments: 3
+---
+```
+
+### Available Options
+
+- `mute-patterns`: An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text
+- `mute-users`: An array of Bluesky DIDs to filter out comments from specific users
+- `filter-empty-replies`: Boolean flag to filter out empty or very short replies (default: `true`)
+- `visible-comments`: Number of top-level comments to show initially (default: `3`)
+- `visible-subcomments`: Number of replies to show initially under each comment (default: `3`)
+
+Users can click "Show more" buttons to reveal additional comments and replies beyond these initial limits. Filtered comments are counted and displayed at the top of the comments section to maintain transparency about moderation.
+
 ## Styling
 
 Modify the extension's appearance by overriding CSS classes in:
