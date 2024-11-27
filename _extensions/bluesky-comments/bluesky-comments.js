@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
       };
       this.currentVisibleCount = null;
       this.replyVisibilityCounts = new Map();
+      this.acknowledgedWarnings = new Set();
       
       // Bind methods
       this.showMore = this.showMore.bind(this);
@@ -121,19 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return count;
     }
 
-    renderContentWarning(labels) {
-      if (!labels?.length) return '';
-      
-      const warningId = `warning-${Math.random().toString(36).substr(2, 9)}`;
-      return `
-        <div class="content-warning">
-          <button onclick="document.getElementById('${warningId}').style.display='block'; this.style.display='none'">
-            Click to see content (${labels.join(', ')})
-          </button>
-          <div id="${warningId}" style="display: none">
-      `;
-    }
-
     showMoreReplies(event) {
       const button = event.target;
       const commentId = button.getAttribute('data-comment-id');
@@ -145,6 +133,21 @@ document.addEventListener('DOMContentLoaded', function() {
       this.replyVisibilityCounts.set(commentId, newCount);
 
       // Re-render the comment with updated visibility
+      this.render();
+    }
+
+    // Handle warning button clicks
+    handleWarningClick(warningType, contentId) {
+      this.acknowledgedWarnings.add(warningType);
+      const contentElement = document.getElementById(contentId);
+      if (contentElement) {
+        contentElement.style.display = 'block';
+        const warningElement = contentElement.previousElementSibling;
+        if (warningElement && warningElement.classList.contains('content-warning')) {
+          warningElement.style.display = 'none';
+        }
+      }
+      // Re-render to update other warnings of the same type
       this.render();
     }
 
@@ -165,34 +168,60 @@ document.addEventListener('DOMContentLoaded', function() {
       const visibleReplies = replies.slice(0, visibleCount);
       const hiddenReplies = replies.slice(visibleCount);
 
-      const labels = comment.post.labels?.map(l => l.val) || [];
-      const warningStart = this.renderContentWarning(labels);
-      const warningEnd = labels.length ? '</div></div>' : '';
+      const labels = comment.post.labels?.map(l => ({
+        value: l.val.charAt(0).toUpperCase() + l.val.slice(1)
+      })) || [];
+      
+      const warningType = labels.map(l => l.value).sort().join('-');
+      const hasWarning = labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
+      const warningId = hasWarning ? `warning-${commentId}` : '';
+
+      const warningHtml = hasWarning ? `
+        <div class="content-warning">
+          <div class="warning-content">
+            ${labels.map(label => `
+              <div class="label-warning">
+                <strong>${label.value}</strong>
+                <p>Warning: This content may contain sensitive material</p>
+                <p class="label-attribution">This label was applied by the Bluesky community.</p>
+              </div>
+            `).join('')}
+            <p class="warning-prompt">Do you wish to see these comments?</p>
+            <hr class="warning-divider"/>
+            <button class="warning-button" 
+                    data-warning-type="${warningType}"
+                    data-content-id="${warningId}">
+              Show Comments
+            </button>
+          </div>
+        </div>
+      ` : '';
 
       return `
         <div class="comment" id="comment-${commentId}">
-          <div class="comment-header">
-            <a href="https://bsky.app/profile/${author.did}" target="_blank" class="author-link">
-              ${avatarHtml}
-              <span>${author.displayName || author.handle}</span>
-              <span class="handle">@${author.handle}</span>
-            </a>
-          </div>
-          <div class="comment-body">
-            ${warningStart}
-            <p>${comment.post.record.text}</p>
-            ${warningEnd}
-            <div class="comment-actions">
-              <span>♡ ${comment.post.likeCount || 0}</span>
-              <span>↻ ${comment.post.repostCount || 0}</span>
-              <span>💬 ${comment.post.replyCount || 0}</span>
+          ${warningHtml}
+          <div id="${warningId}" style="display: ${hasWarning ? 'none' : 'block'}">
+            <div class="comment-header">
+              <a href="https://bsky.app/profile/${author.did}" target="_blank" class="author-link">
+                ${avatarHtml}
+                <span>${author.displayName || author.handle}</span>
+                <span class="handle">@${author.handle}</span>
+              </a>
             </div>
+            <div class="comment-body">
+              <p>${comment.post.record.text}</p>
+              <div class="comment-actions">
+                <span>♡ ${comment.post.likeCount || 0}</span>
+                <span>↻ ${comment.post.repostCount || 0}</span>
+                <span>💬 ${comment.post.replyCount || 0}</span>
+              </div>
+            </div>
+            ${this.renderReplies(visibleReplies, depth + 1)}
+            ${hiddenReplies.length > 0 ? 
+              `<button class="show-more-replies" data-comment-id="${commentId}">
+                Show ${hiddenReplies.length} more replies
+               </button>` : ''}
           </div>
-          ${this.renderReplies(visibleReplies, depth + 1)}
-          ${hiddenReplies.length > 0 ? 
-            `<button class="show-more-replies" data-comment-id="${commentId}">
-              Show ${hiddenReplies.length} more replies
-             </button>` : ''}
         </div>
       `;
     }
@@ -224,15 +253,15 @@ document.addEventListener('DOMContentLoaded', function() {
       const [, , did, , rkey] = this.getAttribute('data-uri').split('/');
       const postUrl = `https://bsky.app/profile/${did}/post/${rkey}`;
 
-      // Check for labels on the main post
-      const labels = this.thread.post.labels?.map(l => l.val) || [];
-      const warningStart = this.renderContentWarning(labels);
-      const warningEnd = labels.length ? '</div></div>' : '';
-
-      // Count filtered comments
-      const filteredCount = this.countFilteredComments(this.thread.replies);
-
       // Filter and sort replies
+      const labels = this.thread.post.labels?.map(l => ({
+        value: l.val.charAt(0).toUpperCase() + l.val.slice(1)
+      })) || [];
+      
+      const warningType = labels.map(l => l.value).sort().join('-');
+      const hasWarning = labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
+      const warningId = hasWarning ? `warning-${Math.random().toString(36).substr(2, 9)}` : '';
+
       const filteredReplies = (this.thread.replies || [])
         .filter(reply => !this.shouldFilterComment(reply))
         .sort((a, b) => (b.post.likeCount || 0) - (a.post.likeCount || 0));
@@ -240,38 +269,76 @@ document.addEventListener('DOMContentLoaded', function() {
       // Get visible replies based on currentVisibleCount
       const visibleReplies = filteredReplies.slice(0, this.currentVisibleCount);
       const remainingCount = filteredReplies.length - this.currentVisibleCount;
+      const filteredCount = this.countFilteredComments(this.thread.replies);
+
+      const warningHtml = hasWarning ? `
+        <div class="content-warning">
+          <div class="warning-content">
+            ${labels.map(label => `
+              <div class="label-warning">
+                <strong>${label.value}</strong>
+                <p>Warning: This content may contain sensitive material</p>
+                <p class="label-attribution">This label was applied by the Bluesky community.</p>
+              </div>
+            `).join('')}
+            <p class="warning-prompt">Do you wish to see these comments?</p>
+            <hr class="warning-divider"/>
+            <button class="warning-button" 
+                    data-warning-type="${warningType}"
+                    data-content-id="${warningId}">
+              Show Comments
+            </button>
+          </div>
+        </div>
+      ` : '';
+
+      const contentHtml = `
+        <div class="stats">
+          <a href="${postUrl}" target="_blank">
+            <span>♡ ${this.thread.post.likeCount || 0} likes</span>
+            <span>↻ ${this.thread.post.repostCount || 0} reposts</span>
+            <span>💬 ${this.thread.post.replyCount || 0} replies</span>
+          </a>
+        </div>
+        <h2>Comments</h2>
+        ${filteredCount > 0 ? 
+          `<p class="filtered-notice">
+            ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
+           </p>` : ''}
+        <p class="reply-prompt">
+          Reply on Bluesky <a href="${postUrl}" target="_blank">here</a> to join the conversation.
+        </p>
+        <hr/>
+        <div class="comments-list">
+          ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
+        </div>
+        ${remainingCount > 0 ? 
+          `<button class="show-more">
+            Show ${remainingCount} more comments
+           </button>` : ''}
+      `;
 
       this.innerHTML = `
         <div class="bluesky-comments-container">
-          ${warningStart}
-          <div class="stats">
-            <a href="${postUrl}" target="_blank">
-              <span>♡ ${this.thread.post.likeCount || 0} likes</span>
-              <span>↻ ${this.thread.post.repostCount || 0} reposts</span>
-              <span>💬 ${this.thread.post.replyCount || 0} replies</span>
-            </a>
+          ${warningHtml}
+          <div id="${warningId}" style="display: ${hasWarning ? 'none' : 'block'}">
+            ${contentHtml}
           </div>
-          ${warningEnd}
-          <h2>Comments</h2>
-          ${filteredCount > 0 ? 
-            `<p class="filtered-notice">
-              ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
-             </p>` : ''}
-          <p class="reply-prompt">
-            Reply on Bluesky <a href="${postUrl}" target="_blank">here</a> to join the conversation.
-          </p>
-          <hr/>
-          <div class="comments-list">
-            ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
-          </div>
-          ${remainingCount > 0 ? 
-            `<button class="show-more">
-              Show ${remainingCount} more comments
-             </button>` : ''}
         </div>
       `;
 
       // Add event listeners after rendering
+      this.querySelectorAll('.warning-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const warningType = button.getAttribute('data-warning-type');
+          const contentId = button.getAttribute('data-content-id');
+          if (warningType && contentId) {
+            this.handleWarningClick(warningType, contentId);
+          }
+        });
+      });
+
+      // Add other event listeners
       if (remainingCount > 0) {
         const showMoreButton = this.querySelector('.show-more');
         if (showMoreButton) {
