@@ -1,14 +1,41 @@
 ---
 title: "Bluesky Comments Example"
 format: html
+callout-appearance: simple
+bluesky-comments:
+  mute-patterns: 
+    - "📌"
+    - "🔥"
+  filter-empty-replies: true
+  visible-comments: 3
+  visible-subcomments: 5
 ---
 
 This document shows an example of the Bluesky Comments extension in Quarto embedding comments from multiple Bluesky posts in a single document.
 
-## Basic Usage
+## Usage
 
 To embed comments from a Bluesky post, use the `{{{< bluesky-comments >}}}` shortcode with a `uri` parameter. The URI should be in the format `at://did/app.bsky.feed.post/rkey`. To get the correct URI format, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html) to move from a Bluesky URL to an AT-URI for a post.
 
+:::{.callout-note}
+We've opted to require the `at-uri` for a post to ensure that the comments once embedded are not tied to a specific user URL that may change if the user changes their username.
+:::
+
+## Configuration
+
+The document header or `_quarto.yml` can include configuration options for the Bluesky Comments extension. For this example, we've set the following configuration options:
+
+```yml
+bluesky-comments:
+  mute-patterns: 
+    - "📌"
+    - "🔥"
+  filter-empty-replies: true
+  visible-comments: 3
+  visible-subcomments: 5
+```
+
+We could also supply `mute-users` to mute specific users from the comments; however, we have not done so in this example.
 
 ## Multiple Comment Sections
 
@@ -16,9 +43,17 @@ You can embed multiple comment sections in your document:
 
 ### Discussion Topic 1
 
-**Post URL:**  https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i
+**Post URL:** 
 
-**Converted AT-URI:** `at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i`
+```default
+https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i
+```
+
+**Converted AT-URI:** 
+
+```default
+at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i
+```
 
 **Shortcode:**
 
@@ -32,9 +67,17 @@ You can embed multiple comment sections in your document:
 
 ### Discussion Topic 2
 
-**Post URL:**  <https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26>
+**Post URL:**  
 
-**Converted AT-URI:** `at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26`
+```default
+https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
+```
+
+**Converted AT-URI:** 
+
+```default
+at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
+```
 
 **Shortcode:**
 
@@ -45,4 +88,3 @@ You can embed multiple comment sections in your document:
 **Live:**
 
 {{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
-
