@@ -43,9 +43,17 @@ You can embed multiple comment sections in your document:
 
 ### Discussion Topic 1
 
-**Post URL:**  <https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i>
+**Post URL:** 
 
-**Converted AT-URI:** `at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i`
+```default
+https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i
+```
+
+**Converted AT-URI:** 
+
+```default
+at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i
+```
 
 **Shortcode:**
 
@@ -59,9 +67,17 @@ You can embed multiple comment sections in your document:
 
 ### Discussion Topic 2
 
-**Post URL:**  <https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26>
+**Post URL:**  
 
-**Converted AT-URI:** `at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26`
+```default
+https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
+```
+
+**Converted AT-URI:** 
+
+```default
+at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
+```
 
 **Shortcode:**
 
@@ -72,4 +88,3 @@ You can embed multiple comment sections in your document:
 **Live:**
 
 {{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
-
