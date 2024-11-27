@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
       super();
       this.thread = null;
       this.error = null;
+      this.filteredCount = 0;  // Track number of filtered comments
       this.config = {
         mutePatterns: [],
         muteUsers: [],
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (this.config.muteUsers?.includes(comment.post.author.did)) {
         return true;
       }
-    
+
       // Check muted patterns
       const text = comment.post.record.text;
       if (this.config.mutePatterns?.some(pattern => {
@@ -95,14 +96,29 @@ document.addEventListener('DOMContentLoaded', function() {
       })) {
         return true;
       }
-    
+
       // Check empty/spam replies
       if (this.config.filterEmptyReplies && 
           (!text.trim() || text.length < 2)) {
         return true;
       }
-    
+
       return false;
+    }
+
+    countFilteredComments(replies) {
+      let count = 0;
+      if (!replies) return count;
+      
+      for (const reply of replies) {
+        if (this.shouldFilterComment(reply)) {
+          count++;
+        }
+        if (reply.replies) {
+          count += this.countFilteredComments(reply.replies);
+        }
+      }
+      return count;
     }
 
     renderContentWarning(labels) {
@@ -213,6 +229,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const warningStart = this.renderContentWarning(labels);
       const warningEnd = labels.length ? '</div></div>' : '';
 
+      // Count filtered comments
+      const filteredCount = this.countFilteredComments(this.thread.replies);
+
       // Filter and sort replies
       const filteredReplies = (this.thread.replies || [])
         .filter(reply => !this.shouldFilterComment(reply))
@@ -234,6 +253,10 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           ${warningEnd}
           <h2>Comments</h2>
+          ${filteredCount > 0 ? 
+            `<p class="filtered-notice">
+              ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
+             </p>` : ''}
           <p class="reply-prompt">
             Reply on Bluesky <a href="${postUrl}" target="_blank">here</a> to join the conversation.
           </p>
@@ -243,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           ${remainingCount > 0 ? 
             `<button class="show-more">
-              Show ${filteredReplies.length} comments
+              Show ${remainingCount} more comments
              </button>` : ''}
         </div>
       `;
