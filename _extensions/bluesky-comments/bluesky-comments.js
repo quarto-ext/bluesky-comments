@@ -21,7 +21,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   async connectedCallback() {
-    const uri = this.getAttribute('uri');
+    const uri = this.getAttribute('post');
     const configStr = this.getAttribute('config');
 
     if (!uri) return;
@@ -249,7 +249,7 @@ class BlueskyComments extends HTMLElement {
       return;
     }
 
-    const [, , did, , rkey] = this.getAttribute('uri').split('/');
+    const [, , did, , rkey] = this.getAttribute('post').split('/');
     const postUrl = `https://bsky.app/profile/${did}/post/${rkey}`;
 
     // Filter and sort replies

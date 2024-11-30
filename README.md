@@ -24,7 +24,7 @@ This will install the extension under the `_extensions` directory of your Quarto
 To embed comments from a Bluesky post, use the `bluesky-comments` shortcode in your Quarto document:
 
 ````markdown
-{{{< bluesky-comments uri="at://did.plc/rkey" >}}}
+{{{< bluesky-comments post="at://did.plc/rkey" >}}}
 ````
 
 ### Converting Bluesky URLs to AT Protocol URIs
@@ -45,7 +45,7 @@ For example:
 
 3. **Final shortcode:**
    ````markdown
-   {{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
+   {{< bluesky-comments post="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
    ````
 
 ## Configuration

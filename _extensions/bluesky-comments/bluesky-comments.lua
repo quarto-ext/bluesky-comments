@@ -67,7 +67,7 @@ function shortcode(args, kwargs, meta)
   ensureHtmlDeps()
 
   -- Get URI from kwargs or default to empty string
-  local uri = kwargs['uri'] or ''
+  local postUri = kwargs['post'] or ''
 
   -- Get configuration
   local config = getFilterConfig(meta)
@@ -75,9 +75,9 @@ function shortcode(args, kwargs, meta)
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
     <bluesky-comments
-         uri="%s"
+         post="%s"
          config='%s'></bluesky-comments>
-  ]], uri, config))
+  ]], postUri, config))
 end
 
 -- Return the shortcode registration
