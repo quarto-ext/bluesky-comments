@@ -3,7 +3,7 @@ title: "Release Notes"
 date: "11-24-2024"
 date-modified: last-modified
 engine: markdown
-format: 
+format:
   html:
     toc: true
 ---
