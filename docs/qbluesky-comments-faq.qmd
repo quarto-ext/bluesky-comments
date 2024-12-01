@@ -30,7 +30,7 @@ No authentication is required as the extension uses Bluesky's public API endpoin
 Add the following shortcode to your Quarto document where you want the comments to appear:
 
 ```markdown
-{{< bluesky-comments post="at://did.plc/app.bsky.feed.post/threadid" >}}
+{{< bluesky-comments at://did.plc/app.bsky.feed.post/threadid >}}
 ```
 
 ## Where do I find the URI for a Bluesky post?
