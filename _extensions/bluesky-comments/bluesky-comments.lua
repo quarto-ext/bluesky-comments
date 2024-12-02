@@ -42,6 +42,16 @@ local function getFilterConfig(meta)
     filterConfig.visibleSubComments = tonumber(pandoc.utils.stringify(config['visible-subcomments']))
   end
 
+  -- Add any additional config values
+  for key, value in pairs(config) do
+    -- Convert key from kebab-case to camelCase
+    local camelKey = key:gsub("%-(%w)", function(match) return match:upper() end)
+    -- Only add if not already in filterConfig
+    if filterConfig[camelKey] == nil then
+      filterConfig[camelKey] = pandoc.utils.stringify(value)
+    end
+  end
+
   -- Convert to JSON string
   return quarto.json.encode(filterConfig)
 end

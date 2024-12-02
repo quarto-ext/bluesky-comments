@@ -32,3 +32,7 @@ website:
 format:
   html:
     toc: true
+
+bluesky-comments:
+  # profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b
+  profile: coatless.bsky.social
