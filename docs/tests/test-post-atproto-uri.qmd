@@ -1,0 +1,48 @@
+---
+title: "Test: Shortcode with atproto URI"
+description: Test that the shortcode works with Bluesky atproto post URIs.
+
+bluesky-comments:
+  profile: did:plc:72jpccg3u3vbohc67rqrplei
+---
+
+## As direct argument
+
+```markdown
+{{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j >}}}
+```
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j >}}
+
+## As named `uri` argument
+
+```markdown
+{{{< bluesky-comments uri="at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j" >}}}
+```
+
+{{< bluesky-comments uri="at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j" >}}
+
+## Using `profile` from metadata
+
+This post includes the following in its frontmatter:
+
+```yaml
+bluesky-comments:
+  profile: did:plc:72jpccg3u3vbohc67rqrplei
+```
+
+### As direct argument with post ID
+
+```markdown
+{{{< bluesky-comments 3lbu5opiixc2j >}}}
+```
+
+{{< bluesky-comments 3lbu5opiixc2j >}}
+
+### As named `uri` argument with ID
+
+```markdown
+{{{< bluesky-comments uri="3lbu5opiixc2j" >}}}
+```
+
+{{< bluesky-comments uri="3lbu5opiixc2j" >}}
