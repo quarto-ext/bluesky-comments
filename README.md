@@ -56,7 +56,7 @@ The extension can be configured through your document's YAML frontmatter or the 
 ---
 title: "My Document"
 bluesky-comments:
-  mute-patterns: 
+  mute-patterns:
     - "📌"
     - "🔥"
     - "/\\bspam\\b/i"  # regex pattern

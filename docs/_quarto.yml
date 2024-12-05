@@ -14,7 +14,7 @@ website:
     tools:
       - icon: github
         href: https://github.com/coatless-quarto/bluesky-comments/
-    contents: 
+    contents:
       - text: "Home"
         file: index.qmd
       - text: "Examples"
@@ -29,6 +29,6 @@ website:
         contents:
         - qbluesky-comments-release-notes.qmd
 
-format: 
+format:
   html:
     toc: true

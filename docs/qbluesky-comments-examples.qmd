@@ -3,7 +3,7 @@ title: "Bluesky Comments Example"
 format: html
 callout-appearance: simple
 bluesky-comments:
-  mute-patterns: 
+  mute-patterns:
     - "📌"
     - "🔥"
   filter-empty-replies: true
@@ -27,7 +27,7 @@ The document header or `_quarto.yml` can include configuration options for the B
 
 ```yml
 bluesky-comments:
-  mute-patterns: 
+  mute-patterns:
     - "📌"
     - "🔥"
   filter-empty-replies: true
@@ -44,13 +44,13 @@ You can embed multiple comment sections in your document:
 
 ## Small Thread
 
-**Post URL:**  
+**Post URL:**
 
 ```default
 https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
 ```
 
-**Converted AT-URI:** 
+**Converted AT-URI:**
 
 ```default
 at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
@@ -68,13 +68,13 @@ at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
 
 ## Medium Thread
 
-**Post URL:**  
+**Post URL:**
 
 ```default
 https://bsky.app/profile/nytimes.com/post/3lbvio3i5d22f
 ```
 
-**Converted AT-URI:** 
+**Converted AT-URI:**
 
 ```default
 at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f
@@ -93,13 +93,13 @@ at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f
 
 ## Massive Thread
 
-**Post URL:** 
+**Post URL:**
 
 ```default
 https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i
 ```
 
-**Converted AT-URI:** 
+**Converted AT-URI:**
 
 ```default
 at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i

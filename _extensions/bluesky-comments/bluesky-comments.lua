@@ -74,9 +74,9 @@ function shortcode(args, kwargs, meta)
 
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
-    <div class="bluesky-comments" 
-         data-uri="%s"
-         data-config='%s'></div>
+    <bluesky-comments
+         uri="%s"
+         config='%s'></bluesky-comments>
   ]], uri, config))
 end
 
