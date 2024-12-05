@@ -1,0 +1,43 @@
+---
+title: "Test: Expected Errors"
+description: Rendering this document produces console errors (but does not break render)
+
+bluesky-comments:
+  profile: ~
+---
+
+## Post record key without profile
+
+````markdown
+{{{< bluesky-comments 3lbtwdydxrk26 >}}}
+````
+
+{{< bluesky-comments 3lbtwdydxrk26 >}}
+
+## Missing post entirely
+
+````markdown
+{{{< bluesky-comments >}}}
+````
+
+{{< bluesky-comments >}}
+
+## Post specified twice
+
+````markdown
+{{{< bluesky-comments https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j uri="https://bsky.app/profile/coatless.bsky.social" >}}}
+````
+
+{{< bluesky-comments https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j uri="https://bsky.app/profile/coatless.bsky.social" >}}
+
+## Expected
+
+When rendered, this document should produce three non-blocking errors and no comments or output will appear in the document.
+
+```
+(E) [bluesky-comments] Post record key 3lbtwdydxrk26 provided but `bluesky-comments.profile` metadata is not set.
+(E) [bluesky-comments] Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument.
+(E) [bluesky-comments] Cannot provide both named and unnamed arguments for post URI:
+    * uri="https://bsky.app/profile/coatless.bsky.social"
+    * https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j
+```
