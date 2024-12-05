@@ -66,8 +66,33 @@ function shortcode(args, kwargs, meta)
   -- Ensure HTML dependencies are added
   ensureHtmlDeps()
 
-  -- Get URI from kwargs or default to empty string
-  local uri = kwargs['uri'] or ''
+  -- Handle post URI from either kwargs or args
+  local postUri = nil
+  local errorMsg = nil
+
+  -- Simplify post kwarg. In shortcodes, kwargs is a table of pandoc inlines
+  kwargsUri = pandoc.utils.stringify(kwargs['uri'])
+
+  if kwargsUri ~= '' and #args > 0 then
+    if kwargsUri ~= args[1] then
+      errorMsg = string.format([[Cannot provide both named and unnamed arguments for post URI:
+    * post="%s"
+    * %s]], kwargsUri, args[1])
+    else
+      postUri = args[1]
+    end
+  elseif kwargsUri ~= '' then
+    postUri = kwargsUri
+  elseif #args == 1 then
+    postUri = args[1]
+  else
+    errorMsg = "shortcode requires exactly one unnamed argument: the Bluesky post URL or AT-proto URI."
+  end
+
+  if errorMsg ~= nil then
+    quarto.log.error("[bluesky-comments] " .. errorMsg)
+    return ""
+  end
 
   -- Get configuration
   local config = getFilterConfig(meta)
@@ -75,9 +100,9 @@ function shortcode(args, kwargs, meta)
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
     <bluesky-comments
-         uri="%s"
+         post="%s"
          config='%s'></bluesky-comments>
-  ]], uri, config))
+  ]], pandoc.utils.stringify(postUri or ''), config))
 end
 
 -- Return the shortcode registration

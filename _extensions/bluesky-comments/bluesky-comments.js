@@ -1,6 +1,7 @@
 class BlueskyComments extends HTMLElement {
   constructor() {
     super();
+    this.post = null;
     this.thread = null;
     this.error = null;
     this.filteredCount = 0;  // Track number of filtered comments
@@ -20,11 +21,12 @@ class BlueskyComments extends HTMLElement {
     this.showMoreReplies = this.showMoreReplies.bind(this);
   }
 
-  async connectedCallback() {
-    const uri = this.getAttribute('uri');
-    const configStr = this.getAttribute('config');
+  static get observedAttributes() {
+    return ['post'];
+  }
 
-    if (!uri) return;
+  async connectedCallback() {
+    const configStr = this.getAttribute('config');
 
     // Parse configuration
     if (configStr) {
@@ -38,17 +40,62 @@ class BlueskyComments extends HTMLElement {
 
     // Initialize visible count from config
     this.currentVisibleCount = this.config.visibleComments;
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) return
+
+    if (name === 'post') {
+      this.post = newValue;
+      this.#loadThread();
+    }
+  }
+
+  async #loadThread() {
+    if (!this.post) {
+      this.error = 'Post link (or at:// URI) is required';
+      this.render();
+      return;
+    }
 
     try {
-      await this.fetchThreadData(uri);
+      await this.#fetchThreadData();
+      this.#logAtUri();
       this.render();
-    } catch (err) {
+    } catch (error) {
+      console.error("[bluesky-comments] Error loading comments", error);
       this.error = 'Error loading comments';
       this.render();
     }
   }
 
-  async fetchThreadData(uri) {
+  #convertUri (uri) {
+    if (uri.startsWith('at://')) return uri
+
+    const match = uri.match(/profile\/([\w.]+)\/post\/([\w]+)/)
+    if (match) {
+      const [, did, postId] = match
+      return `at://${did}/app.bsky.feed.post/${postId}`
+    }
+
+    this.error = 'Invalid Bluesky post URL format'
+    return null
+  }
+
+  #logAtUri () {
+    const threadUri = this.thread.post.uri
+    if (this.post === threadUri) {
+      return
+    }
+
+    console.warn(
+      `[bluesky-comments] For more stable and future-proof comments, replace the post URL ${this.post} with the resolved AT-proto URI ${threadUri}.`,
+      { source: this.post, resolved: threadUri }
+    )
+  }
+
+  async #fetchThreadData() {
+    const uri = this.#convertUri(this.post);
     const params = new URLSearchParams({ uri });
     const res = await fetch(
       "https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?" + params.toString(),
@@ -249,7 +296,7 @@ class BlueskyComments extends HTMLElement {
       return;
     }
 
-    const [, , did, , rkey] = this.getAttribute('uri').split('/');
+    const [, , did, , rkey] = this.getAttribute('post').split('/');
     const postUrl = `https://bsky.app/profile/${did}/post/${rkey}`;
 
     // Filter and sort replies

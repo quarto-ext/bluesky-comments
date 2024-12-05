@@ -59,12 +59,12 @@ at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
 **Shortcode:**
 
 ```markdown
-{{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}}
+{{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}}
 ```
 
 **Live:**
 
-{{< bluesky-comments uri="at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26" >}}
+{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}
 
 ## Medium Thread
 
@@ -83,13 +83,13 @@ at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f
 **Shortcode:**
 
 ```markdown
-{{{< bluesky-comments uri="at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f" >}}}
+{{{< bluesky-comments at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f >}}}
 ```
 
 
 **Live:**
 
-{{< bluesky-comments uri="at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f" >}}
+{{< bluesky-comments at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f >}}
 
 ## Massive Thread
 
@@ -108,10 +108,10 @@ at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i
 **Shortcode:**
 
 ```markdown
-{{{< bluesky-comments uri="at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i" >}}}
+{{{< bluesky-comments at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i >}}}
 ```
 
 **Live:**
 
-{{< bluesky-comments uri="at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i" >}}
+{{< bluesky-comments at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i >}}
 
