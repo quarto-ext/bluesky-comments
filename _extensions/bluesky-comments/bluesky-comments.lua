@@ -86,7 +86,7 @@ function shortcode(args, kwargs, meta)
   if kwargsUri ~= '' and #args > 0 then
     if kwargsUri ~= args[1] then
       errorMsg = string.format([[Cannot provide both named and unnamed arguments for post URI:
-    * post="%s"
+    * uri="%s"
     * %s]], kwargsUri, args[1])
     else
       postUri = args[1]
