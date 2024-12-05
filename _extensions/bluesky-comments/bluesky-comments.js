@@ -57,6 +57,7 @@ class BlueskyComments extends HTMLElement {
     if (oldValue === newValue) return
 
     if (name === 'post') {
+      this.#setPostUri(newValue);
       this.#loadThread();
     }
   }
