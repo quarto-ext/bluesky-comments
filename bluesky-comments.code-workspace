@@ -4,5 +4,16 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"cSpell.words": [
+			"aturi",
+			"bluesky",
+			"bsky",
+			"pandoc"
+		],
+		"editor.trimAutoWhitespace": true,
+		"files.trimTrailingWhitespace": true,
+		"files.insertFinalNewline": true,
+		"files.trimFinalNewlines": true
+	}
 }
