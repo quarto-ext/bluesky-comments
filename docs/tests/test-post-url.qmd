@@ -1,0 +1,52 @@
+---
+title: "Test: Shortcode with post URL"
+description: Test that the shortcode works with Bluesky post URLs.
+
+bluesky-comments:
+  profile: grrrck.xyz
+---
+
+::: callout-important
+A console warning should be generated for every comments section in this test, giving the user the resolved atproto URI.
+:::
+
+## As direct argument
+
+```markdown
+{{{< bluesky-comments https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j >}}}
+```
+
+{{< bluesky-comments https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j >}}
+
+## As named `uri` argument
+
+```markdown
+{{{< bluesky-comments uri="https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j" >}}}
+```
+
+{{< bluesky-comments uri="https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j" >}}
+
+## Using `profile` from metadata
+
+This post includes the following in its frontmatter:
+
+```yaml
+bluesky-comments:
+  profile: grrrck.xyz
+```
+
+### As direct argument with post ID
+
+```markdown
+{{{< bluesky-comments 3lbu5opiixc2j >}}}
+```
+
+{{< bluesky-comments 3lbu5opiixc2j >}}
+
+### As named `uri` argument with ID
+
+```markdown
+{{{< bluesky-comments uri="3lbu5opiixc2j" >}}}
+```
+
+{{< bluesky-comments uri="3lbu5opiixc2j" >}}

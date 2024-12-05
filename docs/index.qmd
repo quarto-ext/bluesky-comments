@@ -30,32 +30,51 @@ This will install the extension under the `_extensions` directory of your Quarto
 
 ## Usage
 
-To embed comments from a Bluesky post, use the `bluesky-comments` shortcode in your Quarto document:
+To embed comments from a Bluesky post, use the `bluesky-comments` shortcode in your Quarto document, replacing `post_url` with the link to the Bluesky post that serves as the start of your comments.
 
 ````markdown
-{{{< bluesky-comments at://did.plc/rkey >}}}
+{{{< bluesky-comments post_url >}}}
 ````
 
-### Converting Bluesky URLs to AT Protocol URIs
+Here's the shortcode we used in the example above:
 
-To get the correct URI format, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html).
+````markdown
+{{{< bluesky-comments https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26 >}}}
+````
 
-For example:
+Alternatively, you can add your Bluesky profile handle to your document's YAML frontmatter (or in the `_quarto.yml` configuration file). Then you can just use the post's record key (the identifier at the end of the URL):
 
-1. **Original URL:**
-   ```
-   https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
-   ```
+````markdown
+---
+bluesky-comments:
+  profile: coatless.bsky.social
+---
 
-2. **Converted AT-URI:**
-   ```
-   at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
-   ```
+{{{< bluesky-comments 3lbtwdydxrk26 >}}}
+````
 
-3. **Final shortcode:**
-   ````markdown
-   {{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}}
+### Durable Bluesky post links
+
+Post record keys never change on Bluesky, but user handles may.
+If you change your Bluesky handle in the future (or if you link to a post by someone else and _they_ update their handle), your comments may break.
+
+To avoid breakage, you have a few choices:
+
+1. Use the full [AT Protocol URL](qbluesky-comments-faq.qmd#convert-to-atproto-uri) for the post. Anywhere that `{{{< bluesky-comments >}}}` takes a post URL, it also accepts an `at://` atproto URI.
+
+2. Set your `bluesky-comments.profile` to the [Decentralized Identifier](qbluesky-comments-faq.qmd#convert-to-atproto-uri) (DID) for your profile and use only the post record key in the shortcode:
+
+   ````markdow
+   ---
+   bluesky-comments:
+     profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b  # coatless.bsky.social
+   ---
+
+   {{{< bluesky-comments 3lbtwdydxrk26 >}}}
    ````
+
+3. Or you can use your profile URL, knowing that if you change it in the future you may need to update your site again.
+
 
 ## Configuration
 
@@ -65,6 +84,7 @@ The extension can be configured through your document's YAML frontmatter or the 
 ---
 title: "My Document"
 bluesky-comments:
+  profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b  # coatless.bsky.social
   mute-patterns:
     - "📌"
     - "🔥"
@@ -79,6 +99,7 @@ bluesky-comments:
 
 ### Available Options
 
+- `profile`: A string with the user profile as a handle or [decentralized identifier](qbluesky-comments-faq.qmd#convert-to-atproto-uri)
 - `mute-patterns`: An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text
 - `mute-users`: An array of Bluesky DIDs to filter out comments from specific users
 - `filter-empty-replies`: Boolean flag to filter out empty or very short replies (default: `true`)

@@ -30,17 +30,38 @@ No authentication is required as the extension uses Bluesky's public API endpoin
 Add the following shortcode to your Quarto document where you want the comments to appear:
 
 ```markdown
-{{< bluesky-comments at://did.plc/app.bsky.feed.post/threadid >}}
+<!-- Using the post URL -->
+{{< bluesky-comments https://bsky.app/profile/{handle}/post/{thread_id} >>}}
+
+<!-- Using the AT Protocol URI -->
+{{< bluesky-comments at://{did_plc}/app.bsky.feed.post/{thread_id} >}}
 ```
 
-## Where do I find the URI for a Bluesky post?
+### Converting Bluesky URLs to AT Protocol URIs {#convert-to-atproto-uri}
 
-1. Go to the Bluesky post you want to embed
-2. The URL will look like: `https://bsky.app/profile/username.bsky.social/post/threadid`
-3. Convert this to the AT protocol format: `at://did.plc/app.bsky.feed.post/threadid` by using [Bluesky/AT Protocol
-URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html).
+To get the [At Protocol URI](https://atproto.com/specs/at-uri-scheme) for a post or user profile, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html).
 
-You can find the DID (Decentralized Identifier) by viewing the profile of the post author.
+For example:
+
+1. **Original URL:**
+   ```
+   https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
+   ```
+
+2. **Converted AT-URI:**
+   ```
+   at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
+   ```
+
+3. **Final shortcode:**
+   ````markdown
+   {{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}}
+   ````
+
+This tool can also be used to find the DID (Decentralized Identifier) of a Bluesky handle.
+The DID starts with `did:plc:` and uniquely identifies a poster.
+For example, James' profile is currently `coatless.bsky.social`, but one day he may decide to change it to use domain that he owns.
+When he changes his profile handle, his DID will remain the same: `did:plc:fgeozid7uyx2lfz3yo7zvm3b`.
 
 ## Can I customize the appearance?
 

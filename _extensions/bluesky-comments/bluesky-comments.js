@@ -1,6 +1,7 @@
 class BlueskyComments extends HTMLElement {
   constructor() {
     super();
+    this._initialized = false;
     this.post = null;
     this.thread = null;
     this.error = null;
@@ -38,17 +39,40 @@ class BlueskyComments extends HTMLElement {
       }
     }
 
+    this.#setPostUri(this.getAttribute('post'));
+
     // Initialize visible count from config
     this.currentVisibleCount = this.config.visibleComments;
+    if (!this._initialized) {
+      this._initialized = true
+      this.#loadThread();
+    }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    if (!this._initialized) {
+      // connectedCallback handles first load but is async
+      return
+    }
     if (oldValue === newValue) return
 
     if (name === 'post') {
-      this.post = newValue;
+      this.#setPostUri(newValue);
       this.#loadThread();
     }
+  }
+
+  #setPostUri(newValue) {
+    if (newValue && !/^(https?|at):\/\//.test(newValue)) {
+      if (this.config.profile) {
+        if (this.config.profile.startsWith("did:")) {
+          newValue = `at://${this.config.profile}/app.bsky.feed.post/${newValue}`
+        } else {
+          newValue = `https://bsky.app/profile/${this.config.profile.replace("@", "")}/post/${newValue}`
+        }
+      }
+    }
+    this.post = newValue;
   }
 
   async #loadThread() {
