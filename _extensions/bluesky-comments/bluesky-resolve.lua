@@ -62,6 +62,10 @@ function BlueskyAPI.createPostUrl(handle, postId)
   return string.format("%s/profile/%s/post/%s", BASE_APP_URL, handle, postId)
 end
 
+-- Global cache for resolved URIs
+local BSKY_RESOLVED_URIS = _G.BSKY_RESOLVED_URIS or {}
+_G.BSKY_RESOLVED_URIS = BSKY_RESOLVED_URIS
+
 ---Convert a Bluesky post URL to an atproto URI
 ---
 ---See <https://docs.bsky.app/docs/advanced-guides/posts> and
@@ -85,6 +89,15 @@ function BlueskyAPI.convertUrlToAtUri(url)
   if not success then
     quarto.log.error("Error resolving aturi for post " .. url .. ". Error: " .. err)
     return nil
+  end
+
+  if BSKY_RESOLVED_URIS[url] == nil then
+    quarto.log.output(
+      "[bluesky-comments] Resolved Bluesky post:" ..
+      "\n    source: " .. url ..
+      "\n  resolved: " .. atUri
+    )
+    BSKY_RESOLVED_URIS[url] = atUri
   end
 
   quarto.log.info("[bluesky-comments] Resolved aturi: " .. atUri)
