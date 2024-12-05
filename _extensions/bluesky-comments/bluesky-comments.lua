@@ -1,4 +1,7 @@
--- Get filter configuration from meta and convert to JSON
+local bluesky = require("bluesky-resolve")
+
+
+-- Get filter configuration from meta
 local function getFilterConfig(meta)
   -- Access the extension configuration from meta
   local config = meta and meta['bluesky-comments']
@@ -52,8 +55,7 @@ local function getFilterConfig(meta)
     end
   end
 
-  -- Convert to JSON string
-  return quarto.json.encode(filterConfig)
+  return filterConfig
 end
 
 -- Register HTML dependencies for the shortcode
@@ -61,9 +63,38 @@ local function ensureHtmlDeps()
   quarto.doc.add_html_dependency({
     name = 'bluesky-comments',
     version = '1.0.0',
-    scripts = {'bluesky-comments.js'},
-    stylesheets = {'styles.css'}
+    scripts = { 'bluesky-comments.js' },
+    stylesheets = { 'styles.css' }
   })
+end
+
+local function composePostUri(postUri, config)
+  postUri = pandoc.utils.stringify(postUri or "")
+
+  if postUri:match("^at://") or postUri:match("^https?://") then
+    return postUri
+  end
+
+  if postUri == "" then
+    -- TODO: look up the postUri from meta
+    return postUri
+  end
+
+  local profile = pandoc.utils.stringify(config.profile or "")
+
+  if profile == "" then
+    quarto.log.error(
+      "[bluesky-comments] Post record key " .. postUri ..
+      " provided but `bluesky-comments.profile` metadata is not set."
+    )
+    return ''
+  end
+
+  if profile:match("^did:") then
+    return bluesky.createAtUri(profile, postUri)
+  end
+
+  return bluesky.createPostUrl(profile, postUri)
 end
 
 -- Main shortcode function
@@ -72,6 +103,9 @@ function shortcode(args, kwargs, meta)
   if not quarto.doc.is_format("html:js") then
     return pandoc.Null()
   end
+
+  -- Get configuration
+  local config = getFilterConfig(meta)
 
   -- Ensure HTML dependencies are added
   ensureHtmlDeps()
@@ -95,24 +129,30 @@ function shortcode(args, kwargs, meta)
     postUri = kwargsUri
   elseif #args == 1 then
     postUri = args[1]
-  else
-    errorMsg = "shortcode requires exactly one unnamed argument: the Bluesky post URL or AT-proto URI."
   end
 
-  if errorMsg ~= nil then
+  if postUri == nil then
+    errorMsg = errorMsg or "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
     quarto.log.error("[bluesky-comments] " .. errorMsg)
     return ""
   end
 
-  -- Get configuration
-  local config = getFilterConfig(meta)
+  postUri = composePostUri(postUri, config)
+  if postUri == "" then
+    return ""
+  end
+
+  local atUri = bluesky.convertUrlToAtUri(postUri)
+  if atUri and atUri ~= '' then
+    postUri = atUri
+  end
 
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
     <bluesky-comments
          post="%s"
          config='%s'></bluesky-comments>
-  ]], pandoc.utils.stringify(postUri or ''), config))
+  ]], postUri, quarto.json.encode(config)))
 end
 
 -- Return the shortcode registration
