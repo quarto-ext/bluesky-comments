@@ -34,5 +34,5 @@ format:
     toc: true
 
 bluesky-comments:
-  # profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b
-  profile: coatless.bsky.social
+  # profile: coatless.bsky.social
+  profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b
