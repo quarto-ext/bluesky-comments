@@ -11,7 +11,7 @@ The Bluesky Comments extension allows you to embed Bluesky post comments in your
 To install the Bluesky Comments extension, run the following command in your Quarto project directory:
 
 ```bash
-quarto add coatless-quarto/bluesky-comments
+quarto add quarto-ext/bluesky-comments
 ```
 
 This will add the extension to your project's `_extensions` directory. If you're using version control, make sure to commit this directory.

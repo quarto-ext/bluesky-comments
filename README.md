@@ -9,7 +9,7 @@ Bluesky Comments is a Quarto shortcode extension that seamlessly integrates Blue
 You can install this extension using Quarto's extension management system:
 
 ```bash
-quarto add coatless-quarto/bluesky-comments
+quarto add quarto-ext/bluesky-comments
 ```
 
 This will install the extension under the `_extensions` directory of your Quarto project.

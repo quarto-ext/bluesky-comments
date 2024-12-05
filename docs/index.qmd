@@ -18,7 +18,7 @@ As an example, let's use the following [Bluesky post](https://bsky.app/profile/c
 You can install this extension using Quarto's extension management system:
 
 ```bash
-quarto add coatless-quarto/bluesky-comments
+quarto add quarto-ext/bluesky-comments
 ```
 
 This will install the extension under the `_extensions` directory of your Quarto project.

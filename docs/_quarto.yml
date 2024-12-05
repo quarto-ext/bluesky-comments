@@ -4,7 +4,7 @@ project:
 website:
   title: "BlueSky Comments"
   reader-mode: true
-  repo-url: https://github.com/coatless-quarto/bluesky-comments/
+  repo-url: https://github.com/quarto-ext/bluesky-comments/
   repo-actions: [edit, issue]
   sidebar:
     logo: "https://github.com/user-attachments/assets/260e97ce-6941-4f3a-8dc8-b7125522ebc0"
@@ -13,7 +13,7 @@ website:
     search: true
     tools:
       - icon: github
-        href: https://github.com/coatless-quarto/bluesky-comments/
+        href: https://github.com/quarto-ext/bluesky-comments/
     contents:
       - text: "Home"
         file: index.qmd
@@ -24,7 +24,7 @@ website:
         - text: "FAQ"
           href: qbluesky-comments-faq.qmd
         - text: "Submit an issue"
-          href: https://github.com/coatless-quarto/bluesky-comments/issues/new/choose
+          href: https://github.com/quarto-ext/bluesky-comments/issues/new/choose
       - section: "Extra"
         contents:
         - qbluesky-comments-release-notes.qmd
