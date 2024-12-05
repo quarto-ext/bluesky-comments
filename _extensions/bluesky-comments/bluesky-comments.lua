@@ -1,7 +1,7 @@
 local bluesky = require("bluesky-resolve")
 
 
--- Get filter configuration from meta and convert to JSON
+-- Get filter configuration from meta
 local function getFilterConfig(meta)
   -- Access the extension configuration from meta
   local config = meta and meta['bluesky-comments']
