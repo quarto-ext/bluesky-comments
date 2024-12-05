@@ -1,5 +1,7 @@
 ---
 title: Bluesky Comments Extension FAQ
+aliases:
+  - qbluesky-comments-faq
 ---
 
 ## What is the Bluesky Comments extension?

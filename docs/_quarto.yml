@@ -18,16 +18,16 @@ website:
       - text: "Home"
         file: index.qmd
       - text: "Examples"
-        file: qbluesky-comments-examples.qmd
+        file: examples.qmd
       - section: "Support"
         contents:
         - text: "FAQ"
-          href: qbluesky-comments-faq.qmd
+          href: faq.qmd
         - text: "Submit an issue"
           href: https://github.com/quarto-ext/bluesky-comments/issues/new/choose
       - section: "Extra"
         contents:
-        - qbluesky-comments-release-notes.qmd
+        - news.qmd
 
 format:
   html:
