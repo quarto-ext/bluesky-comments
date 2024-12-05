@@ -2,6 +2,8 @@
 title: "Bluesky Comments Example"
 format: html
 callout-appearance: simple
+aliases:
+  - qbluesky-comments-examples
 bluesky-comments:
   mute-patterns:
     - "📌"
@@ -114,4 +116,3 @@ at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i
 **Live:**
 
 {{< bluesky-comments at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i >}}
-
