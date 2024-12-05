@@ -101,4 +101,3 @@ Comments are loaded asynchronously after the page loads, so they don't block pag
 ## Is authentication required?
 
 No, the extension uses Bluesky's public API endpoints and doesn't require authentication. However, users need a Bluesky account to post comments.
-
