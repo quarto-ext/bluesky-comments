@@ -75,6 +75,16 @@ To avoid breakage, you have a few choices:
 
 3. Or you can use your profile URL, knowing that if you change it in the future you may need to update your site again.
 
+`bluesky-comments` will attempt to convert the post URL to an AT Protocol URI when rendering your document.
+If a post URL is successfully converted, you'll find a message like the following in the output of `quarto render`:
+
+```
+[bluesky-comments] Resolved Bluesky post:
+    source: https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
+  resolved: at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
+```
+
+You can use this information to replace the source post URL with the resolved AT Protocol URI, or you can replace your profile handle with the DID from the resolved URI.
 
 ## Configuration
 
