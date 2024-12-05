@@ -71,18 +71,18 @@ function shortcode(args, kwargs, meta)
   local errorMsg = nil
 
   -- Simplify post kwarg. In shortcodes, kwargs is a table of pandoc inlines
-  kwargsPost = pandoc.utils.stringify(kwargs['post'])
+  kwargsUri = pandoc.utils.stringify(kwargs['uri'])
 
-  if kwargsPost ~= '' and #args > 0 then
-    if kwargsPost ~= args[1] then
+  if kwargsUri ~= '' and #args > 0 then
+    if kwargsUri ~= args[1] then
       errorMsg = string.format([[Cannot provide both named and unnamed arguments for post URI:
     * post="%s"
-    * %s]], kwargsPost, args[1])
+    * %s]], kwargsUri, args[1])
     else
       postUri = args[1]
     end
-  elseif kwargsPost ~= '' then
-    postUri = kwargsPost
+  elseif kwargsUri ~= '' then
+    postUri = kwargsUri
   elseif #args == 1 then
     postUri = args[1]
   else
