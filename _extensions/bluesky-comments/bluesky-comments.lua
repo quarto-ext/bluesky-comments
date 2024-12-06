@@ -1,4 +1,4 @@
-local bluesky = require("bluesky-resolve")
+local bluesky = require("bluesky-api")
 
 
 -- Get filter configuration from meta
