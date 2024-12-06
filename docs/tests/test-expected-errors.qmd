@@ -14,6 +14,7 @@ bluesky-comments:
 
 {{< bluesky-comments 3lbtwdydxrk26 >}}
 
+
 ## Missing post entirely
 
 ````markdown
@@ -21,6 +22,25 @@ bluesky-comments:
 ````
 
 {{< bluesky-comments >}}
+
+
+## Invalid post URL
+
+```markdown
+{{{< bluesky-comments https://example.com/bad/ >}}}
+```
+
+{{< bluesky-comments https://example.com/bad/ >}}
+
+
+## Invalid handle
+
+````markdown
+{{{< bluesky-comments https://bsky.app/profile/bad.bad.bad.bad.bad/post/3lbu5opiixc2j >}}}
+````
+
+{{< bluesky-comments https://bsky.app/profile/bad.bad.bad.bad.bad/post/3lbu5opiixc2j >}}
+
 
 ## Post specified twice
 
@@ -30,14 +50,26 @@ bluesky-comments:
 
 {{< bluesky-comments https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j uri="https://bsky.app/profile/coatless.bsky.social" >}}
 
+
 ## Expected
 
 When rendered, this document should produce three non-blocking errors and no comments or output will appear in the document.
 
 ```
-(E) [bluesky-comments] Post record key 3lbtwdydxrk26 provided but `bluesky-comments.profile` metadata is not set.
-(E) [bluesky-comments] Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument.
-(E) [bluesky-comments] Cannot provide both named and unnamed arguments for post URI:
+ERROR (/..snip../_extensions/bluesky-comments/utils.lua:9)
+[bluesky-comments] Post record key 3lbtwdydxrk26 provided but `bluesky-comments.profile` metadata is not set.
+
+ERROR (/..snip../_extensions/bluesky-comments/utils.lua:9)
+[bluesky-comments] Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument.
+
+ERROR (/..snip../_extensions/bluesky-comments/utils.lua:9)
+[bluesky-comments] Invalid Bluesky URL format: https://example.com/bad/
+
+ERROR (/..snip../_extensions/bluesky-comments/utils.lua:9)
+[bluesky-comments] Failed to resolve handle 'bad.bad.bad.bad.bad'. InvalidRequest: Unable to resolve handle
+
+ERROR (/..snip../_extensions/bluesky-comments/utils.lua:9)
+[bluesky-comments] Cannot provide both named and unnamed arguments for post URI:
     * uri="https://bsky.app/profile/coatless.bsky.social"
     * https://bsky.app/profile/grrrck.xyz/post/3lbu5opiixc2j
 ```
