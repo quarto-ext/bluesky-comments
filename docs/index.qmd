@@ -9,6 +9,10 @@ format:
 
 Bluesky Comments is a Quarto shortcode extension that seamlessly integrates Bluesky post comments into your documents. This extension dynamically fetches and displays threaded conversations from Bluesky, creating an interactive bridge between your content and social discussions.
 
+::: {.callout-warning}
+`bluesky-comments` is under active development and the API may change as we iterate. Early adopters and feedback are welcome!
+:::
+
 As an example, let's use the following [Bluesky post](https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26). Feel free to join the conversation by commenting on the post - your comment will appear below when you refresh the page!
 
 {{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}
