@@ -1,4 +1,5 @@
 local bluesky = require("bluesky-api")
+local utils = require("utils")
 
 
 -- Get filter configuration from meta
@@ -83,11 +84,10 @@ local function composePostUri(postUri, config)
   local profile = pandoc.utils.stringify(config.profile or "")
 
   if profile == "" then
-    quarto.log.error(
-      "[bluesky-comments] Post record key " .. postUri ..
+    return utils.abort(
+      "Post record key " .. postUri ..
       " provided but `bluesky-comments.profile` metadata is not set."
     )
-    return ''
   end
 
   if profile:match("^did:") then
@@ -133,12 +133,12 @@ function shortcode(args, kwargs, meta)
 
   if postUri == nil then
     errorMsg = errorMsg or "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
-    quarto.log.error("[bluesky-comments] " .. errorMsg)
+    utils.abort(errorMsg)
     return ""
   end
 
   postUri = composePostUri(postUri, config)
-  if postUri == "" then
+  if (postUri or "") == "" then
     return ""
   end
 

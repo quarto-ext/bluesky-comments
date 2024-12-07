@@ -1,3 +1,5 @@
+local utils = require("utils")
+
 local BlueskyAPI = {}
 
 -- Base Bluesky API URL
@@ -13,7 +15,8 @@ local BASE_APP_URL = "https://bsky.app"
 local function extractPostInfo(url)
   local handle, postId = url:match("bsky%.app/profile/([^/]+)/post/([^/]+)")
   if not handle or not postId then
-    error("Invalid Bluesky URL format")
+    utils.abort("Invalid Bluesky URL format: " .. url)
+    return "", ""
   end
   return handle, postId
 end
@@ -25,7 +28,7 @@ _G.BSKY_RESOLVED_HANDLES = BSKY_RESOLVED_HANDLES
 -- Resolve a handle to a DID.
 -- See <https://docs.bsky.app/docs/advanced-guides/resolving-identities>.
 ---@param handle string The user's handle to be resolved
----@return string did The resolved DID for the user
+---@return string|nil did The resolved DID for the user
 function BlueskyAPI.resolveHandle(handle)
   if BSKY_RESOLVED_HANDLES[handle] ~= nil then
     return BSKY_RESOLVED_HANDLES[handle]
@@ -33,15 +36,24 @@ function BlueskyAPI.resolveHandle(handle)
 
   local url = string.format("%s/xrpc/com.atproto.identity.resolveHandle?handle=%s", BASE_API_URL, handle)
 
-  quarto.log.info("[bluesky-comments] Request: " .. url)
+  utils.log_info("Request: " .. url)
   local mt, contents = pandoc.mediabag.fetch(url)
-  quarto.log.info("[bluesky-comments] Response: ", contents)
+  utils.log_info("Response: ", contents)
 
   if not contents then
-    error("Failed to resolve handle: " .. handle)
+    utils.abort("Failed to resolve handle: " .. handle)
+    return nil
   end
 
   local data = quarto.json.decode(contents)
+  if data.error then
+    utils.abort(string.format(
+      "Failed to resolve handle '%s'. %s: %s",
+      handle, data.error, data.message or ""
+    ))
+    return nil
+  end
+
   BSKY_RESOLVED_HANDLES[handle] = data.did   -- Cache the resolved DID
   return data.did
 end
@@ -77,30 +89,34 @@ function BlueskyAPI.convertUrlToAtUri(url)
     return url
   end
 
-  quarto.log.info("[bluesky-comments] Resolving post: " .. url)
+  utils.log_info("Resolving post: " .. url)
 
-  local atUri
-  local success, err = pcall(function()
-    local handle, postId = extractPostInfo(url)
-    local did = BlueskyAPI.resolveHandle(handle)
-    atUri = BlueskyAPI.createAtUri(did, postId)
-  end)
-
-  if not success then
-    quarto.log.error("Error resolving aturi for post " .. url .. ". Error: " .. err)
+  local handle, postId = extractPostInfo(url)
+  if handle == "" then
     return nil
   end
 
+  local did
+  local success, err = pcall(function()
+    did = BlueskyAPI.resolveHandle(handle)
+  end)
+
+  if err or not did then
+    return nil
+  end
+
+  local atUri = BlueskyAPI.createAtUri(did, postId)
+
   if BSKY_RESOLVED_URIS[url] == nil then
-    quarto.log.output(
-      "[bluesky-comments] Resolved Bluesky post:" ..
+    utils.log_output(
+      "Resolved Bluesky post:" ..
       "\n    source: " .. url ..
       "\n  resolved: " .. atUri
     )
     BSKY_RESOLVED_URIS[url] = atUri
   end
 
-  quarto.log.info("[bluesky-comments] Resolved aturi: " .. atUri)
+  utils.log_info("Resolved aturi: " .. atUri)
   return atUri
 end
 
