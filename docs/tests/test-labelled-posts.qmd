@@ -1,0 +1,6 @@
+---
+title: Labelled posts
+description: A thread with labelled posts
+---
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lcptgvy2ws22 >}}
