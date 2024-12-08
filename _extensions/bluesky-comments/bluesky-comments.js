@@ -267,6 +267,8 @@ class BlueskyComments extends HTMLElement {
       </div>
     ` : '';
 
+    const postId = comment.post.uri.split("/").pop()
+
     return `
       <div class="comment" id="comment-${commentId}">
         ${warningHtml}
@@ -276,6 +278,11 @@ class BlueskyComments extends HTMLElement {
               ${avatarHtml}
               <span>${author.displayName || author.handle}</span>
               <span class="handle">@${author.handle}</span>
+            </a>
+            <a href="https://bsky.app/profile/${author.did}/post/${postId}"
+               class="timestamp-link"
+               target="_blank">
+              ${this.#formatTimestamp(comment.post.record.createdAt)}
             </a>
           </div>
           <div class="comment-body">
@@ -363,6 +370,7 @@ class BlueskyComments extends HTMLElement {
     ` : '';
 
     const contentHtml = `
+      <h2>Comments</h2>
       <div class="stats">
         <a href="${postUrl}" target="_blank">
           <span>♡ ${this.thread.post.likeCount || 0} likes</span>
@@ -370,13 +378,12 @@ class BlueskyComments extends HTMLElement {
           <span>💬 ${this.thread.post.replyCount || 0} replies</span>
         </a>
       </div>
-      <h2>Comments</h2>
       ${filteredCount > 0 ?
         `<p class="filtered-notice">
           ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
           </p>` : ''}
       <p class="reply-prompt">
-        Reply on Bluesky <a href="${postUrl}" target="_blank">here</a> to join the conversation.
+        <a href="${postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
       </p>
       <hr/>
       <div class="comments-list">
@@ -425,6 +432,18 @@ class BlueskyComments extends HTMLElement {
   showMore() {
     this.currentVisibleCount += this.config.visibleComments;
     this.render();
+  }
+
+  #formatTimestamp(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleDateString(navigator.language || 'en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   }
 }
 

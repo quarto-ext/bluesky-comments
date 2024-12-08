@@ -35,7 +35,20 @@
 }
 
 .comment-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   margin-bottom: 0.5rem;
+}
+
+.timestamp-link {
+  color: var(--bs-tertiary-color, #666);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.timestamp-link:hover {
+  text-decoration: underline;
 }
 
 .filtered-notice {
