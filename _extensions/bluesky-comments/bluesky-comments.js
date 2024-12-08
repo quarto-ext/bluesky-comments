@@ -376,7 +376,7 @@ class BlueskyComments extends HTMLElement {
           ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
           </p>` : ''}
       <p class="reply-prompt">
-        Reply on Bluesky <a href="${postUrl}" target="_blank">here</a> to join the conversation.
+        <a href="${postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
       </p>
       <hr/>
       <div class="comments-list">
