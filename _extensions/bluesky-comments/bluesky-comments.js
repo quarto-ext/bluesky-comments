@@ -370,6 +370,7 @@ class BlueskyComments extends HTMLElement {
     ` : '';
 
     const contentHtml = `
+      <h2>Comments</h2>
       <div class="stats">
         <a href="${postUrl}" target="_blank">
           <span>♡ ${this.thread.post.likeCount || 0} likes</span>
@@ -377,7 +378,6 @@ class BlueskyComments extends HTMLElement {
           <span>💬 ${this.thread.post.replyCount || 0} replies</span>
         </a>
       </div>
-      <h2>Comments</h2>
       ${filteredCount > 0 ?
         `<p class="filtered-notice">
           ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
