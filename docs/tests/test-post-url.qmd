@@ -1,5 +1,5 @@
 ---
-title: "Test: Shortcode with post URL"
+title: "Shortcode with post URL"
 description: Test that the shortcode works with Bluesky post URLs.
 
 bluesky-comments:
