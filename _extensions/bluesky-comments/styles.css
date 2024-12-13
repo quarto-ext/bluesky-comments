@@ -21,6 +21,17 @@
   text-decoration: underline;
 }
 
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action-item svg {
+  height: 1em;
+  width: 1em;
+}
+
 .avatar, .avatar-placeholder {
   width: 24px;
   height: 24px;

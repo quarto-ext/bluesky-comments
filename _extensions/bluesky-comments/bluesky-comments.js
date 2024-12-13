@@ -17,6 +17,13 @@ class BlueskyComments extends HTMLElement {
     this.replyVisibilityCounts = new Map();
     this.acknowledgedWarnings = new Set();
 
+    // Define SVG icons
+    this.statsIcons = {
+      likes: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-pink, pink)" class="bi bi-heart-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/></svg>',
+      reposts: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-green, green)" class="bi bi-recycle" viewBox="0 0 16 16"><path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z"/></svg>',
+      quotes: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-blue, blue)" class="bi bi-chat-dots-fill" viewBox="0 0 16 16"><path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>'
+    };
+
     // Bind methods
     this.showMore = this.showMore.bind(this);
     this.showMoreReplies = this.showMoreReplies.bind(this);
@@ -288,9 +295,9 @@ class BlueskyComments extends HTMLElement {
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
             <div class="comment-actions">
-              <span>♡ ${comment.post.likeCount || 0}</span>
-              <span>↻ ${comment.post.repostCount || 0}</span>
-              <span>💬 ${comment.post.replyCount || 0}</span>
+              <span class="action-item">${this.statsIcons.likes} ${comment.post.likeCount || 0}</span>
+              <span class="action-item">${this.statsIcons.reposts} ${comment.post.repostCount || 0}</span>
+              <span class="action-item">${this.statsIcons.quotes} ${comment.post.replyCount || 0}</span>
             </div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
@@ -373,9 +380,9 @@ class BlueskyComments extends HTMLElement {
       <h2>Comments</h2>
       <div class="stats">
         <a href="${postUrl}" target="_blank">
-          <span>♡ ${this.thread.post.likeCount || 0} likes</span>
-          <span>↻ ${this.thread.post.repostCount || 0} reposts</span>
-          <span>💬 ${this.thread.post.replyCount || 0} replies</span>
+            <span class="action-item">${this.statsIcons.likes} ${this.thread.post.likeCount || 0}</span>
+            <span class="action-item">${this.statsIcons.reposts} ${this.thread.post.repostCount || 0}</span>
+            <span class="action-item">${this.statsIcons.quotes} ${this.thread.post.replyCount || 0}</span>
         </a>
       </div>
       ${filteredCount > 0 ?
