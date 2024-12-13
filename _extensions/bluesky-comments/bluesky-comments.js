@@ -298,16 +298,28 @@ class BlueskyComments extends HTMLElement {
             <p>${comment.post.record.text}</p>
             <div class="comment-actions">
               <a href="${postUrl}/liked-by" target="_blank" class="action-link">
-                <span class="action-item">${this.statsIcons.likes} ${comment.post.likeCount || 0}</span>
+                <span class="action-item">
+                  ${this.statsIcons.likes}
+                  <span class="action-text">${comment.post.likeCount || 0} likes</span>
+                </span>
               </a>
               <a href="${postUrl}/reposted-by" target="_blank" class="action-link">
-                <span class="action-item">${this.statsIcons.reposts} ${comment.post.repostCount || 0}</span>
-              </a>
-              <a href="${postUrl}/quotes" target="_blank" class="action-link">
-                <span class="action-item">${this.statsIcons.quotes} ${comment.post.quoteCount || 0}</span>
+                <span class="action-item">
+                  ${this.statsIcons.reposts}
+                  <span class="action-text">${comment.post.repostCount || 0} reposts</span>
+                </span>
               </a>
               <a href="${postUrl}" target="_blank" class="action-link">
-                <span class="action-item">${this.statsIcons.replies} ${comment.post.replyCount || 0}</span>
+                <span class="action-item">
+                  ${this.statsIcons.replies}
+                  <span class="action-text">${comment.post.replyCount || 0} replies</span>
+                </span>
+              </a>
+              <a href="${postUrl}/quoted-by" target="_blank" class="action-link">
+                <span class="action-item">
+                  ${this.statsIcons.quotes}
+                  <span class="action-text">${comment.post.quoteCount || 0} quotes</span>
+                </span>
               </a>
             </div>
           </div>
@@ -389,20 +401,32 @@ class BlueskyComments extends HTMLElement {
 
     const contentHtml = `
       <h2>Comments</h2>
-      <div class="stats">
-        <a href="${postUrl}/liked-by" target="_blank" class="stat-link">
-          <span class="action-item">${this.statsIcons.likes} ${this.thread.post.likeCount || 0}</span>
-        </a>
-        <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
-          <span class="action-item">${this.statsIcons.reposts} ${this.thread.post.repostCount || 0}</span>
-        </a>
-        <a href="${postUrl}/quotes" target="_blank" class="stat-link">
-          <span class="action-item">${this.statsIcons.quotes} ${this.thread.post.quoteCount || 0}</span>
-        </a>
-        <a href="${postUrl}" target="_blank" class="stat-link">
-          <span class="action-item">${this.statsIcons.replies} ${this.thread.post.replyCount || 0}</span>
-        </a>
-      </div>
+        <div class="stats">
+          <a href="${postUrl}/liked-by" target="_blank" class="stat-link">
+            <span class="action-item">
+              ${this.statsIcons.likes}
+              <span class="action-text">${this.thread.post.likeCount || 0} likes</span>
+            </span>
+          </a>
+          <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
+            <span class="action-item">
+              ${this.statsIcons.reposts}
+              <span class="action-text">${this.thread.post.repostCount || 0} reposts</span>
+            </span>
+          </a>
+          <a href="${postUrl}" target="_blank" class="stat-link">
+            <span class="action-item">
+              ${this.statsIcons.replies}
+              <span class="action-text">${this.thread.post.replyCount || 0} replies</span>
+            </span>
+          </a>
+          <a href="${postUrl}/quoted-by" target="_blank" class="stat-link">
+            <span class="action-item">
+              ${this.statsIcons.quotes}
+              <span class="action-text">${this.thread.post.quoteCount || 0} quotes</span>
+            </span>
+          </a>
+        </div>
       ${filteredCount > 0 ?
         `<p class="filtered-notice">
           ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.

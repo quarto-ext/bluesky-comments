@@ -31,6 +31,10 @@
   opacity: 0.8;
 }
 
+.action-text {
+  white-space: nowrap;
+}
+
 .action-item {
   display: flex;
   align-items: center;
@@ -40,6 +44,7 @@
 .action-item svg {
   height: 1em;
   width: 1em;
+  flex-shrink: 0;
 }
 
 .avatar, .avatar-placeholder {
