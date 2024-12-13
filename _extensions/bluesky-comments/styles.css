@@ -21,6 +21,16 @@
   text-decoration: underline;
 }
 
+.stat-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+}
+
+.stat-link:hover {
+  opacity: 0.8;
+}
+
 .action-item {
   display: flex;
   align-items: center;

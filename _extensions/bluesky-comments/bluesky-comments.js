@@ -379,10 +379,14 @@ class BlueskyComments extends HTMLElement {
     const contentHtml = `
       <h2>Comments</h2>
       <div class="stats">
-        <a href="${postUrl}" target="_blank">
-            <span class="action-item">${this.statsIcons.likes} ${this.thread.post.likeCount || 0}</span>
-            <span class="action-item">${this.statsIcons.reposts} ${this.thread.post.repostCount || 0}</span>
-            <span class="action-item">${this.statsIcons.quotes} ${this.thread.post.replyCount || 0}</span>
+        <a href="${postUrl}/likes" target="_blank" class="stat-link">
+          <span class="action-item">${this.statsIcons.likes} ${this.thread.post.likeCount || 0}</span>
+        </a>
+        <a href="${postUrl}/repost" target="_blank" class="stat-link">
+          <span class="action-item">${this.statsIcons.reposts} ${this.thread.post.repostCount || 0}</span>
+        </a>
+        <a href="${postUrl}/quotes" target="_blank" class="stat-link">
+          <span class="action-item">${this.statsIcons.quotes} ${this.thread.post.replyCount || 0}</span>
         </a>
       </div>
       ${filteredCount > 0 ?
