@@ -17,8 +17,34 @@
   color: inherit;
 }
 
-.stats a:hover {
+.stats a:hover, .comment-actions a:hover {
   text-decoration: underline;
+}
+
+.stat-link, .action-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+}
+
+.stat-link:hover, .action-link:hover {
+  opacity: 0.8;
+}
+
+.action-text {
+  white-space: nowrap;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action-item svg {
+  height: 1em;
+  width: 1em;
+  flex-shrink: 0;
 }
 
 .avatar, .avatar-placeholder {
@@ -40,6 +66,14 @@
   gap: 0.25rem;
   margin-bottom: 0.5rem;
 }
+
+
+.comment-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
 
 .timestamp-link {
   color: var(--bs-tertiary-color, #666);
