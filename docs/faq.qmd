@@ -65,25 +65,51 @@ The DID starts with `did:plc:` and uniquely identifies a poster.
 For example, James' profile is currently `coatless.bsky.social`, but one day he may decide to change it to use domain that he owns.
 When he changes his profile handle, his DID will remain the same: `did:plc:fgeozid7uyx2lfz3yo7zvm3b`.
 
-## Can I customize the appearance?
+## How can I customize the appearance of comments?
 
-Yes, you can override the default styles by adding custom CSS to your Quarto document:
+The extension uses Bootstrap theme variables by default, which you can customize in three ways:
+
+1. Override Bootstrap variables to affect all Bootstrap-styled components:
+
+```css
+:root {
+  --bs-body-color: #333;
+  --bs-link-color: #0070f3;
+}
+```
+
+2. Use component-specific variables for targeted styling:
+
+```css
+:root {
+  --bc-text-color: #333;       /* Main text */
+  --bc-muted-text: #666;       /* Secondary text */
+  --bc-link-color: #0070f3;    /* Links */
+  --bc-border-color: #eaeaea;  /* Borders */
+}
+```
+
+3. Override specific classes for complete control:
 
 ```css
 .bluesky-comments-container {
-  /* Your custom styles */
   max-width: 600px;
   margin: 1rem auto;
 }
 
 .comment {
-  /* Customize comment appearance */
   background: #f5f5f5;
   padding: 1rem;
 }
 ```
 
-Or, you can modify the extension's CSS file directly in the `_extensions/bluesky-comments` directory. Be aware that changes to the extension's files may be overwritten when updating the extension.
+Add these styles to your document's CSS or in a custom CSS file under the theme. 
+
+:::{.callout-warning}
+Modifying files directly in `_extensions/bluesky-comments` may be overwritten when updating the extension.
+:::
+
+For a complete list of available variables and their defaults, see the [styling documentation entry](index.qmd#styling).
 
 ## How many comments are shown initially?
 

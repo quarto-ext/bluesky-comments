@@ -1,9 +1,59 @@
-.bluesky-comments-container {
+/*
+ * Bluesky Comments CSS
+ * 
+ * We use CSS variables to allow for easy theming and customization. Specifically, we use:
+ * 
+ * - Private variables (--_*): Used internally within the component
+ * - Public variables (--bc-*): For user customization
+ * - Bootstrap variables (--bs-*): Used as fallbacks
+ * 
+ * To customize the appearance:
+ * 1. Override Bootstrap variables to affect all Bootstrap components
+ * 2. Set --bc-* variables to specifically style this component
+ * 3. Use class-specific styles for fine-grained control
+ */
+
+ .bluesky-comments-container {
+  /* Custom Properties for Theming
+   * Each property follows the pattern:
+   * --_internal: var(--bc-public, var(--bs-bootstrap, fallback))
+   */
+
+  /* Text Colors
+   * Control the appearance of various text elements */
+  --_text-color: var(--bc-text-color, var(--bs-body-color, #000));         /* Main text color */
+  --_muted-text: var(--bc-muted-text, var(--bs-secondary-color, #666));    /* Secondary text color */
+  --_link-color: var(--bc-link-color, var(--bs-link-color, #0066cc));      /* Link color */
+  --_link-hover-color: var(--bc-link-hover-color, 
+    var(--bs-link-hover-color, #0052a3));                                  /* Link hover color */
+  
+  /* Background Colors
+   * Define background colors for various component elements */
+  --_bg-notice: var(--bc-notice-bg, var(--bs-light, #f8f9fa));             /* Notice background */
+  --_bg-warning: var(--bc-warning-bg, var(--bs-light, #f8f9fa));           /* Warning background */
+  --_bg-avatar: var(--bc-avatar-bg, var(--bs-secondary-bg, #eee));         /* Avatar placeholder */
+  
+  /* Border Colors
+   * Control the appearance of borders and dividers */
+  --_border-color: var(--bc-border-color, var(--bs-border-color, #e9ecef)); /* General borders */
+  --_thread-line: var(--bc-thread-line, var(--bs-border-color, #eee));      /* Comment thread lines */
+  
+  /* Warning Colors
+   * Styles for warning messages and buttons */
+  --_warning-text: var(--bc-warning-text, var(--bs-danger, #dc3545));      /* Warning text */
+  --_warning-button: var(--bc-warning-button, var(--bs-primary, #0066cc)); /* Warning button */
+  --_warning-button-hover: var(--bc-warning-button-hover, 
+    var(--bs-primary-dark, #0052a3));                                      /* Warning button hover */
+
+  /* Base Container Styles */
   font-family: system-ui, -apple-system, sans-serif;
   max-width: 800px;
   margin: 2rem auto;
+  color: var(--_text-color);
 }
 
+/* Statistics Display
+ * Shows post engagement metrics */
 .stats {
   display: flex;
   gap: 1rem;
@@ -14,20 +64,26 @@
   display: flex;
   gap: 1rem;
   text-decoration: none;
-  color: inherit;
+  color: var(--_text-color);
 }
 
-.stats a:hover, .comment-actions a:hover {
+.stats a:hover, 
+.comment-actions a:hover {
   text-decoration: underline;
+  color: var(--_link-hover-color);
 }
 
-.stat-link, .action-link {
+/* Action Links
+ * Styles for interactive elements */
+.stat-link, 
+.action-link {
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s;
 }
 
-.stat-link:hover, .action-link:hover {
+.stat-link:hover, 
+.action-link:hover {
   opacity: 0.8;
 }
 
@@ -47,13 +103,18 @@
   flex-shrink: 0;
 }
 
-.avatar, .avatar-placeholder {
+/* Avatar Styles
+ * User profile pictures and placeholders */
+.avatar, 
+.avatar-placeholder {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #eee;
+  background-color: var(--_bg-avatar);
 }
 
+/* Comment Styles
+ * Individual comment containers and their components */
 .comment {
   margin: 1rem 0;
   padding: 0.5rem;
@@ -67,92 +128,100 @@
   margin-bottom: 0.5rem;
 }
 
-
 .comment-actions {
   display: flex;
   gap: 1rem;
   margin-top: 0.5rem;
+  color: var(--_muted-text);
 }
 
-
+/* Timestamp Display */
 .timestamp-link {
-  color: var(--bs-tertiary-color, #666);
+  color: var(--_muted-text);
   font-size: 0.9rem;
   text-decoration: none;
 }
 
 .timestamp-link:hover {
   text-decoration: underline;
+  color: var(--_link-hover-color);
 }
 
+/* Moderation Notice
+ * Displays information about filtered comments */
 .filtered-notice {
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background-color: var(--_bg-notice);
+  border: 1px solid var(--_border-color);
   border-radius: 4px;
   padding: 0.75rem;
   margin: 1rem 0;
-  color: #6c757d;
+  color: var(--_muted-text);
   font-size: 0.9rem;
 }
 
+/* Author Information
+ * Styles for user identification */
 .author-link {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
-  color: inherit;
+  color: var(--_text-color);
 }
 
 .author-link:hover {
   text-decoration: underline;
+  color: var(--_link-hover-color);
 }
 
 .handle {
-  color: #666;
+  color: var(--_muted-text);
 }
 
-.comment-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  color: #666;
-  font-size: 0.9rem;
-}
-
+/* Reply Thread Styles
+ * Visual hierarchy for comment threads */
 .replies {
   margin-left: 1.5rem;
   padding-left: 1rem;
-  border-left: 2px solid #eee;
+  border-left: 2px solid var(--_thread-line);
 }
 
-.show-more, .show-more-replies {
+/* Load More Buttons
+ * Controls for expanding comment threads */
+.show-more, 
+.show-more-replies {
   background: none;
   border: none;
-  color: #0066cc;
+  color: var(--_link-color);
   cursor: pointer;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
 
-.show-more:hover, .show-more-replies:hover {
+.show-more:hover, 
+.show-more-replies:hover {
   text-decoration: underline;
+  color: var(--_link-hover-color);
 }
 
+/* Status Messages
+ * Error and loading state displays */
 .error {
-  color: #cc0000;
+  color: var(--_warning-text);
   text-align: center;
 }
 
 .loading {
   text-align: center;
-  color: #666;
+  color: var(--_muted-text);
 }
 
-/* Content warning label */
+/* Content Warning System
+ * Styles for content warning labels and interactions */
 .content-warning {
   margin: 1rem 0;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: var(--_bg-warning);
+  border: 1px solid var(--_border-color);
   border-radius: 4px;
   padding: 1.5rem;
 }
@@ -170,12 +239,12 @@
   display: block;
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-  color: #dc3545;
+  color: var(--_warning-text);
 }
 
 .label-attribution {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--_muted-text);
   margin-top: 0.5rem;
 }
 
@@ -186,12 +255,12 @@
 
 .warning-divider {
   border: 0;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--_border-color);
   margin: 1rem 0;
 }
 
 .warning-button {
-  background: #0066cc;
+  background: var(--_warning-button);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -202,5 +271,5 @@
 }
 
 .warning-button:hover {
-  background: #0052a3;
+  background: var(--_warning-button-hover);
 }
