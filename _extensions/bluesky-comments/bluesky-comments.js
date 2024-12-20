@@ -301,7 +301,7 @@ class BlueskyComments extends HTMLElement {
           </div>
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
-            <div class="comment-actions">${this.#postStatsBar(comment.post, {postUrl, showIcons: false})}</div>
+            <div class="comment-stats">${this.#postStatsBar(comment.post, {postUrl, showIcons: false})}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
           ${hiddenReplies.length > 0 ?

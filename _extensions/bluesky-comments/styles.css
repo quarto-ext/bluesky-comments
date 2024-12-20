@@ -128,11 +128,16 @@
   margin-bottom: 0.5rem;
 }
 
-.comment-actions {
+.comment-body > p:last-of-type {
+  margin-bottom: 0;
+}
+
+.comment-stats {
   display: flex;
   gap: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   color: var(--_muted-text);
+  font-size: 0.8em;
 }
 
 /* Timestamp Display */
