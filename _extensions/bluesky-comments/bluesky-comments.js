@@ -387,7 +387,6 @@ class BlueskyComments extends HTMLElement {
       <p class="reply-prompt">
         <a href="${postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
       </p>
-      <hr/>
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
       </div>
