@@ -131,7 +131,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
   padding-bottom: 0.5rem;
 }
 
