@@ -303,16 +303,16 @@ class BlueskyComments extends HTMLElement {
                   <span class="action-text">${comment.post.likeCount || 0} likes</span>
                 </span>
               </a>
-              <a href="${postUrl}/reposted-by" target="_blank" class="action-link">
-                <span class="action-item">
-                  ${this.statsIcons.reposts}
-                  <span class="action-text">${comment.post.repostCount || 0} reposts</span>
-                </span>
-              </a>
               <a href="${postUrl}" target="_blank" class="action-link">
                 <span class="action-item">
                   ${this.statsIcons.replies}
                   <span class="action-text">${comment.post.replyCount || 0} replies</span>
+                </span>
+              </a>
+              <a href="${postUrl}/reposted-by" target="_blank" class="action-link">
+                <span class="action-item">
+                  ${this.statsIcons.reposts}
+                  <span class="action-text">${comment.post.repostCount || 0} reposts</span>
                 </span>
               </a>
               <a href="${postUrl}/quoted-by" target="_blank" class="action-link">
@@ -408,16 +408,16 @@ class BlueskyComments extends HTMLElement {
               <span class="action-text">${this.thread.post.likeCount || 0} likes</span>
             </span>
           </a>
-          <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
-            <span class="action-item">
-              ${this.statsIcons.reposts}
-              <span class="action-text">${this.thread.post.repostCount || 0} reposts</span>
-            </span>
-          </a>
           <a href="${postUrl}" target="_blank" class="stat-link">
             <span class="action-item">
               ${this.statsIcons.replies}
               <span class="action-text">${this.thread.post.replyCount || 0} replies</span>
+            </span>
+          </a>
+          <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
+            <span class="action-item">
+              ${this.statsIcons.reposts}
+              <span class="action-text">${this.thread.post.repostCount || 0} reposts</span>
             </span>
           </a>
           <a href="${postUrl}/quoted-by" target="_blank" class="stat-link">
