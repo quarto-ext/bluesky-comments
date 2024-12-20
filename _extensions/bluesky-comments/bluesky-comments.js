@@ -19,10 +19,10 @@ class BlueskyComments extends HTMLElement {
 
     // Define SVG icons
     this.statsIcons = {
-      likes: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-pink, pink)" class="bi bi-heart-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/></svg>',
-      reposts: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-green, green)" class="bi bi-recycle" viewBox="0 0 16 16"><path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z"/></svg>',
-      replies: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-blue, blue)" class="bi bi-chat-dots-fill" viewBox="0 0 16 16"><path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>',
-      quotes: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-purple, purple)" class="bi bi-quote" viewBox="0 0 16 16"><path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/></svg>'
+      like: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-pink, pink)" class="bi bi-heart-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/></svg>',
+      repost: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-green, green)" class="bi bi-recycle" viewBox="0 0 16 16"><path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z"/></svg>',
+      reply: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-blue, blue)" class="bi bi-chat-dots-fill" viewBox="0 0 16 16"><path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>',
+      quote: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-purple, purple)" class="bi bi-quote" viewBox="0 0 16 16"><path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/></svg>'
     };
 
     // Bind methods
@@ -301,7 +301,7 @@ class BlueskyComments extends HTMLElement {
           </div>
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
-            <div class="comment-stats">${this.#postStatsBar(comment.post, {postUrl, showIcons: false})}</div>
+            <div class="comment-stats">${this.#postStatsBar(comment.post, {postUrl, showIcons: false, showZero: false})}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
           ${hiddenReplies.length > 0 ?
@@ -432,7 +432,7 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #postStatsBar(post, {postUrl, showIcons} = {showIcons: true}) {
+  #postStatsBar(post, {postUrl, showIcons, showZero} = {showIcons: true, showZero: true}) {
     postUrl = postUrl || this.postUrl;
 
     const plurals = {
@@ -440,41 +440,38 @@ class BlueskyComments extends HTMLElement {
       reply: "replies",
       repost: "reposts",
       quote: "quotes"
-    }
+    };
+
+    const bskyPaths = {
+      like: "/liked-by",
+      reply: "",
+      repost: "/reposted-by",
+      quote: "/quoted-by"
+    };
 
     const stats = {};
-    ['like', 'reply', 'repost', 'quote'].forEach((type) => {
+    Object.keys(plurals).forEach((type) => {
       const count = post[`${type}Count`] || 0
       stats[type] = {
         count,
         text: count == 1 ? type : plurals[type]
       }
+    });
+
+    const statsHtml = Object.keys(plurals).map((type) => {
+      if (stats[type].count == 0 && !showZero) {
+        return '';
+      }
+
+      return `<a href="${postUrl}${bskyPaths[type]}" target="_blank" class="stat-link">
+        <span class="action-item">
+          ${showIcons ? this.statsIcons[type] : ''}
+          <span class="action-text">${stats[type].count} ${stats[type].text}</span>
+        </span>
+      </a>`;
     })
 
-    return `<a href="${postUrl}/liked-by" target="_blank" class="stat-link">
-        <span class="action-item">
-          ${showIcons ? this.statsIcons.likes : ''}
-          <span class="action-text">${stats.like.count} ${stats.like.text}</span>
-        </span>
-      </a>
-      <a href="${postUrl}" target="_blank" class="stat-link">
-        <span class="action-item">
-          ${showIcons ? this.statsIcons.replies : ''}
-          <span class="action-text">${stats.reply.count} ${stats.reply.text}</span>
-        </span>
-      </a>
-      <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
-        <span class="action-item">
-          ${showIcons ? this.statsIcons.reposts : ''}
-          <span class="action-text">${stats.repost.count} ${stats.repost.text}</span>
-        </span>
-      </a>
-      <a href="${postUrl}/quoted-by" target="_blank" class="stat-link">
-        <span class="action-item">
-          ${showIcons ? this.statsIcons.quotes : ''}
-          <span class="action-text">${stats.quote.count} ${stats.quote.text}</span>
-        </span>
-      </a>`
+    return statsHtml.join('\n');
   }
 
   showMore() {
