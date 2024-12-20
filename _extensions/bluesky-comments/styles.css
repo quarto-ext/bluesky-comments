@@ -13,7 +13,7 @@
  * 3. Use class-specific styles for fine-grained control
  */
 
- .bluesky-comments-container {
+ bluesky-comments {
   /* Custom Properties for Theming
    * Each property follows the pattern:
    * --_internal: var(--bc-public, var(--bs-bootstrap, fallback))
