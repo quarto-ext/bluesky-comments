@@ -290,8 +290,7 @@ class BlueskyComments extends HTMLElement {
           <div class="comment-header">
             ${avatarHtml}
             <a href="https://bsky.app/profile/${author.did}" target="_blank" class="author-link">
-              <span>${author.displayName || author.handle}</span>
-              <span class="handle">@${author.handle}</span>
+              <span>${author.displayName || '@' + author.handle}</span>
             </a>
             <a href="${postUrl}"
                class="timestamp-link"
