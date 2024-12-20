@@ -301,7 +301,7 @@ class BlueskyComments extends HTMLElement {
           </div>
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
-            <div class="comment-actions">${this.#postStatsBar(comment.post, postUrl)}</div>
+            <div class="comment-actions">${this.#postStatsBar(comment.post, {postUrl, showIcons: false})}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
           ${hiddenReplies.length > 0 ?
@@ -432,31 +432,47 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #postStatsBar(post, postUrl = undefined) {
-    postUrl = postUrl || this.postUrl
+  #postStatsBar(post, {postUrl, showIcons} = {showIcons: true}) {
+    postUrl = postUrl || this.postUrl;
+
+    const plurals = {
+      like: "likes",
+      reply: "replies",
+      repost: "reposts",
+      quote: "quotes"
+    }
+
+    const stats = {};
+    ['like', 'reply', 'repost', 'quote'].forEach((type) => {
+      const count = post[`${type}Count`] || 0
+      stats[type] = {
+        count,
+        text: count == 1 ? type : plurals[type]
+      }
+    })
 
     return `<a href="${postUrl}/liked-by" target="_blank" class="stat-link">
         <span class="action-item">
-          ${this.statsIcons.likes}
-          <span class="action-text">${post.likeCount || 0} likes</span>
+          ${showIcons ? this.statsIcons.likes : ''}
+          <span class="action-text">${stats.like.count} ${stats.like.text}</span>
         </span>
       </a>
       <a href="${postUrl}" target="_blank" class="stat-link">
         <span class="action-item">
-          ${this.statsIcons.replies}
-          <span class="action-text">${post.replyCount || 0} replies</span>
+          ${showIcons ? this.statsIcons.replies : ''}
+          <span class="action-text">${stats.reply.count} ${stats.reply.text}</span>
         </span>
       </a>
       <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
         <span class="action-item">
-          ${this.statsIcons.reposts}
-          <span class="action-text">${post.repostCount || 0} reposts</span>
+          ${showIcons ? this.statsIcons.reposts : ''}
+          <span class="action-text">${stats.repost.count} ${stats.repost.text}</span>
         </span>
       </a>
       <a href="${postUrl}/quoted-by" target="_blank" class="stat-link">
         <span class="action-item">
-          ${this.statsIcons.quotes}
-          <span class="action-text">${post.quoteCount || 0} quotes</span>
+          ${showIcons ? this.statsIcons.quotes : ''}
+          <span class="action-text">${stats.quote.count} ${stats.quote.text}</span>
         </span>
       </a>`
   }
