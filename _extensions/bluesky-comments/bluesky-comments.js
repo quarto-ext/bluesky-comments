@@ -301,32 +301,7 @@ class BlueskyComments extends HTMLElement {
           </div>
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
-            <div class="comment-actions">
-              <a href="${postUrl}/liked-by" target="_blank" class="action-link">
-                <span class="action-item">
-                  ${this.statsIcons.likes}
-                  <span class="action-text">${comment.post.likeCount || 0} likes</span>
-                </span>
-              </a>
-              <a href="${postUrl}" target="_blank" class="action-link">
-                <span class="action-item">
-                  ${this.statsIcons.replies}
-                  <span class="action-text">${comment.post.replyCount || 0} replies</span>
-                </span>
-              </a>
-              <a href="${postUrl}/reposted-by" target="_blank" class="action-link">
-                <span class="action-item">
-                  ${this.statsIcons.reposts}
-                  <span class="action-text">${comment.post.repostCount || 0} reposts</span>
-                </span>
-              </a>
-              <a href="${postUrl}/quoted-by" target="_blank" class="action-link">
-                <span class="action-item">
-                  ${this.statsIcons.quotes}
-                  <span class="action-text">${comment.post.quoteCount || 0} quotes</span>
-                </span>
-              </a>
-            </div>
+            <div class="comment-actions">${this.#postStatsBar(comment.post, postUrl)}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
           ${hiddenReplies.length > 0 ?
@@ -457,26 +432,28 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #postStatsBar(post) {
-    return `<a href="${this.postUrl}/liked-by" target="_blank" class="stat-link">
+  #postStatsBar(post, postUrl = undefined) {
+    postUrl = postUrl || this.postUrl
+
+    return `<a href="${postUrl}/liked-by" target="_blank" class="stat-link">
         <span class="action-item">
           ${this.statsIcons.likes}
           <span class="action-text">${post.likeCount || 0} likes</span>
         </span>
       </a>
-      <a href="${this.postUrl}" target="_blank" class="stat-link">
+      <a href="${postUrl}" target="_blank" class="stat-link">
         <span class="action-item">
           ${this.statsIcons.replies}
           <span class="action-text">${post.replyCount || 0} replies</span>
         </span>
       </a>
-      <a href="${this.postUrl}/reposted-by" target="_blank" class="stat-link">
+      <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
         <span class="action-item">
           ${this.statsIcons.reposts}
           <span class="action-text">${post.repostCount || 0} reposts</span>
         </span>
       </a>
-      <a href="${this.postUrl}/quoted-by" target="_blank" class="stat-link">
+      <a href="${postUrl}/quoted-by" target="_blank" class="stat-link">
         <span class="action-item">
           ${this.statsIcons.quotes}
           <span class="action-text">${post.quoteCount || 0} quotes</span>
