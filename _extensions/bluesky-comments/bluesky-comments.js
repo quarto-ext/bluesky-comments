@@ -288,8 +288,8 @@ class BlueskyComments extends HTMLElement {
         ${warningHtml}
         <div id="${warningId}" style="display: ${hasWarning ? 'none' : 'block'}">
           <div class="comment-header">
+            ${avatarHtml}
             <a href="https://bsky.app/profile/${author.did}" target="_blank" class="author-link">
-              ${avatarHtml}
               <span>${author.displayName || author.handle}</span>
               <span class="handle">@${author.handle}</span>
             </a>
