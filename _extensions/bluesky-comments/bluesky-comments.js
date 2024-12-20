@@ -30,6 +30,11 @@ class BlueskyComments extends HTMLElement {
     this.showMoreReplies = this.showMoreReplies.bind(this);
   }
 
+  get postUrl() {
+    const [, , did, , rkey] = this.getAttribute('post').split('/');
+    return `https://bsky.app/profile/${did}/post/${rkey}`;
+  }
+
   static get observedAttributes() {
     return ['post'];
   }
@@ -357,8 +362,7 @@ class BlueskyComments extends HTMLElement {
       return;
     }
 
-    const [, , did, , rkey] = this.getAttribute('post').split('/');
-    const postUrl = `https://bsky.app/profile/${did}/post/${rkey}`;
+    const postUrl = this.postUrl
 
     // Filter and sort replies
     const labels = this.thread.post.labels?.map(l => ({
@@ -401,32 +405,7 @@ class BlueskyComments extends HTMLElement {
 
     const contentHtml = `
       <h2>Comments</h2>
-        <div class="stats">
-          <a href="${postUrl}/liked-by" target="_blank" class="stat-link">
-            <span class="action-item">
-              ${this.statsIcons.likes}
-              <span class="action-text">${this.thread.post.likeCount || 0} likes</span>
-            </span>
-          </a>
-          <a href="${postUrl}" target="_blank" class="stat-link">
-            <span class="action-item">
-              ${this.statsIcons.replies}
-              <span class="action-text">${this.thread.post.replyCount || 0} replies</span>
-            </span>
-          </a>
-          <a href="${postUrl}/reposted-by" target="_blank" class="stat-link">
-            <span class="action-item">
-              ${this.statsIcons.reposts}
-              <span class="action-text">${this.thread.post.repostCount || 0} reposts</span>
-            </span>
-          </a>
-          <a href="${postUrl}/quoted-by" target="_blank" class="stat-link">
-            <span class="action-item">
-              ${this.statsIcons.quotes}
-              <span class="action-text">${this.thread.post.quoteCount || 0} quotes</span>
-            </span>
-          </a>
-        </div>
+      <div class="stats">${this.#postStatsBar(this.thread.post)}</div>
       ${filteredCount > 0 ?
         `<p class="filtered-notice">
           ${filteredCount} ${filteredCount === 1 ? 'comment has' : 'comments have'} been filtered based on moderation settings.
@@ -476,6 +455,33 @@ class BlueskyComments extends HTMLElement {
     this.querySelectorAll('.show-more-replies').forEach(button => {
       button.addEventListener('click', this.showMoreReplies);
     });
+  }
+
+  #postStatsBar(post) {
+    return `<a href="${this.postUrl}/liked-by" target="_blank" class="stat-link">
+        <span class="action-item">
+          ${this.statsIcons.likes}
+          <span class="action-text">${post.likeCount || 0} likes</span>
+        </span>
+      </a>
+      <a href="${this.postUrl}" target="_blank" class="stat-link">
+        <span class="action-item">
+          ${this.statsIcons.replies}
+          <span class="action-text">${post.replyCount || 0} replies</span>
+        </span>
+      </a>
+      <a href="${this.postUrl}/reposted-by" target="_blank" class="stat-link">
+        <span class="action-item">
+          ${this.statsIcons.reposts}
+          <span class="action-text">${post.repostCount || 0} reposts</span>
+        </span>
+      </a>
+      <a href="${this.postUrl}/quoted-by" target="_blank" class="stat-link">
+        <span class="action-item">
+          ${this.statsIcons.quotes}
+          <span class="action-text">${post.quoteCount || 0} quotes</span>
+        </span>
+      </a>`
   }
 
   showMore() {
