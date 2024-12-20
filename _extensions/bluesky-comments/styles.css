@@ -1,12 +1,12 @@
 /*
  * Bluesky Comments CSS
- * 
+ *
  * We use CSS variables to allow for easy theming and customization. Specifically, we use:
- * 
+ *
  * - Private variables (--_*): Used internally within the component
  * - Public variables (--bc-*): For user customization
  * - Bootstrap variables (--bs-*): Used as fallbacks
- * 
+ *
  * To customize the appearance:
  * 1. Override Bootstrap variables to affect all Bootstrap components
  * 2. Set --bc-* variables to specifically style this component
@@ -24,25 +24,25 @@
   --_text-color: var(--bc-text-color, var(--bs-body-color, #000));         /* Main text color */
   --_muted-text: var(--bc-muted-text, var(--bs-secondary-color, #666));    /* Secondary text color */
   --_link-color: var(--bc-link-color, var(--bs-link-color, #0066cc));      /* Link color */
-  --_link-hover-color: var(--bc-link-hover-color, 
+  --_link-hover-color: var(--bc-link-hover-color,
     var(--bs-link-hover-color, #0052a3));                                  /* Link hover color */
-  
+
   /* Background Colors
    * Define background colors for various component elements */
   --_bg-notice: var(--bc-notice-bg, var(--bs-light, #f8f9fa));             /* Notice background */
   --_bg-warning: var(--bc-warning-bg, var(--bs-light, #f8f9fa));           /* Warning background */
   --_bg-avatar: var(--bc-avatar-bg, var(--bs-secondary-bg, #eee));         /* Avatar placeholder */
-  
+
   /* Border Colors
    * Control the appearance of borders and dividers */
   --_border-color: var(--bc-border-color, var(--bs-border-color, #e9ecef)); /* General borders */
   --_thread-line: var(--bc-thread-line, var(--bs-border-color, #eee));      /* Comment thread lines */
-  
+
   /* Warning Colors
    * Styles for warning messages and buttons */
   --_warning-text: var(--bc-warning-text, var(--bs-danger, #dc3545));      /* Warning text */
   --_warning-button: var(--bc-warning-button, var(--bs-primary, #0066cc)); /* Warning button */
-  --_warning-button-hover: var(--bc-warning-button-hover, 
+  --_warning-button-hover: var(--bc-warning-button-hover,
     var(--bs-primary-dark, #0052a3));                                      /* Warning button hover */
 
   /* Base Container Styles */
@@ -67,7 +67,7 @@
   color: var(--_text-color);
 }
 
-.stats a:hover, 
+.stats a:hover,
 .comment-actions a:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
@@ -75,14 +75,14 @@
 
 /* Action Links
  * Styles for interactive elements */
-.stat-link, 
+.stat-link,
 .action-link {
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s;
 }
 
-.stat-link:hover, 
+.stat-link:hover,
 .action-link:hover {
   opacity: 0.8;
 }
@@ -105,7 +105,7 @@
 
 /* Avatar Styles
  * User profile pictures and placeholders */
-.avatar, 
+.avatar,
 .avatar-placeholder {
   width: 24px;
   height: 24px;
@@ -188,7 +188,7 @@
 
 /* Load More Buttons
  * Controls for expanding comment threads */
-.show-more, 
+.show-more,
 .show-more-replies {
   background: none;
   border: none;
@@ -198,7 +198,7 @@
   font-size: 0.9rem;
 }
 
-.show-more:hover, 
+.show-more:hover,
 .show-more-replies:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
