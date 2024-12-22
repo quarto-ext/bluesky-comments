@@ -163,7 +163,7 @@
 /* Timestamp Display */
 .timestamp-link {
   color: var(--_muted-text);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   text-decoration: none;
 }
 
