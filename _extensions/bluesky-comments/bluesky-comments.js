@@ -433,7 +433,7 @@ class BlueskyComments extends HTMLElement {
       like: "/liked-by",
       reply: "",
       repost: "/reposted-by",
-      quote: "/quoted-by"
+      quote: "/quotes"
     };
 
     const stats = {};
