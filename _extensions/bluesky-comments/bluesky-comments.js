@@ -388,12 +388,9 @@ class BlueskyComments extends HTMLElement {
           </button>` : ''}
     `;
 
-    this.innerHTML = `
-      <div class="bluesky-comments-container">
-        ${warningHtml}
-        <div id="${warningId}" style="display: ${hasWarning ? 'none' : 'block'}">
-          ${contentHtml}
-        </div>
+    this.innerHTML = `${warningHtml}
+      <div id="${warningId}" style="display: ${hasWarning ? 'none' : 'block'}">
+        ${contentHtml}
       </div>
     `;
 
