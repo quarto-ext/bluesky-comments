@@ -45,6 +45,10 @@
   --_warning-button-hover: var(--bc-warning-button-hover,
     var(--bs-primary-dark, #0052a3));                                      /* Warning button hover */
 
+
+  /* Avatar */
+  --_avatar-size: var(--bc-avatar-size, 24px);
+
   /* Base Container Styles */
   font-family: system-ui, -apple-system, sans-serif;
   max-width: 800px;
@@ -107,38 +111,59 @@
  * User profile pictures and placeholders */
 .avatar,
 .avatar-placeholder {
-  width: 24px;
-  height: 24px;
+  width: var(--_avatar-size);
+  height: var(--_avatar-size);
   border-radius: 50%;
   background-color: var(--_bg-avatar);
+  left: calc(var(--_avatar-size, 0) / -2);
 }
 
 /* Comment Styles
  * Individual comment containers and their components */
 .comment {
-  margin: 1rem 0;
-  padding: 0.5rem;
+  margin: 0;
+  padding-right: 0.5rem;
+  padding-top: 1rem;
   border-radius: 4px;
 }
 
 .comment-header {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-.comment-actions {
+.comment-body, .comment-header {
+  margin-left: calc(var(--_avatar-size, 0) / 2);
+  border-left: 2px solid var(--_thread-line);
+}
+
+.comment-body > p:last-of-type {
+  margin-bottom: 0;
+}
+
+.comment-stats {
   display: flex;
   gap: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   color: var(--_muted-text);
+  font-size: 0.8em;
+}
+
+.comment-header,
+.comment-body {
+  padding-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
+}
+
+.replies > .comment {
+  padding-left: 0.5rem;
 }
 
 /* Timestamp Display */
 .timestamp-link {
   color: var(--_muted-text);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   text-decoration: none;
 }
 
@@ -169,21 +194,22 @@
   color: var(--_text-color);
 }
 
+.avatar {
+  position: absolute;
+  left: calc(var(--_avatar-size, 0) / -2);
+}
+
 .author-link:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
 }
 
-.handle {
-  color: var(--_muted-text);
-}
-
 /* Reply Thread Styles
  * Visual hierarchy for comment threads */
 .replies {
-  margin-left: 1.5rem;
-  padding-left: 1rem;
+  margin-left: calc(var(--_avatar-size, 0) / 2);
   border-left: 2px solid var(--_thread-line);
+  padding-left: calc(1rem - var(--_avatar-size, 0));
 }
 
 /* Load More Buttons

@@ -130,6 +130,7 @@ You may specify these variables in your document's CSS or in a custom CSS file u
 | `--bc-thread-line` | Reply thread lines | `var(--bs-border-color)` |
 | `--bc-warning-text` | Warning text | `var(--bs-danger)` |
 | `--bc-warning-button` | Warning button | `var(--bs-primary)` |
+| `--bc-avatar-size` | Avatar size | `24px` |
 
 
 ## Limitations
