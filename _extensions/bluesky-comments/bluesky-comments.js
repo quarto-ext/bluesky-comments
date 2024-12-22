@@ -10,8 +10,8 @@ class BlueskyComments extends HTMLElement {
       mutePatterns: [],
       muteUsers: [],
       filterEmptyReplies: true,
-      visibleComments: 3,
-      visibleSubComments: 3
+      nShowInit: 3,
+      nShowMore: 2,
     };
     this.currentVisibleCount = null;
     this.replyVisibilityCounts = new Map();
@@ -38,6 +38,12 @@ class BlueskyComments extends HTMLElement {
     if (configStr) {
       try {
         const userConfig = JSON.parse(configStr);
+        // Handle legacy config properties
+        if (userConfig.visibleComments || userConfig.visibleSubComments) {
+          userConfig.nShowInit = userConfig.visibleComments || userConfig.visibleSubComments || 3;
+          delete userConfig.visibleComments;
+          delete userConfig.visibleSubComments;
+        }
         this.config = { ...this.config, ...userConfig };
       } catch (err) {
         console.error('Error parsing config:', err);
@@ -47,7 +53,7 @@ class BlueskyComments extends HTMLElement {
     this.#setPostUri(this.getAttribute('post'));
 
     // Initialize visible count from config
-    this.currentVisibleCount = this.config.visibleComments;
+    this.currentVisibleCount = this.config.nShowInit;
     if (!this._initialized) {
       this._initialized = true
       this.#loadThread();
@@ -203,8 +209,8 @@ class BlueskyComments extends HTMLElement {
     if (!commentId) return;
 
     // Initialize or increment the visibility count for this comment
-    const currentCount = this.replyVisibilityCounts.get(commentId) || this.config.visibleSubComments;
-    const newCount = currentCount + this.config.visibleSubComments;
+    const currentCount = this.replyVisibilityCounts.get(commentId) || this.config.nShowInit;
+    const newCount = currentCount + this.config.nShowInit;
     this.replyVisibilityCounts.set(commentId, newCount);
 
     // Re-render the comment with updated visibility
@@ -238,7 +244,7 @@ class BlueskyComments extends HTMLElement {
     const commentId = `${author.did}-${comment.post.record.text.slice(0, 20)}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
     const replies = (comment.replies || []).filter(reply => !this.shouldFilterComment(reply));
-    const visibleCount = this.replyVisibilityCounts.get(commentId) || this.config.visibleSubComments;
+    const visibleCount = this.replyVisibilityCounts.get(commentId) || this.config.nShowInit;
 
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
@@ -462,7 +468,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   showMore() {
-    this.currentVisibleCount += this.config.visibleComments;
+    this.currentVisibleCount += this.config.nShowMore;
     this.render();
   }
 
