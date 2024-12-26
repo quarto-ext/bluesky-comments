@@ -44,6 +44,14 @@ class BlueskyComments extends HTMLElement {
           delete userConfig.visibleComments;
           delete userConfig.visibleSubComments;
         }
+        ['nShowInit', 'nShowMore'].forEach(prop => {
+          if (typeof userConfig[prop] !== "number") {
+            userConfig[prop] = parseInt(userConfig[prop])
+            if (isNaN(userConfig[prop])) {
+              delete userConfig[prop]
+            }
+          }
+        })
         this.config = { ...this.config, ...userConfig };
       } catch (err) {
         console.error('Error parsing config:', err);
@@ -210,7 +218,7 @@ class BlueskyComments extends HTMLElement {
 
     // Initialize or increment the visibility count for this comment
     const currentCount = this.replyVisibilityCounts.get(commentId) || this.config.nShowInit;
-    const newCount = currentCount + this.config.nShowInit;
+    const newCount = currentCount + this.config.nShowMore;
     this.replyVisibilityCounts.set(commentId, newCount);
 
     // Re-render the comment with updated visibility
@@ -303,7 +311,7 @@ class BlueskyComments extends HTMLElement {
           ${this.renderReplies(visibleReplies, depth + 1)}
           ${hiddenReplies.length > 0 ?
             `<button class="show-more-replies" data-comment-id="${commentId}">
-              Show ${hiddenReplies.length} more replies
+              Show ${this.config.nShowMore} more of ${hiddenReplies.length}  replies
               </button>` : ''}
         </div>
       </div>
@@ -390,7 +398,7 @@ class BlueskyComments extends HTMLElement {
       </div>
       ${remainingCount > 0 ?
         `<button class="show-more">
-          Show ${remainingCount} more comments
+          Show ${this.config.nShowMore} more of ${remainingCount} comments
           </button>` : ''}
     `;
 

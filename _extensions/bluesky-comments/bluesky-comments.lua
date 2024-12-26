@@ -3,20 +3,18 @@ local utils = require("utils")
 
 
 -- Get filter configuration from meta
-local function getFilterConfig(meta)
-  -- Access the extension configuration from meta
-  local config = meta and meta['bluesky-comments']
+local function getFilterConfig(config)
   if not config then
     return '{}'
   end
+
+  quarto.log.output(config)
 
   -- Extract filter configuration with defaults
   local filterConfig = {
     mutePatterns = {},
     muteUsers = {},
-    filterEmptyReplies = true,
-    visibleComments = 3,
-    visibleSubComments = 3
+    filterEmptyReplies = true
   }
 
   -- Process mute patterns if present
@@ -38,11 +36,17 @@ local function getFilterConfig(meta)
     filterConfig.filterEmptyReplies = config['filter-empty-replies']
   end
 
+  if config['n-show-init'] then
+    filterConfig.nShowInit = tonumber(pandoc.utils.stringify(config['n-show-init']))
+  end
+
   if config['visible-comments'] then
+    utils.log_warn("`visible-comments` was deprecated, please use `n-show-init` instead.")
     filterConfig.visibleComments = tonumber(pandoc.utils.stringify(config['visible-comments']))
   end
 
   if config['visible-subcomments'] then
+    utils.log_warn("`visible-subcomments` was deprecated, please use `n-show-init` instead.")
     filterConfig.visibleSubComments = tonumber(pandoc.utils.stringify(config['visible-subcomments']))
   end
 
@@ -104,8 +108,10 @@ function shortcode(args, kwargs, meta)
     return pandoc.Null()
   end
 
-  -- Get configuration
-  local config = getFilterConfig(meta)
+  -- Get configuration, merging kwargs with yaml frontmatter
+  local metaConfig = meta and meta["bluesky-comments"]
+  for k,v in pairs(kwargs) do metaConfig[k] = v end
+  local config = getFilterConfig(metaConfig)
 
   -- Ensure HTML dependencies are added
   ensureHtmlDeps()

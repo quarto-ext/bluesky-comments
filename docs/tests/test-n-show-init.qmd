@@ -1,0 +1,26 @@
+---
+title: "Initial shown and revealed"
+description: |
+  Test initially shown posts and number of posts revealed with "show more".
+
+bluesky-comments:
+  profile: did:plc:72jpccg3u3vbohc67rqrplei
+
+other-thing: true
+---
+
+## `n-show-init="2" n-show-more="1"`
+
+```markdown
+{{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j n-show-init="2" n-show-more=1 >}}}
+```
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j n-show-init=2 n-show-more=1 >}}
+
+## `n-show-init="4" n-show-more=2`
+
+```markdown
+{{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j n-show-init="4" n-show-more=2 >}}}
+```
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j n-show-init="4" n-show-more=2 >}}

@@ -17,6 +17,10 @@ function utils.log_info(msg)
   quarto.log.info(utils.bcMessage(msg))
 end
 
+function utils.log_warn(msg)
+  quarto.log.warning(utils.bcMessage(msg))
+end
+
 function utils.log_output(msg)
   quarto.log.output(utils.bcMessage(msg))
 end
