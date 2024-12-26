@@ -331,11 +331,16 @@ class BlueskyComments extends HTMLElement {
 
   renderShowMoreButton(postId, remainingCount) {
     if (remainingCount <= 0) return '';
+    const nReveal = Math.min(this.config.nShowMore, remainingCount);
+    const txtComment = remainingCount == 1 ? 'comment' : 'comments';
+
+    let txtButton = `Show ${nReveal} more of ${remainingCount} ${txtComment}`
+    if (remainingCount <= nReveal) {
+      txtButton = `Show ${remainingCount} more ${txtComment}`
+    }
 
     return `
-      <button class="show-more-replies" data-post-id="${postId}">
-        Show ${this.config.nShowMore} more of ${remainingCount} ${postId === 'root' ? 'comments' : 'replies'}
-      </button>
+      <button class="show-more-replies" data-post-id="${postId}">${txtButton}</button>
     `;
   }
 
