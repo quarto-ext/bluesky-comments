@@ -13,12 +13,10 @@ class BlueskyComments extends HTMLElement {
       nShowInit: 3,
       nShowMore: 2,
     };
-    this.currentVisibleCount = null;
-    this.replyVisibilityCounts = new Map();
+    this.postVisibilityCounts = new Map();
     this.acknowledgedWarnings = new Set();
 
     // Bind methods
-    this.showMore = this.showMore.bind(this);
     this.showMoreReplies = this.showMoreReplies.bind(this);
   }
 
@@ -60,8 +58,9 @@ class BlueskyComments extends HTMLElement {
 
     this.#setPostUri(this.getAttribute('post'));
 
-    // Initialize visible count from config
-    this.currentVisibleCount = this.config.nShowInit;
+    // Initialize root post visibility count
+    this.postVisibilityCounts.set('root', this.config.nShowInit);
+
     if (!this._initialized) {
       this._initialized = true
       this.#loadThread();
@@ -213,13 +212,13 @@ class BlueskyComments extends HTMLElement {
 
   showMoreReplies(event) {
     const button = event.target;
-    const commentId = button.getAttribute('data-comment-id');
-    if (!commentId) return;
+    const postId = button.getAttribute('data-post-id');
+    if (!postId) return;
 
-    // Initialize or increment the visibility count for this comment
-    const currentCount = this.replyVisibilityCounts.get(commentId) || this.config.nShowInit;
+    // Initialize or increment the visibility count for this post
+    const currentCount = this.postVisibilityCounts.get(postId) || this.config.nShowInit;
     const newCount = currentCount + this.config.nShowMore;
-    this.replyVisibilityCounts.set(commentId, newCount);
+    this.postVisibilityCounts.set(postId, newCount);
 
     // Re-render the comment with updated visibility
     this.render();
@@ -251,8 +250,11 @@ class BlueskyComments extends HTMLElement {
     // Generate a stable comment ID based on author and text
     const commentId = `${author.did}-${comment.post.record.text.slice(0, 20)}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
+    // Generate post ID for visibility tracking
+    const postId = comment.post.uri;
+
     const replies = (comment.replies || []).filter(reply => !this.shouldFilterComment(reply));
-    const visibleCount = this.replyVisibilityCounts.get(commentId) || this.config.nShowInit;
+    const visibleCount = this.postVisibilityCounts.get(postId) || this.config.nShowInit;
 
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
@@ -265,7 +267,6 @@ class BlueskyComments extends HTMLElement {
     const hasWarning = labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
     const warningId = hasWarning ? `warning-${commentId}` : '';
 
-    const postId = comment.post.uri.split("/").pop();
     const postUrl = `https://bsky.app/profile/${author.did}/post/${postId}`;
 
     const warningHtml = hasWarning ? `
@@ -309,10 +310,7 @@ class BlueskyComments extends HTMLElement {
             <div class="comment-stats">${this.#postStatsBar(comment.post, {postUrl, showIcons: false, showZero: false})}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
-          ${hiddenReplies.length > 0 ?
-            `<button class="show-more-replies" data-comment-id="${commentId}">
-              Show ${this.config.nShowMore} more of ${hiddenReplies.length}  replies
-              </button>` : ''}
+          ${this.renderShowMoreButton(postId, hiddenReplies.length)}
         </div>
       </div>
     `;
@@ -328,6 +326,16 @@ class BlueskyComments extends HTMLElement {
           .map(reply => this.renderComment(reply, depth))
           .join('')}
       </div>
+    `;
+  }
+
+  renderShowMoreButton(postId, remainingCount) {
+    if (remainingCount <= 0) return '';
+
+    return `
+      <button class="show-more-replies" data-post-id="${postId}">
+        Show ${this.config.nShowMore} more of ${remainingCount} ${postId === 'root' ? 'comments' : 'replies'}
+      </button>
     `;
   }
 
@@ -357,9 +365,10 @@ class BlueskyComments extends HTMLElement {
       .filter(reply => !this.shouldFilterComment(reply))
       .sort((a, b) => (b.post.likeCount || 0) - (a.post.likeCount || 0));
 
-    // Get visible replies based on currentVisibleCount
-    const visibleReplies = filteredReplies.slice(0, this.currentVisibleCount);
-    const remainingCount = filteredReplies.length - this.currentVisibleCount;
+    // Use root post visibility count for top-level replies
+    const visibleCount = this.postVisibilityCounts.get('root') || this.config.nShowInit;
+    const visibleReplies = filteredReplies.slice(0, visibleCount);
+    const remainingCount = filteredReplies.length - visibleCount;
     const filteredCount = this.countFilteredComments(this.thread.replies);
 
     const warningHtml = hasWarning ? `
@@ -396,10 +405,7 @@ class BlueskyComments extends HTMLElement {
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
       </div>
-      ${remainingCount > 0 ?
-        `<button class="show-more">
-          Show ${this.config.nShowMore} more of ${remainingCount} comments
-          </button>` : ''}
+      ${this.renderShowMoreButton('root', remainingCount)}
     `;
 
     this.innerHTML = `${warningHtml}
@@ -421,9 +427,9 @@ class BlueskyComments extends HTMLElement {
 
     // Add other event listeners
     if (remainingCount > 0) {
-      const showMoreButton = this.querySelector('.show-more');
+      const showMoreButton = this.querySelector('.show-more-replies');
       if (showMoreButton) {
-        showMoreButton.addEventListener('click', this.showMore);
+        showMoreButton.addEventListener('click', this.showMoreReplies);
       }
     }
 
