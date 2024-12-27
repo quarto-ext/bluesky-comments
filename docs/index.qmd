@@ -106,8 +106,8 @@ bluesky-comments:
   mute-users:
     - "did:plc:1234abcd"
   filter-empty-replies: true
-  visible-comments: 3
-  visible-subcomments: 3
+  n-show-init: 3
+  n-show-more: 2
 ---
 ```
 
@@ -117,8 +117,8 @@ bluesky-comments:
 - `mute-patterns`: An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text
 - `mute-users`: An array of Bluesky DIDs to filter out comments from specific users
 - `filter-empty-replies`: Boolean flag to filter out empty or very short replies (default: `true`)
-- `visible-comments`: Number of top-level comments to show initially (default: `3`)
-- `visible-subcomments`: Number of replies to show initially under each comment (default: `3`)
+- `n-show-init`: Number of top-level comments to show initially (default: `3`)
+- `n-show-more`: Number of replies to reveal when the user clicks on the "Show more" button (default: `2`)
 
 Users can click "Show more" buttons to reveal additional comments and replies beyond these initial limits. Filtered comments are counted and displayed at the top of the comments section to maintain transparency about moderation.
 
