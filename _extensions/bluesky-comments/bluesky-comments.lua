@@ -36,8 +36,7 @@ local function getFilterConfig(config)
   end
 
   if config['visible-comments'] then
-    utils.log_warn("`visible-comments` was deprecated, please use `n-show-init` instead.")
-    filterConfig.visibleComments = tonumber(pandoc.utils.stringify(config['visible-comments']))
+    utils.log_warn("`visible-comments` is deprecated and no longer used, please use `n-show-init` instead.")
   end
 
   if config['visible-subcomments'] then
