@@ -131,7 +131,7 @@ local function mergeKwargsWithMeta(kwargs, meta)
       else
         attrs[key] = value
       end
-    else
+    elseif key ~= "uri" then
       attrs[key] = value
     end
   end
@@ -194,10 +194,6 @@ function shortcode(args, kwargs, meta)
     postUri = kwargsUri
   elseif #args == 1 then
     postUri = args[1]
-  end
-
-  if kwargsUri ~= '' then
-    kwargs.remove('uri')
   end
 
   if postUri == nil then
