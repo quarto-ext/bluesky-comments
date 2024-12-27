@@ -49,6 +49,7 @@ class BlueskyComments extends HTMLElement {
       {attr: 'n-show-more', prop: 'nShowMore'}
     ].forEach(({attr, prop}) => {
       let value = this.getAttribute(attr);
+      if (!value) return;
       if (typeof value !== "number") {
         value = parseInt(value);
         if (!isNaN(value)) {
