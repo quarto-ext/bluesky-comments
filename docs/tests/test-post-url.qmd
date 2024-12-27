@@ -50,3 +50,11 @@ bluesky-comments:
 ```
 
 {{< bluesky-comments uri="3lbu5opiixc2j" >}}
+
+### With `profile` as a shortcode kwarg
+
+```markdown
+{{{< bluesky-comments 3lbtwdydxrk26 profile="did:plc:fgeozid7uyx2lfz3yo7zvm3b" >}}}
+```
+
+{{< bluesky-comments 3lbtwdydxrk26 profile="did:plc:fgeozid7uyx2lfz3yo7zvm3b" >}}

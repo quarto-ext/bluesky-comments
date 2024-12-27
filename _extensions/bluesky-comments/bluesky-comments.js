@@ -6,13 +6,14 @@ class BlueskyComments extends HTMLElement {
     this.thread = null;
     this.error = null;
     this.filteredCount = 0;  // Track number of filtered comments
-    this.config = {
+    this.filterConfig = {
       mutePatterns: [],
       muteUsers: [],
       filterEmptyReplies: true,
-      nShowInit: 3,
-      nShowMore: 2,
     };
+    this.profile = null;
+    this.nShowInit = 3;
+    this.nShowMore = 2;
     this.postVisibilityCounts = new Map();
     this.acknowledgedWarnings = new Set();
 
@@ -30,30 +31,38 @@ class BlueskyComments extends HTMLElement {
   }
 
   async connectedCallback() {
-    const configStr = this.getAttribute('config');
+    const configStr = this.getAttribute('filter-config');
 
     // Parse configuration
     if (configStr) {
       try {
         const userConfig = JSON.parse(configStr);
-        ['nShowInit', 'nShowMore'].forEach(prop => {
-          if (typeof userConfig[prop] !== "number") {
-            userConfig[prop] = parseInt(userConfig[prop])
-            if (isNaN(userConfig[prop])) {
-              delete userConfig[prop]
-            }
-          }
-        })
-        this.config = { ...this.config, ...userConfig };
+        this.filterConfig = { ...this.filterConfig, ...userConfig };
       } catch (err) {
         console.error('Error parsing config:', err);
       }
     }
 
+    // n-show- attributes
+    [
+      {attr: 'n-show-init', prop: 'nShowInit'},
+      {attr: 'n-show-more', prop: 'nShowMore'}
+    ].forEach(({attr, prop}) => {
+      let value = this.getAttribute(attr);
+      if (typeof value !== "number") {
+        value = parseInt(value);
+        if (!isNaN(value)) {
+          this[prop] = value;
+        }
+      }
+    });
+
+    this.profile = this.getAttribute('profile');
+
     this.#setPostUri(this.getAttribute('post'));
 
     // Initialize root post visibility count
-    this.postVisibilityCounts.set('root', this.config.nShowInit);
+    this.postVisibilityCounts.set('root', this.nShowInit);
 
     if (!this._initialized) {
       this._initialized = true
@@ -76,11 +85,11 @@ class BlueskyComments extends HTMLElement {
 
   #setPostUri(newValue) {
     if (newValue && !/^(https?|at):\/\//.test(newValue)) {
-      if (this.config.profile) {
-        if (this.config.profile.startsWith("did:")) {
-          newValue = `at://${this.config.profile}/app.bsky.feed.post/${newValue}`
+      if (this.profile) {
+        if (this.profile.startsWith("did:")) {
+          newValue = `at://${this.profile}/app.bsky.feed.post/${newValue}`
         } else {
-          newValue = `https://bsky.app/profile/${this.config.profile.replace("@", "")}/post/${newValue}`
+          newValue = `https://bsky.app/profile/${this.profile.replace("@", "")}/post/${newValue}`
         }
       }
     }
@@ -156,13 +165,13 @@ class BlueskyComments extends HTMLElement {
     if (!comment?.post?.record?.text) return true;
 
     // Check muted users
-    if (this.config.muteUsers?.includes(comment.post.author.did)) {
+    if (this.filterConfig.muteUsers?.includes(comment.post.author.did)) {
       return true;
     }
 
     // Check muted patterns
     const text = comment.post.record.text;
-    if (this.config.mutePatterns?.some(pattern => {
+    if (this.filterConfig.mutePatterns?.some(pattern => {
       try {
         // Check if pattern is a regex string (enclosed in /)
         if (pattern.startsWith('/') && pattern.endsWith('/')) {
@@ -181,7 +190,7 @@ class BlueskyComments extends HTMLElement {
     }
 
     // Check empty/spam replies
-    if (this.config.filterEmptyReplies &&
+    if (this.filterConfig.filterEmptyReplies &&
         (!text.trim() || text.length < 2)) {
       return true;
     }
@@ -210,8 +219,8 @@ class BlueskyComments extends HTMLElement {
     if (!postId) return;
 
     // Initialize or increment the visibility count for this post
-    const currentCount = this.postVisibilityCounts.get(postId) || this.config.nShowInit;
-    const newCount = currentCount + this.config.nShowMore;
+    const currentCount = this.postVisibilityCounts.get(postId) || this.nShowInit;
+    const newCount = currentCount + this.nShowMore;
     this.postVisibilityCounts.set(postId, newCount);
 
     // Re-render the comment with updated visibility
@@ -248,7 +257,7 @@ class BlueskyComments extends HTMLElement {
     const postId = comment.post.uri;
 
     const replies = (comment.replies || []).filter(reply => !this.shouldFilterComment(reply));
-    const visibleCount = this.postVisibilityCounts.get(postId) || this.config.nShowInit;
+    const visibleCount = this.postVisibilityCounts.get(postId) || this.nShowInit;
 
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
@@ -325,7 +334,7 @@ class BlueskyComments extends HTMLElement {
 
   renderShowMoreButton(postId, remainingCount) {
     if (remainingCount <= 0) return '';
-    const nReveal = Math.min(this.config.nShowMore, remainingCount);
+    const nReveal = Math.min(this.nShowMore, remainingCount);
     const txtComment = remainingCount == 1 ? 'comment' : 'comments';
 
     let txtButton = `Show ${nReveal} more of ${remainingCount} ${txtComment}`
@@ -365,7 +374,7 @@ class BlueskyComments extends HTMLElement {
       .sort((a, b) => (b.post.likeCount || 0) - (a.post.likeCount || 0));
 
     // Use root post visibility count for top-level replies
-    const visibleCount = this.postVisibilityCounts.get('root') || this.config.nShowInit;
+    const visibleCount = this.postVisibilityCounts.get('root') || this.nShowInit;
     const visibleReplies = filteredReplies.slice(0, visibleCount);
     const remainingCount = filteredReplies.length - visibleCount;
     const filteredCount = this.countFilteredComments(this.thread.replies);
@@ -481,7 +490,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   showMore() {
-    this.currentVisibleCount += this.config.nShowMore;
+    this.currentVisibleCount += this.nShowMore;
     this.render();
   }
 

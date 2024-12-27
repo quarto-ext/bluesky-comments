@@ -35,33 +35,13 @@ local function getFilterConfig(config)
     filterConfig.filterEmptyReplies = config['filter-empty-replies']
   end
 
-  if not config['n-show-init'] and config['visible-comments'] then
+  if config['visible-comments'] then
     utils.log_warn("`visible-comments` was deprecated, please use `n-show-init` instead.")
-    filterConfig.nShowInit = tonumber(pandoc.utils.stringify(config['visible-comments']))
+    filterConfig.visibleComments = tonumber(pandoc.utils.stringify(config['visible-comments']))
   end
 
   if config['visible-subcomments'] then
     utils.log_warn("`visible-subcomments` is deprecated and no longer used, please use `n-show-init` instead.")
-  end
-
-  local numericKeys = {
-    nShowInit = true,
-    nShowMore = true
-  }
-
-  -- Add any additional config values
-  for key, value in pairs(config) do
-    -- Convert key from kebab-case to camelCase
-    local camelKey = key:gsub("%-(%w)", function(match) return match:upper() end)
-    -- Only add if not already in filterConfig
-    if filterConfig[camelKey] == nil then
-      value = pandoc.utils.stringify(value)
-      if numericKeys[camelKey] then
-        value = tonumber(value)
-      end
-      ---@diagnostic disable-next-line: assign-type-mismatch
-      filterConfig[camelKey] = value
-    end
   end
 
   return filterConfig
@@ -77,7 +57,7 @@ local function ensureHtmlDeps()
   })
 end
 
-local function composePostUri(postUri, config)
+local function composePostUri(postUri, profile)
   postUri = pandoc.utils.stringify(postUri or "")
 
   if postUri:match("^at://") or postUri:match("^https?://") then
@@ -89,7 +69,7 @@ local function composePostUri(postUri, config)
     return postUri
   end
 
-  local profile = pandoc.utils.stringify(config.profile or "")
+  local profile = pandoc.utils.stringify(profile or "")
 
   if profile == "" then
     return utils.abort(
@@ -112,10 +92,8 @@ function shortcode(args, kwargs, meta)
     return pandoc.Null()
   end
 
-  -- Get configuration, merging kwargs with yaml frontmatter
-  local metaConfig = meta and meta["bluesky-comments"]
-  for k,v in pairs(kwargs) do metaConfig[k] = v end
-  local config = getFilterConfig(metaConfig)
+  -- Get filter configuration from metadata
+  local filterConfig = getFilterConfig(meta and meta["bluesky-comments"])
 
   -- Ensure HTML dependencies are added
   ensureHtmlDeps()
@@ -147,7 +125,12 @@ function shortcode(args, kwargs, meta)
     return ""
   end
 
-  postUri = composePostUri(postUri, config)
+  local profile = pandoc.utils.stringify(kwargs['profile'])
+  if profile == "" then
+    profile = meta and meta['bluesky-comments'] and meta["bluesky-comments"]['profile']
+  end
+
+  postUri = composePostUri(postUri, profile)
   if (postUri or "") == "" then
     return ""
   end
@@ -157,12 +140,32 @@ function shortcode(args, kwargs, meta)
     postUri = atUri
   end
 
+  local attrs = ""
+  -- Add any additional attributes from kwargs
+  for key, value in pairs(kwargs) do
+    -- Validate that key is a string
+    if type(key) ~= "string" then
+      error("Invalid kwarg key: " .. tostring(key) .. ". Keys must be strings.")
+    end
+
+    -- Handle different value types
+    if type(value) == "string" then
+      if value == "true" then
+        attrs = attrs .. " " .. key
+      elseif value ~= "false" then
+        attrs = attrs .. " " .. key .. "=\"" .. value .. "\""
+      end
+    else
+      error("Invalid kwarg value for '" .. key .. "'. Values must be strings.")
+    end
+  end
+
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
     <bluesky-comments
          post="%s"
-         config='%s'></bluesky-comments>
-  ]], postUri, quarto.json.encode(config)))
+         filter-config='%s'%s></bluesky-comments>
+  ]], postUri, quarto.json.encode(filterConfig), attrs))
 end
 
 -- Return the shortcode registration
