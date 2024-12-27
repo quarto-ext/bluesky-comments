@@ -1,14 +1,23 @@
 local bluesky = require("bluesky-api")
 local utils = require("utils")
 
+-- These attributes become part of `filter-config` JSON and aren't added to the
+-- custom element as attributes.
+local filter_config_attrs = {
+  ["mute-patterns"] = true,
+  ["mute-users"] = true,
+  ["filter-empty-replies"] = true,
+  -- legacy attributes
+  ["visible-comments"] = true,
+  ["visible-subcomments"] = true
+}
+
 
 -- Get filter configuration from meta
 local function getFilterConfig(config)
   if not config then
     return '{}'
   end
-
-  quarto.log.output(config)
 
   local filterConfig = {
     mutePatterns = {},
@@ -84,6 +93,67 @@ local function composePostUri(postUri, profile)
   return bluesky.createPostUrl(profile, postUri)
 end
 
+local function mergeKwargsWithMeta(kwargs, meta)
+  local attrs = {}
+
+  for key, value in pairs(meta and meta["bluesky-comments"]) do
+    if filter_config_attrs[key] then
+      -- attributes from metadata pass through directly
+      attrs[key] = value
+    else
+      attrs[key] = pandoc.utils.stringify(value)
+    end
+  end
+
+
+  -- Add any additional attributes from kwargs
+  for key, value in pairs(kwargs) do
+    -- Validate that key is a string
+    if type(key) ~= "string" then
+      error("Invalid key: " .. tostring(key) .. ". Keys must be strings.")
+    end
+
+    -- Handle different value types
+    if type(value) ~= "string" then
+      error("Invalid value for '" .. key .. "'. Values must be strings.")
+    end
+    if key == "mute-patterns" or key == "mute-users" then
+      value = quarto.json.decode(value)
+      if attrs[key] then
+        -- merge with global metadata mute settings rather than overriding
+        for i = 1, #value do
+          table.insert(attrs[key], value[i])
+        end
+      else
+        attrs[key] = value
+      end
+    else
+      attrs[key] = value
+    end
+  end
+
+  return attrs
+end
+
+local function attrsFromKwargsMeta(kwargs)
+  local ret = ""
+  for key, value in pairs(kwargs) do
+    if filter_config_attrs[key] then
+      goto continue
+    end
+
+    if value == "true" then
+      ret = ret .. " " .. key
+    elseif value ~= "false" then
+      ret = ret .. " " .. key .. "=\"" .. value .. "\""
+    end
+
+    ::continue::
+  end
+
+  return ret
+end
+
 -- Main shortcode function
 function shortcode(args, kwargs, meta)
   -- Only process for HTML formats with JavaScript enabled
@@ -91,8 +161,12 @@ function shortcode(args, kwargs, meta)
     return pandoc.Null()
   end
 
+  -- Merge kwargs with global meta. Users can set inline attributes or use
+  -- `bluesky-comments` in YAML front-matter or _quarto.yml.
+  local kwargsWithMeta = mergeKwargsWithMeta(kwargs, meta)
+
   -- Get filter configuration from metadata
-  local filterConfig = getFilterConfig(meta and meta["bluesky-comments"])
+  local filterConfig = getFilterConfig(kwargsWithMeta)
 
   -- Ensure HTML dependencies are added
   ensureHtmlDeps()
@@ -118,6 +192,10 @@ function shortcode(args, kwargs, meta)
     postUri = args[1]
   end
 
+  if kwargsUri ~= '' then
+    kwargs.remove('uri')
+  end
+
   if postUri == nil then
     errorMsg = errorMsg or "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
     utils.abort(errorMsg)
@@ -139,25 +217,7 @@ function shortcode(args, kwargs, meta)
     postUri = atUri
   end
 
-  local attrs = ""
-  -- Add any additional attributes from kwargs
-  for key, value in pairs(kwargs) do
-    -- Validate that key is a string
-    if type(key) ~= "string" then
-      error("Invalid kwarg key: " .. tostring(key) .. ". Keys must be strings.")
-    end
-
-    -- Handle different value types
-    if type(value) == "string" then
-      if value == "true" then
-        attrs = attrs .. " " .. key
-      elseif value ~= "false" then
-        attrs = attrs .. " " .. key .. "=\"" .. value .. "\""
-      end
-    else
-      error("Invalid kwarg value for '" .. key .. "'. Values must be strings.")
-    end
-  end
+  local attrs = attrsFromKwargsMeta(kwargsWithMeta)
 
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[

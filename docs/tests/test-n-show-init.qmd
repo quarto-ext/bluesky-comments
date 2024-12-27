@@ -4,10 +4,26 @@ description: |
   Test initially shown posts and number of posts revealed with "show more".
 
 bluesky-comments:
-  profile: did:plc:72jpccg3u3vbohc67rqrplei
+  n-show-init: 1
+  n-show-more: 2
 
 other-thing: true
 ---
+
+## Default, uses YAML front matter
+
+```markdown
+---
+bluesky-comments:
+  n-show-init: 1
+  n-show-more: 2
+---
+
+{{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j>}}}
+```
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lbu5opiixc2j >}}
+
 
 ## `n-show-init="2" n-show-more="1"`
 
