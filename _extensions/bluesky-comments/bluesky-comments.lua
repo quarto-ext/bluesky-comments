@@ -117,8 +117,12 @@ local function mergeKwargsWithMeta(kwargs, meta)
     if type(value) ~= "string" then
       error("Invalid value for '" .. key .. "'. Values must be strings.")
     end
-    if key == "mute-patterns" or key == "mute-users" then
+
+    if filter_config_attrs[key] then
       value = quarto.json.decode(value)
+    end
+
+    if key == "mute-patterns" or key == "mute-users" then
       if attrs[key] then
         -- merge with global metadata mute settings rather than overriding
         for i = 1, #value do
