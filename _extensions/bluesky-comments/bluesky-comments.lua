@@ -10,7 +10,6 @@ local function getFilterConfig(config)
 
   quarto.log.output(config)
 
-  -- Extract filter configuration with defaults
   local filterConfig = {
     mutePatterns = {},
     muteUsers = {},
@@ -36,19 +35,19 @@ local function getFilterConfig(config)
     filterConfig.filterEmptyReplies = config['filter-empty-replies']
   end
 
-  if config['n-show-init'] then
-    filterConfig.nShowInit = tonumber(pandoc.utils.stringify(config['n-show-init']))
-  end
-
-  if config['visible-comments'] then
+  if not config['n-show-init'] and config['visible-comments'] then
     utils.log_warn("`visible-comments` was deprecated, please use `n-show-init` instead.")
-    filterConfig.visibleComments = tonumber(pandoc.utils.stringify(config['visible-comments']))
+    filterConfig.nShowInit = tonumber(pandoc.utils.stringify(config['visible-comments']))
   end
 
   if config['visible-subcomments'] then
-    utils.log_warn("`visible-subcomments` was deprecated, please use `n-show-init` instead.")
-    filterConfig.visibleSubComments = tonumber(pandoc.utils.stringify(config['visible-subcomments']))
+    utils.log_warn("`visible-subcomments` is deprecated and no longer used, please use `n-show-init` instead.")
   end
+
+  local numericKeys = {
+    nShowInit = true,
+    nShowMore = true
+  }
 
   -- Add any additional config values
   for key, value in pairs(config) do
@@ -56,7 +55,12 @@ local function getFilterConfig(config)
     local camelKey = key:gsub("%-(%w)", function(match) return match:upper() end)
     -- Only add if not already in filterConfig
     if filterConfig[camelKey] == nil then
-      filterConfig[camelKey] = pandoc.utils.stringify(value)
+      value = pandoc.utils.stringify(value)
+      if numericKeys[camelKey] then
+        value = tonumber(value)
+      end
+      ---@diagnostic disable-next-line: assign-type-mismatch
+      filterConfig[camelKey] = value
     end
   end
 

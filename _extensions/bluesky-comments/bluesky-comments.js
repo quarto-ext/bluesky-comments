@@ -36,12 +36,6 @@ class BlueskyComments extends HTMLElement {
     if (configStr) {
       try {
         const userConfig = JSON.parse(configStr);
-        // Handle legacy config properties
-        if (userConfig.visibleComments || userConfig.visibleSubComments) {
-          userConfig.nShowInit = userConfig.visibleComments || userConfig.visibleSubComments || 3;
-          delete userConfig.visibleComments;
-          delete userConfig.visibleSubComments;
-        }
         ['nShowInit', 'nShowMore'].forEach(prop => {
           if (typeof userConfig[prop] !== "number") {
             userConfig[prop] = parseInt(userConfig[prop])
