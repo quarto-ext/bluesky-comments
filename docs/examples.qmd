@@ -9,8 +9,8 @@ bluesky-comments:
     - "📌"
     - "🔥"
   filter-empty-replies: true
-  visible-comments: 3
-  visible-subcomments: 5
+  n-show-init: 3
+  n-show-more: 2
 ---
 
 This document shows an example of the Bluesky Comments extension in Quarto embedding comments from multiple Bluesky posts in a single document.
@@ -33,11 +33,17 @@ bluesky-comments:
     - "📌"
     - "🔥"
   filter-empty-replies: true
-  visible-comments: 3
-  visible-subcomments: 5
+  n-show-init: 3
+  n-show-more: 2
 ```
 
 We could also supply `mute-users` to mute specific users from the comments; however, we have not done so in this example.
+
+Note that each of these settings can also be added directly to the shortcode to be applied specifically to that comment section:
+
+```markdown
+{{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 mute-patterns='["📌", "🔥"]' filter-empty-replies="true" >}}}
+```
 
 # Multiple Comment Sections
 
@@ -61,12 +67,12 @@ at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
 **Shortcode:**
 
 ```markdown
-{{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}}
+{{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 mute-patterns='["👍"]' >}}}
 ```
 
 **Live:**
 
-{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}
+{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 mute-patterns='["👍"]' >}}
 
 ## Medium Thread
 

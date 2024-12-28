@@ -17,8 +17,25 @@ function utils.log_info(msg)
   quarto.log.info(utils.bcMessage(msg))
 end
 
+function utils.log_warn(msg)
+  quarto.log.warning(utils.bcMessage(msg))
+end
+
 function utils.log_output(msg)
   quarto.log.output(utils.bcMessage(msg))
+end
+
+function utils.isKeyInTable(table, keyToFind)
+  for key, _ in pairs(table) do
+      if key == keyToFind then
+          return true
+      end
+  end
+  return false
+end
+
+function utils.toCamelCase(x)
+  return x:gsub("%-(%w)", function(match) return match:upper() end)
 end
 
 return utils
