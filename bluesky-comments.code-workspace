@@ -14,6 +14,14 @@
 		"editor.trimAutoWhitespace": true,
 		"files.trimTrailingWhitespace": true,
 		"files.insertFinalNewline": true,
-		"files.trimFinalNewlines": true
+		"files.trimFinalNewlines": true,
+		"[javascript][javascriptreact][typescript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.formatOnSave": true
+		},
+		"[lua]": {
+			"editor.defaultFormatter": "sumneko.lua",
+			"editor.formatOnSave": true
+		}
 	}
 }

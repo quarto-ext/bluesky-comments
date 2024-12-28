@@ -197,7 +197,8 @@ function shortcode(args, kwargs, meta)
   end
 
   if postUri == nil then
-    errorMsg = errorMsg or "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
+    errorMsg = errorMsg or
+    "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
     utils.abort(errorMsg)
     return ""
   end
