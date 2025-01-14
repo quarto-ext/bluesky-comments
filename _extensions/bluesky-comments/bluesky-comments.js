@@ -328,7 +328,7 @@ class BlueskyComments extends HTMLElement {
           </div>
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
-            <div class="comment-stats">${this.#postStatsBar(comment.post, {
+            <div class="comment-stats">${this.#renderStatsBar(comment.post, {
               postUrl,
               showIcons: false,
               showZero: false,
@@ -401,7 +401,7 @@ class BlueskyComments extends HTMLElement {
 
     const contentHtml = `
       <h2>Comments</h2>
-      <div class="stats">${this.#postStatsBar(this.thread.post)}</div>
+      <div class="stats">${this.#renderStatsBar(this.thread.post)}</div>
       ${
         filteredCount > 0
           ? `<p class="filtered-notice">
@@ -498,7 +498,7 @@ class BlueskyComments extends HTMLElement {
     return { html, id: warningId };
   }
 
-  #postStatsBar(
+  #renderStatsBar(
     post,
     { postUrl, showIcons, showZero } = { showIcons: true, showZero: true },
   ) {
