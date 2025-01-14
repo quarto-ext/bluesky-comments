@@ -26,7 +26,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['post'];
+    return ['post', 'profile'];
   }
 
   async connectedCallback() {
@@ -80,6 +80,10 @@ class BlueskyComments extends HTMLElement {
     if (name === 'post') {
       this.#setPostUri(newValue);
       this.#loadThread();
+    }
+
+    if (name == 'profile') {
+      this.profile = newValue;
     }
   }
 
