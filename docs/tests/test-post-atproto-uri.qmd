@@ -1,5 +1,5 @@
 ---
-title: "Test: Shortcode with atproto URI"
+title: "Shortcode with atproto URI"
 description: Test that the shortcode works with Bluesky atproto post URIs.
 
 bluesky-comments:

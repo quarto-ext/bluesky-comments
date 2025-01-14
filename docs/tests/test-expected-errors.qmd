@@ -1,5 +1,5 @@
 ---
-title: "Test: Expected Errors"
+title: "Expected Errors"
 description: Rendering this document produces console errors (but does not break render)
 
 bluesky-comments:

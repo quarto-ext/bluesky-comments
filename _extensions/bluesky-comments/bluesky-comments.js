@@ -305,54 +305,14 @@ class BlueskyComments extends HTMLElement {
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
 
-    const labels =
-      comment.post.labels?.map(l => ({
-        value: l.val.charAt(0).toUpperCase() + l.val.slice(1),
-      })) || [];
-
-    const warningType = labels
-      .map(l => l.value)
-      .sort()
-      .join('-');
-    const hasWarning =
-      labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
-    const warningId = hasWarning ? `warning-${commentId}` : '';
+    const warning = this.#renderWarning(comment.post.labels);
 
     const postUrl = this.#convertToHttpUrl(comment.post.uri);
 
-    const warningHtml = hasWarning
-      ? `
-      <div class="content-warning">
-        <div class="warning-content">
-          ${labels
-            .map(
-              label => `
-            <div class="label-warning">
-              <strong>${label.value}</strong>
-              <p>Warning: This content may contain sensitive material</p>
-              <p class="label-attribution">This label was applied by the Bluesky community.</p>
-            </div>
-          `,
-            )
-            .join('')}
-          <p class="warning-prompt">Do you wish to see these comments?</p>
-          <hr class="warning-divider"/>
-          <button class="warning-button"
-                  data-warning-type="${warningType}"
-                  data-content-id="${warningId}">
-            Show Comments
-          </button>
-        </div>
-      </div>
-    `
-      : '';
-
     return `
       <div class="comment" id="comment-${commentId}">
-        ${warningHtml}
-        <div id="${warningId}" style="display: ${
-      hasWarning ? 'none' : 'block'
-    }">
+        ${warning?.html || ''}
+        <div id="${warning?.id || ''}" style="display: ${warning ? 'none' : 'block'}">
           <div class="comment-header">
             ${avatarHtml}
             <a href="https://bsky.app/profile/${
@@ -368,7 +328,7 @@ class BlueskyComments extends HTMLElement {
           </div>
           <div class="comment-body">
             <p>${comment.post.record.text}</p>
-            <div class="comment-stats">${this.#postStatsBar(comment.post, {
+            <div class="comment-stats">${this.#renderStatsBar(comment.post, {
               postUrl,
               showIcons: false,
               showZero: false,
@@ -426,15 +386,7 @@ class BlueskyComments extends HTMLElement {
         value: l.val.charAt(0).toUpperCase() + l.val.slice(1),
       })) || [];
 
-    const warningType = labels
-      .map(l => l.value)
-      .sort()
-      .join('-');
-    const hasWarning =
-      labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
-    const warningId = hasWarning
-      ? `warning-${Math.random().toString(36).substr(2, 9)}`
-      : '';
+    const warning = this.#renderWarning(this.thread.post.labels);
 
     const filteredReplies = (this.thread.replies || [])
       .filter(reply => !this.shouldFilterComment(reply))
@@ -447,36 +399,9 @@ class BlueskyComments extends HTMLElement {
     const remainingCount = filteredReplies.length - visibleCount;
     const filteredCount = this.countFilteredComments(this.thread.replies);
 
-    const warningHtml = hasWarning
-      ? `
-      <div class="content-warning">
-        <div class="warning-content">
-          ${labels
-            .map(
-              label => `
-            <div class="label-warning">
-              <strong>${label.value}</strong>
-              <p>Warning: This content may contain sensitive material</p>
-              <p class="label-attribution">This label was applied by the Bluesky community.</p>
-            </div>
-          `,
-            )
-            .join('')}
-          <p class="warning-prompt">Do you wish to see these comments?</p>
-          <hr class="warning-divider"/>
-          <button class="warning-button"
-                  data-warning-type="${warningType}"
-                  data-content-id="${warningId}">
-            Show Comments
-          </button>
-        </div>
-      </div>
-    `
-      : '';
-
     const contentHtml = `
       <h2>Comments</h2>
-      <div class="stats">${this.#postStatsBar(this.thread.post)}</div>
+      <div class="stats">${this.#renderStatsBar(this.thread.post)}</div>
       ${
         filteredCount > 0
           ? `<p class="filtered-notice">
@@ -497,8 +422,9 @@ class BlueskyComments extends HTMLElement {
       ${this.renderShowMoreButton('root', remainingCount)}
     `;
 
-    this.innerHTML = `${warningHtml}
-      <div id="${warningId}" style="display: ${hasWarning ? 'none' : 'block'}">
+    this.innerHTML = `
+      ${warning?.html || ''}
+      <div id="${warning?.id || ''}" style="display: ${warning ? 'none' : 'block'}">
         ${contentHtml}
       </div>
     `;
@@ -528,7 +454,51 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #postStatsBar(
+  #renderWarning(labels) {
+    if (!labels?.length) return;
+
+    const formattedLabels = labels.map(l => ({
+      value: l.val.charAt(0).toUpperCase() + l.val.slice(1),
+    }));
+
+    const warningType = formattedLabels
+      .map(l => l.value)
+      .sort()
+      .join('-');
+
+    if (this.acknowledgedWarnings.has(warningType)) return;
+
+    const warningId = `warning-${Math.random().toString(36).substr(2, 9)}`;
+
+    const html = `
+      <div class="content-warning">
+        <div class="warning-content">
+          ${formattedLabels
+            .map(
+              label => `
+            <div class="label-warning">
+              <strong>${label.value}</strong>
+              <p>Warning: This content may contain sensitive material</p>
+              <p class="label-attribution">This label was applied by the Bluesky community.</p>
+            </div>
+          `,
+            )
+            .join('')}
+          <p class="warning-prompt">Do you wish to see these comments?</p>
+          <hr class="warning-divider"/>
+          <button class="warning-button"
+                  data-warning-type="${warningType}"
+                  data-content-id="${warningId}">
+            Show Comments
+          </button>
+        </div>
+      </div>
+    `;
+
+    return { html, id: warningId };
+  }
+
+  #renderStatsBar(
     post,
     { postUrl, showIcons, showZero } = { showIcons: true, showZero: true },
   ) {
