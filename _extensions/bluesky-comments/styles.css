@@ -238,8 +238,20 @@
 }
 
 .loading {
-  text-align: center;
   color: var(--_muted-text);
+  animation: bc-fade-in-out 2s ease-in-out infinite;
+}
+
+@keyframes bc-fade-in-out {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }
 
 /* Content Warning System

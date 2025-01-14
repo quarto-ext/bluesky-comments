@@ -30,6 +30,8 @@ class BlueskyComments extends HTMLElement {
   }
 
   async connectedCallback() {
+    this.render();
+
     const configStr = this.getAttribute('filter-config');
 
     // Parse configuration
