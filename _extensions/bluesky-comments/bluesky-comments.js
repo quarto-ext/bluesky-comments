@@ -274,14 +274,12 @@ class BlueskyComments extends HTMLElement {
       20,
     )}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
-    // Generate post ID for visibility tracking
-    const postId = comment.post.uri;
-
     const replies = (comment.replies || []).filter(
       reply => !this.shouldFilterComment(reply),
     );
+
     const visibleCount =
-      this.postVisibilityCounts.get(postId) || this.nShowInit;
+      this.postVisibilityCounts.get(comment.post.uri) || this.nShowInit;
 
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
@@ -299,7 +297,7 @@ class BlueskyComments extends HTMLElement {
       labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
     const warningId = hasWarning ? `warning-${commentId}` : '';
 
-    const postUrl = `https://bsky.app/profile/${author.did}/post/${postId}`;
+    const postUrl = this.#convertToHttpUrl(comment.post.uri);
 
     const warningHtml = hasWarning
       ? `
@@ -356,7 +354,7 @@ class BlueskyComments extends HTMLElement {
             })}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
-          ${this.renderShowMoreButton(postId, hiddenReplies.length)}
+          ${this.renderShowMoreButton(comment.post.uri, hiddenReplies.length)}
         </div>
       </div>
     `;
@@ -400,8 +398,6 @@ class BlueskyComments extends HTMLElement {
       this.innerHTML = '<p class="loading">Loading comments...</p>';
       return;
     }
-
-    const postUrl = this.postUrl;
 
     // Filter and sort replies
     const labels =
@@ -470,7 +466,7 @@ class BlueskyComments extends HTMLElement {
           : ''
       }
       <p class="reply-prompt">
-        <a href="${postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
+        <a href="${this.postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
       </p>
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
