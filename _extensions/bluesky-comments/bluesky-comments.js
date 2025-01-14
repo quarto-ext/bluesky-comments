@@ -92,7 +92,7 @@ class BlueskyComments extends HTMLElement {
       const rkey = newValue;
       if (this.profile) {
         if (this.profile.startsWith('did:')) {
-          newValue = this.createAtProtoUri({did: this.profile, rkey });
+          newValue = this.createAtProtoUri({ did: this.profile, rkey });
         } else {
           newValue = this.createPostUrl({ profile: this.profile, rkey });
         }
@@ -485,7 +485,9 @@ class BlueskyComments extends HTMLElement {
           : ''
       }
       <p class="reply-prompt">
-        <a href="${this.postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
+        <a href="${
+          this.postUrl
+        }" target="_blank">Reply on Bluesky</a> to join the conversation.
       </p>
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}

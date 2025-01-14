@@ -15,7 +15,7 @@
 		"files.trimTrailingWhitespace": true,
 		"files.insertFinalNewline": true,
 		"files.trimFinalNewlines": true,
-		"[javascript][javascriptreact][typescript]": {
+		"[javascript]": {
 			"editor.defaultFormatter": "esbenp.prettier-vscode",
 			"editor.formatOnSave": true
 		},
