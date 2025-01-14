@@ -85,14 +85,12 @@ class BlueskyComments extends HTMLElement {
 
   #setPostUri(newValue) {
     if (newValue && !/^(https?|at):\/\//.test(newValue)) {
+      const rkey = newValue;
       if (this.profile) {
         if (this.profile.startsWith('did:')) {
-          newValue = `at://${this.profile}/app.bsky.feed.post/${newValue}`;
+          newValue = this.createAtProtoUri({did: this.profile, rkey });
         } else {
-          newValue = `https://bsky.app/profile/${this.profile.replace(
-            '@',
-            '',
-          )}/post/${newValue}`;
+          newValue = this.createPostUrl({ profile: this.profile, rkey });
         }
       }
     }
@@ -122,18 +120,30 @@ class BlueskyComments extends HTMLElement {
 
     const match = uri.match(/profile\/([\w.]+)\/post\/([\w]+)/);
     if (match) {
-      const [, did, postId] = match;
-      return `at://${did}/app.bsky.feed.post/${postId}`;
+      const [, did, rkey] = match;
+      return this.createAtProtoUri({ did, rkey });
     }
 
     this.error = 'Invalid Bluesky post URL format';
     return null;
   }
 
+  createAtProtoUri({ did, rkey }) {
+    return `at://${did}/app.bsky.feed.post/${rkey}`;
+  }
+
   #convertToHttpUrl(uri) {
     uri = this.#convertToAtProtoUri(uri);
-    const [, , did, , rkey] = uri.split('/');
-    return `https://bsky.app/profile/${did}/post/${rkey}`;
+    const [, , profile, , rkey] = uri.split('/');
+    return this.createPostUrl({ profile, rkey });
+  }
+
+  createPostUrl({ profile, rkey }) {
+    profile = profile || this.profile;
+    if (profile.startsWith('@')) {
+      profile = profile.slice(1);
+    }
+    return `https://bsky.app/profile/${profile}/post/${rkey}`;
   }
 
   #logAtUri() {
