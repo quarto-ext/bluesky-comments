@@ -108,6 +108,11 @@ class BlueskyComments extends HTMLElement {
       return;
     }
 
+    if (this.thread && this.thread.post.uri === this.post) {
+      // We've already downloaded the thread, no need to update
+      return;
+    }
+
     try {
       await this.#fetchThreadData();
       this.#logAtUri();
