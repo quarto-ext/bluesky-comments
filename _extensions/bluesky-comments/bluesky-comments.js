@@ -22,8 +22,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   get postUrl() {
-    const [, , did, , rkey] = this.getAttribute('post').split('/');
-    return `https://bsky.app/profile/${did}/post/${rkey}`;
+    return this.#convertToHttpUrl(this.post);
   }
 
   static get observedAttributes() {
@@ -97,7 +96,7 @@ class BlueskyComments extends HTMLElement {
         }
       }
     }
-    this.post = newValue;
+    this.post = this.#convertToAtProtoUri(newValue);
   }
 
   async #loadThread() {
@@ -118,7 +117,7 @@ class BlueskyComments extends HTMLElement {
     }
   }
 
-  #convertUri(uri) {
+  #convertToAtProtoUri(uri) {
     if (uri.startsWith('at://')) return uri;
 
     const match = uri.match(/profile\/([\w.]+)\/post\/([\w]+)/);
@@ -129,6 +128,12 @@ class BlueskyComments extends HTMLElement {
 
     this.error = 'Invalid Bluesky post URL format';
     return null;
+  }
+
+  #convertToHttpUrl(uri) {
+    uri = this.#convertToAtProtoUri(uri);
+    const [, , did, , rkey] = uri.split('/');
+    return `https://bsky.app/profile/${did}/post/${rkey}`;
   }
 
   #logAtUri() {
@@ -144,7 +149,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   async #fetchThreadData() {
-    const uri = this.#convertUri(this.post);
+    const uri = this.#convertToAtProtoUri(this.post);
     const params = new URLSearchParams({ uri });
     const res = await fetch(
       'https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?' +
