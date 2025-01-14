@@ -22,12 +22,11 @@ class BlueskyComments extends HTMLElement {
   }
 
   get postUrl() {
-    const [, , did, , rkey] = this.getAttribute('post').split('/');
-    return `https://bsky.app/profile/${did}/post/${rkey}`;
+    return this.#convertToHttpUrl(this.post);
   }
 
   static get observedAttributes() {
-    return ['post'];
+    return ['post', 'profile'];
   }
 
   async connectedCallback() {
@@ -82,28 +81,35 @@ class BlueskyComments extends HTMLElement {
       this.#setPostUri(newValue);
       this.#loadThread();
     }
+
+    if (name == 'profile') {
+      this.profile = newValue;
+    }
   }
 
   #setPostUri(newValue) {
     if (newValue && !/^(https?|at):\/\//.test(newValue)) {
+      const rkey = newValue;
       if (this.profile) {
         if (this.profile.startsWith('did:')) {
-          newValue = `at://${this.profile}/app.bsky.feed.post/${newValue}`;
+          newValue = this.createAtProtoUri({ did: this.profile, rkey });
         } else {
-          newValue = `https://bsky.app/profile/${this.profile.replace(
-            '@',
-            '',
-          )}/post/${newValue}`;
+          newValue = this.createPostUrl({ profile: this.profile, rkey });
         }
       }
     }
-    this.post = newValue;
+    this.post = this.#convertToAtProtoUri(newValue);
   }
 
   async #loadThread() {
     if (!this.post) {
       this.error = 'Post link (or at:// URI) is required';
       this.render();
+      return;
+    }
+
+    if (this.thread && this.thread.post.uri === this.post) {
+      // We've already downloaded the thread, no need to update
       return;
     }
 
@@ -118,17 +124,35 @@ class BlueskyComments extends HTMLElement {
     }
   }
 
-  #convertUri(uri) {
+  #convertToAtProtoUri(uri) {
     if (uri.startsWith('at://')) return uri;
 
     const match = uri.match(/profile\/([\w.]+)\/post\/([\w]+)/);
     if (match) {
-      const [, did, postId] = match;
-      return `at://${did}/app.bsky.feed.post/${postId}`;
+      const [, did, rkey] = match;
+      return this.createAtProtoUri({ did, rkey });
     }
 
     this.error = 'Invalid Bluesky post URL format';
     return null;
+  }
+
+  createAtProtoUri({ did, rkey }) {
+    return `at://${did}/app.bsky.feed.post/${rkey}`;
+  }
+
+  #convertToHttpUrl(uri) {
+    uri = this.#convertToAtProtoUri(uri);
+    const [, , profile, , rkey] = uri.split('/');
+    return this.createPostUrl({ profile, rkey });
+  }
+
+  createPostUrl({ profile, rkey }) {
+    profile = profile || this.profile;
+    if (profile.startsWith('@')) {
+      profile = profile.slice(1);
+    }
+    return `https://bsky.app/profile/${profile}/post/${rkey}`;
   }
 
   #logAtUri() {
@@ -144,7 +168,7 @@ class BlueskyComments extends HTMLElement {
   }
 
   async #fetchThreadData() {
-    const uri = this.#convertUri(this.post);
+    const uri = this.#convertToAtProtoUri(this.post);
     const params = new URLSearchParams({ uri });
     const res = await fetch(
       'https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?' +
@@ -269,14 +293,12 @@ class BlueskyComments extends HTMLElement {
       20,
     )}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
-    // Generate post ID for visibility tracking
-    const postId = comment.post.uri;
-
     const replies = (comment.replies || []).filter(
       reply => !this.shouldFilterComment(reply),
     );
+
     const visibleCount =
-      this.postVisibilityCounts.get(postId) || this.nShowInit;
+      this.postVisibilityCounts.get(comment.post.uri) || this.nShowInit;
 
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
@@ -294,7 +316,7 @@ class BlueskyComments extends HTMLElement {
       labels.length > 0 && !this.acknowledgedWarnings.has(warningType);
     const warningId = hasWarning ? `warning-${commentId}` : '';
 
-    const postUrl = `https://bsky.app/profile/${author.did}/post/${postId}`;
+    const postUrl = this.#convertToHttpUrl(comment.post.uri);
 
     const warningHtml = hasWarning
       ? `
@@ -351,7 +373,7 @@ class BlueskyComments extends HTMLElement {
             })}</div>
           </div>
           ${this.renderReplies(visibleReplies, depth + 1)}
-          ${this.renderShowMoreButton(postId, hiddenReplies.length)}
+          ${this.renderShowMoreButton(comment.post.uri, hiddenReplies.length)}
         </div>
       </div>
     `;
@@ -395,8 +417,6 @@ class BlueskyComments extends HTMLElement {
       this.innerHTML = '<p class="loading">Loading comments...</p>';
       return;
     }
-
-    const postUrl = this.postUrl;
 
     // Filter and sort replies
     const labels =
@@ -465,7 +485,9 @@ class BlueskyComments extends HTMLElement {
           : ''
       }
       <p class="reply-prompt">
-        <a href="${postUrl}" target="_blank">Reply on Bluesky</a> to join the conversation.
+        <a href="${
+          this.postUrl
+        }" target="_blank">Reply on Bluesky</a> to join the conversation.
       </p>
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
