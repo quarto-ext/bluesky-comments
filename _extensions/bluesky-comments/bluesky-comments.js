@@ -15,7 +15,6 @@ class BlueskyComments extends HTMLElement {
     this.nShowInit = 3;
     this.nShowMore = 2;
     this.postVisibilityCounts = new Map();
-    this.acknowledgedWarnings = new Set();
 
     // Bind methods
     this.showMoreReplies = this.showMoreReplies.bind(this);
