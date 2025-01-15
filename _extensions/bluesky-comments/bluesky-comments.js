@@ -157,6 +157,12 @@ class BlueskyComments extends HTMLElement {
     return `https://bsky.app/profile/${profile}/post/${rkey}`;
   }
 
+  #postId({ uri }) {
+    uri = this.#convertToAtProtoUri(uri);
+    const [, , did, , rkey] = uri.split('/');
+    return `${did}-${rkey}`.replace(/[^a-zA-Z0-9_-]+/g, '-');
+  }
+
   #logAtUri() {
     const threadUri = this.thread.post.uri;
     if (this.post === threadUri) {
@@ -264,14 +270,17 @@ class BlueskyComments extends HTMLElement {
   }
 
   #handleWarningClick(event) {
-    const warningBox = event.target.closest('.content-warning');
+    const button = event.target;
+    const warningBox = button.closest('.content-warning');
     const contentElement = warningBox.nextElementSibling;
 
     if (warningBox && contentElement) {
-      // Toggle visibility
-      const isVisible = contentElement.style.display !== 'none';
-      contentElement.style.display = isVisible ? 'none' : 'block';
-      event.target.textContent = isVisible ? 'Show content' : 'Hide content';
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+      // Toggle visibility and ARIA states
+      contentElement.hidden = isExpanded;
+      button.setAttribute('aria-expanded', (!isExpanded).toString());
+      button.textContent = isExpanded ? 'Show content' : 'Hide content';
     }
   }
 
@@ -284,10 +293,7 @@ class BlueskyComments extends HTMLElement {
       : `<div class="avatar-placeholder"></div>`;
 
     // Generate a stable comment ID based on author and text
-    const commentId = `${author.did}-${comment.post.record.text.slice(
-      0,
-      20,
-    )}`.replace(/[^a-zA-Z0-9-]/g, '-');
+    const commentId = `comment-${this.#postId(comment.post)}`;
 
     const replies = (comment.replies || []).filter(
       reply => !this.shouldFilterComment(reply),
@@ -299,12 +305,13 @@ class BlueskyComments extends HTMLElement {
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
 
-    const warningHtml = this.#renderWarning(comment.post.labels);
+    const warningHtml = this.#renderWarning(comment.post);
 
     const postUrl = this.#convertToHttpUrl(comment.post.uri);
+    const postId = this.#postId(comment.post);
 
     return `
-      <div class="comment" id="comment-${commentId}">
+      <div class="comment" id="${commentId}">
         <div class="comment-header">
           ${avatarHtml}
           <a href="https://bsky.app/profile/${
@@ -319,7 +326,11 @@ class BlueskyComments extends HTMLElement {
           </a>
         </div>
         ${warningHtml}
-        <div class="comment-body" style="${warningHtml ? 'display: none' : ''}">
+        <div
+          class="comment-body"
+          id="${postId}"
+          ${warningHtml ? 'hidden' : ''}
+        >
           <p>${comment.post.record.text}</p>
           <div class="comment-stats">${this.#renderStatsBar(comment.post, {
             postUrl,
@@ -427,11 +438,20 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #renderWarning(labels) {
+  #renderWarning(post) {
+    const { labels } = post;
+
     if (!labels?.length) return '';
 
+    const labelDisplay = {
+      sexual: 'adult content',
+    };
+
+    // TODO: Filter out negated labels, see https://atproto.blue/en/latest/atproto/atproto_client.models.com.atproto.label.defs.html
+
     let formattedLabels = labels
-      .map(l => l.val.replaceAll('-', ' '))
+      .map(l => labelDisplay[l.val] || l.val)
+      .map(l => l.replaceAll('-', ' '))
       .sort()
       .join(', ');
 
@@ -441,7 +461,11 @@ class BlueskyComments extends HTMLElement {
     return `
     <div class="content-warning">
       <span class="warning-label">${formattedLabels}</span>
-      <button class="warning-button btn btn-sm btn-soft ms-auto">Show content</button>
+      <button
+        class="warning-button btn btn-sm btn-soft ms-auto"
+        aria-expanded="false"
+        aria-controls="${this.#postId(post)}"
+      >Show content</button>
     </div>`;
   }
 
