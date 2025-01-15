@@ -37,6 +37,7 @@
    * Control the appearance of borders and dividers */
   --_border-color: var(--bc-border-color, var(--bs-border-color, #e9ecef)); /* General borders */
   --_thread-line: var(--bc-thread-line, var(--bs-border-color, #eee));      /* Comment thread lines */
+  --_thread-line-width: var(--bc-thread-line-width, 2px);
 
   /* Warning Colors
    * Styles for warning messages and buttons */
@@ -115,16 +116,18 @@
   height: var(--_avatar-size);
   border-radius: 50%;
   background-color: var(--_bg-avatar);
-  left: calc(var(--_avatar-size, 0) / -2);
 }
 
 /* Comment Styles
  * Individual comment containers and their components */
 .comment {
   margin: 0;
+  padding: 0;
   padding-right: 0.5rem;
-  padding-top: 1rem;
   border-radius: 4px;
+  border-left: var(--_thread-line-width, 2px) solid var(--_thread-line);
+  margin-bottom: 1rem;
+  position: relative;
 }
 
 .comment-header {
@@ -132,11 +135,6 @@
   display: flex;
   flex-direction: column;
   padding-bottom: 0.5rem;
-}
-
-.comment-body, .comment-header {
-  margin-left: calc(var(--_avatar-size, 0) / 2);
-  border-left: 2px solid var(--_thread-line);
 }
 
 .comment-body > p:last-of-type {
@@ -152,7 +150,8 @@
 }
 
 .comment-header,
-.comment-body {
+.comment-body,
+.content-warning {
   padding-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
 }
 
@@ -196,7 +195,7 @@
 
 .avatar {
   position: absolute;
-  left: calc(var(--_avatar-size, 0) / -2);
+  left: calc((var(--_avatar-size, 0) + var(--_thread-line-width, 2px)) / -2);
 }
 
 .author-link:hover {
