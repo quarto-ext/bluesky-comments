@@ -441,7 +441,7 @@ class BlueskyComments extends HTMLElement {
     return `
     <div class="content-warning">
       <span class="warning-label">${formattedLabels}</span>
-      <button class="warning-button btn btn-outline-secondary btn-sm ms-auto">Show content</button>
+      <button class="warning-button btn btn-sm btn-soft ms-auto">Show content</button>
     </div>`;
   }
 

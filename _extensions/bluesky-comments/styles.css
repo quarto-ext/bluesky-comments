@@ -30,7 +30,7 @@
   /* Background Colors
    * Define background colors for various component elements */
   --_bg-notice: var(--bc-notice-bg, var(--bs-light, #f8f9fa));             /* Notice background */
-  --_bg-warning: var(--bc-warning-bg, var(--bs-light, #f8f9fa));           /* Warning background */
+  --_bg-warning: var(--bc-warning-bg, rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.05)); /* Warning background */
   --_bg-avatar: var(--bc-avatar-bg, var(--bs-secondary-bg, #eee));         /* Avatar placeholder */
 
   /* Border Colors
@@ -41,10 +41,7 @@
 
   /* Warning Colors
    * Styles for warning messages and buttons */
-  --_warning-text: var(--bc-warning-text, var(--bs-danger, #dc3545));      /* Warning text */
-  --_warning-button: var(--bc-warning-button, var(--bs-primary, #0066cc)); /* Warning button */
-  --_warning-button-hover: var(--bc-warning-button-hover,
-    var(--bs-primary-dark, #0052a3));                                      /* Warning button hover */
+  --_warning-text: var(--bc-warning-text, var(var(--bs-secondary-text-emphasis), #dc3545));      /* Warning text */
 
 
   /* Avatar */
@@ -124,7 +121,6 @@
   margin: 0;
   padding: 0;
   padding-right: 0.5rem;
-  border-radius: 4px;
   border-left: var(--_thread-line-width, 2px) solid var(--_thread-line);
   margin-bottom: 1rem;
   position: relative;
@@ -153,10 +149,6 @@
 .comment-body,
 .content-warning {
   padding-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
-}
-
-.replies > .comment {
-  padding-left: 0.5rem;
 }
 
 /* Timestamp Display */
@@ -206,9 +198,8 @@
 /* Reply Thread Styles
  * Visual hierarchy for comment threads */
 .replies {
-  margin-left: calc(var(--_avatar-size, 0) / 2);
-  border-left: 2px solid var(--_thread-line);
-  padding-left: calc(1rem - var(--_avatar-size, 0));
+  margin-top: 1rem;
+  margin-left: calc(var(--_avatar-size));
 }
 
 /* Load More Buttons
@@ -259,15 +250,41 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem;
-  margin-left: var(--_avatar-size, 1rem);
+  margin-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.5rem;
   background: var(--_bg-warning);
   border: 1px solid var(--_border-color);
-  border-radius: 4px;
-  font-size: 0.9rem;
+  border-radius: var(--bs-border-radius);
+  font-size: 0.8rem;
 }
 
 .warning-label {
   color: var(--_warning-text);
   font-weight: 500;
+}
+
+.warning-button {
+  padding: 0.25rem 0.5rem;
+  color: var(--_warning-text);
+}
+
+.btn-soft {
+  --_btn-bg-opacity: 0;
+  --_btn-bg-rgb: var(--bs-emphasis-color-rgb);
+  --_btn-bg-color: rgba(var(--_btn-bg-rgb), var(--_btn-bg-opacity));
+  background-color: var(--_btn-bg-color);
+  color: var(--bs-emphasis-color);
+  border-color: transparent;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-soft:hover {
+  --_btn-bg-opacity: 0.1;
+  background-color: var(--_btn-bg-color);
+}
+
+.btn-soft:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(var(--_btn-bg-rgb), 0.5);
 }
