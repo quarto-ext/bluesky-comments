@@ -29,8 +29,8 @@
 
   /* Background Colors
    * Define background colors for various component elements */
-  --_bg-notice: var(--bc-notice-bg, var(--bs-light, #f8f9fa));             /* Notice background */
-  --_bg-warning: var(--bc-warning-bg, rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.05)); /* Warning background */
+  --_bg-soft: rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.05);
+  --_bg-notice: var(--bc-notice-bg, var(--_bg-soft));             /* Notice background */
   --_bg-avatar: var(--bc-avatar-bg, var(--bs-secondary-bg, #eee));         /* Avatar placeholder */
 
   /* Border Colors
@@ -40,8 +40,9 @@
   --_thread-line-width: var(--bc-thread-line-width, 2px);
 
   /* Warning Colors
-   * Styles for warning messages and buttons */
-  --_warning-text: var(--bc-warning-text, var(var(--bs-secondary-text-emphasis), #dc3545));      /* Warning text */
+   * Styles for content warning */
+  --_warning-text: var(--bc-warning-text, var(--bs-secondary-text-emphasis, #2b2f32));      /* Warning text */
+  --_warning-bg: var(--bc-warning-bg, var(--_bg-soft)); /* Warning background */
 
 
   /* Avatar */
@@ -253,7 +254,7 @@
   margin-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
   margin-bottom: 0.25rem;
   padding: 0.25rem 0.5rem;
-  background: var(--_bg-warning);
+  background: var(--_warning-bg);
   border: 1px solid var(--_border-color);
   border-radius: var(--bs-border-radius);
   font-size: 0.8rem;
