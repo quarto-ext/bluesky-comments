@@ -15,7 +15,6 @@ class BlueskyComments extends HTMLElement {
     this.nShowInit = 3;
     this.nShowMore = 2;
     this.postVisibilityCounts = new Map();
-    this.acknowledgedWarnings = new Set();
 
     // Bind methods
     this.showMoreReplies = this.showMoreReplies.bind(this);
@@ -157,6 +156,12 @@ class BlueskyComments extends HTMLElement {
     return `https://bsky.app/profile/${profile}/post/${rkey}`;
   }
 
+  #postId({ uri }) {
+    uri = this.#convertToAtProtoUri(uri);
+    const [, , did, , rkey] = uri.split('/');
+    return `${did}-${rkey}`.replace(/[^a-zA-Z0-9_-]+/g, '-');
+  }
+
   #logAtUri() {
     const threadUri = this.thread.post.uri;
     if (this.post === threadUri) {
@@ -263,22 +268,19 @@ class BlueskyComments extends HTMLElement {
     this.render();
   }
 
-  // Handle warning button clicks
-  handleWarningClick(warningType, contentId) {
-    this.acknowledgedWarnings.add(warningType);
-    const contentElement = document.getElementById(contentId);
-    if (contentElement) {
-      contentElement.style.display = 'block';
-      const warningElement = contentElement.previousElementSibling;
-      if (
-        warningElement &&
-        warningElement.classList.contains('content-warning')
-      ) {
-        warningElement.style.display = 'none';
-      }
+  #handleWarningClick(event) {
+    const button = event.target;
+    const warningBox = button.closest('.content-warning');
+    const contentElement = warningBox.nextElementSibling;
+
+    if (warningBox && contentElement) {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+      // Toggle visibility and ARIA states
+      contentElement.hidden = isExpanded;
+      button.setAttribute('aria-expanded', (!isExpanded).toString());
+      button.textContent = isExpanded ? 'Show content' : 'Hide content';
     }
-    // Re-render to update other warnings of the same type
-    this.render();
   }
 
   renderComment(comment, depth = 0) {
@@ -290,10 +292,7 @@ class BlueskyComments extends HTMLElement {
       : `<div class="avatar-placeholder"></div>`;
 
     // Generate a stable comment ID based on author and text
-    const commentId = `${author.did}-${comment.post.record.text.slice(
-      0,
-      20,
-    )}`.replace(/[^a-zA-Z0-9-]/g, '-');
+    const commentId = `comment-${this.#postId(comment.post)}`;
 
     const replies = (comment.replies || []).filter(
       reply => !this.shouldFilterComment(reply),
@@ -305,40 +304,42 @@ class BlueskyComments extends HTMLElement {
     const visibleReplies = replies.slice(0, visibleCount);
     const hiddenReplies = replies.slice(visibleCount);
 
-    const warning = this.#renderWarning(comment.post.labels);
+    const warningHtml = this.#renderWarning(comment.post);
 
     const postUrl = this.#convertToHttpUrl(comment.post.uri);
+    const postId = this.#postId(comment.post);
 
     return `
-      <div class="comment" id="comment-${commentId}">
-        ${warning?.html || ''}
-        <div id="${warning?.id || ''}" style="display: ${warning ? 'none' : 'block'}">
-          <div class="comment-header">
-            ${avatarHtml}
-            <a href="https://bsky.app/profile/${
-              author.did
-            }" target="_blank" class="author-link">
-              <span>${author.displayName || '@' + author.handle}</span>
-            </a>
-            <a href="${postUrl}"
-               class="timestamp-link"
-               target="_blank">
-              ${this.#formatTimestamp(comment.post.record.createdAt)}
-            </a>
-          </div>
-          <div class="comment-body">
-            <p>${comment.post.record.text}</p>
-            <div class="comment-stats">${this.#renderStatsBar(comment.post, {
-              postUrl,
-              showIcons: false,
-              showZero: false,
-            })}</div>
-          </div>
-          ${this.renderReplies(visibleReplies, depth + 1)}
-          ${this.renderShowMoreButton(comment.post.uri, hiddenReplies.length)}
+      <div class="comment" id="${commentId}">
+        <div class="comment-header">
+          ${avatarHtml}
+          <a href="https://bsky.app/profile/${
+            author.did
+          }" target="_blank" class="author-link">
+            <span>${author.displayName || '@' + author.handle}</span>
+          </a>
+          <a href="${postUrl}"
+              class="timestamp-link"
+              target="_blank">
+            ${this.#formatTimestamp(comment.post.record.createdAt)}
+          </a>
         </div>
-      </div>
-    `;
+        ${warningHtml}
+        <div
+          class="comment-body"
+          id="${postId}"
+          ${warningHtml ? 'hidden' : ''}
+        >
+          <p>${comment.post.record.text}</p>
+          <div class="comment-stats">${this.#renderStatsBar(comment.post, {
+            postUrl,
+            showIcons: false,
+            showZero: false,
+          })}</div>
+        </div>
+        ${this.renderReplies(visibleReplies, depth + 1)}
+        ${this.renderShowMoreButton(comment.post.uri, hiddenReplies.length)}
+      </div>`;
   }
 
   renderReplies(replies, depth) {
@@ -381,13 +382,6 @@ class BlueskyComments extends HTMLElement {
     }
 
     // Filter and sort replies
-    const labels =
-      this.thread.post.labels?.map(l => ({
-        value: l.val.charAt(0).toUpperCase() + l.val.slice(1),
-      })) || [];
-
-    const warning = this.#renderWarning(this.thread.post.labels);
-
     const filteredReplies = (this.thread.replies || [])
       .filter(reply => !this.shouldFilterComment(reply))
       .sort((a, b) => (b.post.likeCount || 0) - (a.post.likeCount || 0));
@@ -402,6 +396,11 @@ class BlueskyComments extends HTMLElement {
     const contentHtml = `
       <h2>Comments</h2>
       <div class="stats">${this.#renderStatsBar(this.thread.post)}</div>
+      <p class="reply-prompt">
+        <a href="${this.postUrl}"
+          target="_blank"
+        >Reply on Bluesky</a> to join the conversation.
+      </p>
       ${
         filteredCount > 0
           ? `<p class="filtered-notice">
@@ -411,33 +410,17 @@ class BlueskyComments extends HTMLElement {
           </p>`
           : ''
       }
-      <p class="reply-prompt">
-        <a href="${
-          this.postUrl
-        }" target="_blank">Reply on Bluesky</a> to join the conversation.
-      </p>
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
       </div>
       ${this.renderShowMoreButton('root', remainingCount)}
     `;
 
-    this.innerHTML = `
-      ${warning?.html || ''}
-      <div id="${warning?.id || ''}" style="display: ${warning ? 'none' : 'block'}">
-        ${contentHtml}
-      </div>
-    `;
+    this.innerHTML = contentHtml;
 
-    // Add event listeners after rendering
+    // Simplified warning button event listeners
     this.querySelectorAll('.warning-button').forEach(button => {
-      button.addEventListener('click', () => {
-        const warningType = button.getAttribute('data-warning-type');
-        const contentId = button.getAttribute('data-content-id');
-        if (warningType && contentId) {
-          this.handleWarningClick(warningType, contentId);
-        }
-      });
+      button.addEventListener('click', e => this.#handleWarningClick(e));
     });
 
     // Add other event listeners
@@ -454,48 +437,42 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #renderWarning(labels) {
-    if (!labels?.length) return;
+  #renderWarning(post) {
+    const { labels } = post;
 
-    const formattedLabels = labels.map(l => ({
-      value: l.val.charAt(0).toUpperCase() + l.val.slice(1),
-    }));
+    if (!labels?.length) return '';
 
-    const warningType = formattedLabels
-      .map(l => l.value)
+    const labelDisplay = {
+      sexual: 'adult content',
+      porn: 'pornographic adult content',
+      '!warn': 'content warning',
+      '!hide': 'content warning',
+    };
+
+    // TODO: Filter out negated labels, see https://atproto.blue/en/latest/atproto/atproto_client.models.com.atproto.label.defs.html
+
+    let formattedLabels = labels
+      .map(l => labelDisplay[l.val] || l.val)
+      .map(l => l.replaceAll('-', ' '))
       .sort()
-      .join('-');
+      .reduce((acc, l) => {
+        if (acc.includes(l)) return acc;
+        return [...acc, l];
+      }, [])
+      .join(', ');
 
-    if (this.acknowledgedWarnings.has(warningType)) return;
+    formattedLabels =
+      formattedLabels.charAt(0).toUpperCase() + formattedLabels.slice(1);
 
-    const warningId = `warning-${Math.random().toString(36).substr(2, 9)}`;
-
-    const html = `
-      <div class="content-warning">
-        <div class="warning-content">
-          ${formattedLabels
-            .map(
-              label => `
-            <div class="label-warning">
-              <strong>${label.value}</strong>
-              <p>Warning: This content may contain sensitive material</p>
-              <p class="label-attribution">This label was applied by the Bluesky community.</p>
-            </div>
-          `,
-            )
-            .join('')}
-          <p class="warning-prompt">Do you wish to see these comments?</p>
-          <hr class="warning-divider"/>
-          <button class="warning-button"
-                  data-warning-type="${warningType}"
-                  data-content-id="${warningId}">
-            Show Comments
-          </button>
-        </div>
-      </div>
-    `;
-
-    return { html, id: warningId };
+    return `
+    <div class="content-warning">
+      <span class="warning-label">${formattedLabels}</span>
+      <button
+        class="warning-button btn btn-sm btn-soft ms-auto"
+        aria-expanded="false"
+        aria-controls="${this.#postId(post)}"
+      >Show content</button>
+    </div>`;
   }
 
   #renderStatsBar(
