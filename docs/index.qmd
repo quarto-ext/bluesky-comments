@@ -166,6 +166,7 @@ You may specify these variables in your document's CSS or in a custom CSS file u
 | `--bc-avatar-bg` | Avatar placeholder | `var(--bs-secondary-bg)` |
 | `--bc-avatar-size` | Avatar size | `24px` |
 | `--bc-border-color` | General borders | `var(--bs-border-color)` |
+| `--bc-border-radius` | General border radius | `var(--bs-border-radius)` |
 | `--bc-thread-line` | Reply thread lines | `var(--bs-border-color)` |
 | `--bc-thread-line-width` | Reply thread line width | `2px` |
 | `--bc-warning-text` | Content warning text | `var(--bc-muted-fg)` |
