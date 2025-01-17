@@ -21,17 +21,19 @@
 
   /* Text Colors
    * Control the appearance of various text elements */
-  --_text-color: var(--bc-text-color, var(--bs-body-color, #000));         /* Main text color */
-  --_muted-text: var(--bc-muted-text, var(--bs-secondary-color, #666));    /* Secondary text color */
-  --_link-color: var(--bc-link-color, var(--bs-link-color, #0066cc));      /* Link color */
+  --_text-color: var(--bc-text-color, var(--bs-body-color, #000));       /* Main text color */
+  --_muted-text: var(--bc-muted-text, var(--bs-secondary-color, #666));  /* Secondary text color */
+  --_link-color: var(--bc-link-color, var(--bs-link-color, #0066cc));    /* Link color */
   --_link-hover-color: var(--bc-link-hover-color,
-    var(--bs-link-hover-color, #0052a3));                                  /* Link hover color */
+    var(--bs-link-hover-color, #0052a3));                                /* Link hover color */
+
+  --_muted-bg: var(--bc-muted-bg, rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.05));
+  --_muted-fg: var(--bc-muted-fg, rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.65));
 
   /* Background Colors
    * Define background colors for various component elements */
-  --_bg-soft: rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.05);
-  --_bg-notice: var(--bc-notice-bg, var(--_bg-soft));             /* Notice background */
-  --_bg-avatar: var(--bc-avatar-bg, var(--bs-secondary-bg, #eee));         /* Avatar placeholder */
+  --_bg-notice: var(--bc-notice-bg, var(--_muted-bg));               /* Notice background */
+  --_bg-avatar: var(--bc-avatar-bg, var(--bs-secondary-bg, #eee)); /* Avatar placeholder */
 
   /* Border Colors
    * Control the appearance of borders and dividers */
@@ -41,9 +43,8 @@
 
   /* Warning Colors
    * Styles for content warning */
-  --_warning-text: var(--bc-warning-text, var(--bs-secondary-text-emphasis, #2b2f32));      /* Warning text */
-  --_warning-bg: var(--bc-warning-bg, var(--_bg-soft)); /* Warning background */
-
+  --_warning-text: var(--bc-warning-text, var(--_muted-fg)); /* Warning text */
+  --_warning-bg: var(--bc-warning-bg, var(--_muted-bg));     /* Warning background */
 
   /* Avatar */
   --_avatar-size: var(--bc-avatar-size, 24px);
@@ -142,7 +143,7 @@
   display: flex;
   gap: 1rem;
   margin-top: 0.25rem;
-  color: var(--_muted-text);
+  color: var(--_muted-fg);
   font-size: 0.8em;
 }
 
@@ -154,7 +155,7 @@
 
 /* Timestamp Display */
 .timestamp-link {
-  color: var(--_muted-text);
+  color: var(--_muted-fg);
   font-size: 0.8rem;
   text-decoration: none;
 }
@@ -172,7 +173,7 @@
   border-radius: 4px;
   padding: 0.75rem;
   margin: 1rem 0;
-  color: var(--_muted-text);
+  color: var(--_muted-fg);
   font-size: 0.9rem;
 }
 
@@ -275,7 +276,7 @@
   --_btn-bg-rgb: var(--bs-emphasis-color-rgb);
   --_btn-bg-color: rgba(var(--_btn-bg-rgb), var(--_btn-bg-opacity));
   background-color: var(--_btn-bg-color);
-  color: var(--bs-emphasis-color);
+  color: var(--_muted-fg);
   border-color: transparent;
   transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }

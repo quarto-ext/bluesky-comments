@@ -149,7 +149,6 @@ For more targeted styling, override the component's custom properties either in 
   --bc-link-color: #0070f3;     /* Links */
   --bc-border-color: #eaeaea;   /* Borders */
   --bc-thread-line: #e1e1e1;    /* Reply thread lines */
-  --bc-warning-text: #ff4444;   /* Warning messages */
 }
 ```
 
@@ -164,13 +163,17 @@ You may specify these variables in your document's CSS or in a custom CSS file u
 | `--bc-link-color` | Link color | `var(--bs-link-color)` |
 | `--bc-link-hover-color` | Link hover color | `var(--bs-link-hover-color)` |
 | `--bc-notice-bg` | Notice background | `var(--bs-light)` |
-| `--bc-warning-bg` | Warning background | `var(--bs-light)` |
 | `--bc-avatar-bg` | Avatar placeholder | `var(--bs-secondary-bg)` |
+| `--bc-avatar-size` | Avatar size | `24px` |
 | `--bc-border-color` | General borders | `var(--bs-border-color)` |
 | `--bc-thread-line` | Reply thread lines | `var(--bs-border-color)` |
-| `--bc-warning-text` | Warning text | `var(--bs-danger)` |
+| `--bc-thread-line-width` | Reply thread line width | `2px` |
+| `--bc-warning-text` | Content warning text | `var(--bc-muted-fg)` |
+| `--bc-warning-bg` | Warning background | `var(--bc-muted-bg)` |
 | `--bc-warning-button` | Warning button | `var(--bs-primary)` |
-| `--bc-avatar-size` | Avatar size | `24px` |
+| `--bc-muted-bg` | Muted background | `--bs-emphasis-color-rgb` at 0.5% alpha |
+| `--bc-muted-fg` | Muted foreground | `--bs-emphasis-color-rgb` at 65% alpha |
+
 
 ## Limitations
 
