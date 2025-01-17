@@ -455,6 +455,10 @@ class BlueskyComments extends HTMLElement {
       .map(l => labelDisplay[l.val] || l.val)
       .map(l => l.replaceAll('-', ' '))
       .sort()
+      .reduce((acc, l) => {
+        if (acc.includes(l)) return acc;
+        return [...acc, l];
+      }, [])
       .join(', ');
 
     formattedLabels =
