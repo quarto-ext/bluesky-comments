@@ -396,6 +396,11 @@ class BlueskyComments extends HTMLElement {
     const contentHtml = `
       <h2>Comments</h2>
       <div class="stats">${this.#renderStatsBar(this.thread.post)}</div>
+      <p class="reply-prompt">
+        <a href="${this.postUrl}"
+          target="_blank"
+        >Reply on Bluesky</a> to join the conversation.
+      </p>
       ${
         filteredCount > 0
           ? `<p class="filtered-notice">
@@ -405,11 +410,6 @@ class BlueskyComments extends HTMLElement {
           </p>`
           : ''
       }
-      <p class="reply-prompt">
-        <a href="${
-          this.postUrl
-        }" target="_blank">Reply on Bluesky</a> to join the conversation.
-      </p>
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
       </div>
