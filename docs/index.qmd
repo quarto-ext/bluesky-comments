@@ -148,7 +148,7 @@ For more targeted styling, override the component's custom properties either in 
   --bc-muted-text: #666;        /* Secondary text */
   --bc-link-color: #0070f3;     /* Links */
   --bc-border-color: #eaeaea;   /* Borders */
-  --bc-thread-line: #e1e1e1;    /* Reply thread lines */
+  --bc-thread-line: #e1e1e1;    /* Reply thread line color */
 }
 ```
 
