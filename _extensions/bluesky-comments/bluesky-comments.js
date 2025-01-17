@@ -444,6 +444,7 @@ class BlueskyComments extends HTMLElement {
 
     const labelDisplay = {
       sexual: 'adult content',
+      porn: 'pornographic adult content',
     };
 
     // TODO: Filter out negated labels, see https://atproto.blue/en/latest/atproto/atproto_client.models.com.atproto.label.defs.html
