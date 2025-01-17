@@ -1,0 +1,8 @@
+---
+title: No comments
+description: A thread without comments
+---
+
+Source: <https://bsky.app/profile/grrrck.xyz/post/3lcyp4he3nk2h>.
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lcyp4he3nk2h >}}
