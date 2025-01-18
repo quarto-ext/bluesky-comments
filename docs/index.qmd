@@ -162,7 +162,6 @@ You may specify these variables in your document's CSS or in a custom CSS file u
 | `--bc-muted-text` | Secondary text | `var(--bs-secondary-color)` |
 | `--bc-link-color` | Link color | `var(--bs-link-color)` |
 | `--bc-link-hover-color` | Link hover color | `var(--bs-link-hover-color)` |
-| `--bc-notice-bg` | Notice background | `var(--bs-light)` |
 | `--bc-avatar-bg` | Avatar placeholder | `var(--bs-secondary-bg)` |
 | `--bc-avatar-size` | Avatar size | `24px` |
 | `--bc-border-color` | General borders | `var(--bs-border-color)` |

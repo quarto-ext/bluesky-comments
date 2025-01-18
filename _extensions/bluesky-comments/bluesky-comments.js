@@ -394,21 +394,12 @@ class BlueskyComments extends HTMLElement {
 
     const contentHtml = `
       <h2>Comments</h2>
-      <div class="stats">${this.#renderStatsBar(this.thread.post)}</div>
+      <div class="stats">${this.#renderStatsBar(this.thread.post, { adjustReplies: -1 * filteredCount })}</div>
       <p class="reply-prompt">
         <a href="${this.postUrl}"
           target="_blank"
         >Reply on Bluesky</a> to join the conversation.
       </p>
-      ${
-        filteredCount > 0
-          ? `<p class="filtered-notice">
-          ${filteredCount} ${
-              filteredCount === 1 ? 'comment has' : 'comments have'
-            } been filtered based on moderation settings.
-          </p>`
-          : ''
-      }
       <div class="comments-list">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
       </div>
@@ -476,9 +467,12 @@ class BlueskyComments extends HTMLElement {
 
   #renderStatsBar(
     post,
-    { postUrl, showIcons, showZero } = { showIcons: true, showZero: true },
+    { postUrl, showIcons, showZero, adjustReplies },
   ) {
     postUrl = postUrl || this.postUrl;
+    showIcons = typeof showIcons === 'boolean' ? showIcons : true;
+    showZero = typeof showZero === 'boolean' ? showZero : true;
+    adjustReplies = adjustReplies || 0;
 
     const plurals = {
       like: 'likes',
@@ -496,7 +490,10 @@ class BlueskyComments extends HTMLElement {
 
     const stats = {};
     Object.keys(plurals).forEach(type => {
-      const count = post[`${type}Count`] || 0;
+      let count = post[`${type}Count`] || 0;
+      if (type === 'reply') {
+        count = count + adjustReplies;
+      }
       stats[type] = {
         count,
         text: count == 1 ? type : plurals[type],
