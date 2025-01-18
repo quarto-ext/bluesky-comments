@@ -108,6 +108,10 @@
   flex-shrink: 0;
 }
 
+.stat-link svg {
+  vertical-align: -.125em;
+}
+
 /* Avatar Styles
  * User profile pictures and placeholders */
 .avatar,
