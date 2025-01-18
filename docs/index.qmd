@@ -116,7 +116,7 @@ bluesky-comments:
 - `profile`: A string with the user profile as a handle or [decentralized identifier](faq.qmd#convert-to-atproto-uri)
 - `mute-patterns`: An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text
 - `mute-users`: An array of Bluesky DIDs to filter out comments from specific users
-- `filter-empty-replies`: Boolean flag to filter out empty or very short replies (default: `true`)
+- `filter-empty-replies`: Boolean flag to filter out empty or very short replies, including bookmarking (📌) replies (default: `true`)
 - `n-show-init`: Number of top-level comments to show initially (default: `3`)
 - `n-show-more`: Number of replies to reveal when the user clicks on the "Show more" button (default: `2`)
 

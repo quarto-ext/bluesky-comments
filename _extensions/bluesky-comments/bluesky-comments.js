@@ -228,11 +228,10 @@ class BlueskyComments extends HTMLElement {
     }
 
     // Check empty/spam replies
-    if (
-      this.filterConfig.filterEmptyReplies &&
-      (!text.trim() || text.length < 2)
-    ) {
-      return true;
+    if (this.filterConfig.filterEmptyReplies) {
+      if (!text.trim() || text.length < 2 || text === '📌') {
+        return true;
+      }
     }
 
     return false;
