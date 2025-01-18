@@ -15,6 +15,7 @@ class BlueskyComments extends HTMLElement {
     this.nShowInit = 3;
     this.nShowMore = 2;
     this.postVisibilityCounts = new Map();
+    this.hiddenReplies = []; // Replies moderated via Bluesky
 
     // Bind methods
     this.showMoreReplies = this.showMoreReplies.bind(this);
@@ -193,12 +194,27 @@ class BlueskyComments extends HTMLElement {
       throw new Error('Failed to fetch post thread');
     }
 
-    const data = await res.json();
-    this.thread = data.thread;
+    const { thread } = await res.json();
+    this.thread = thread;
+    if ('post' in thread && 'threadgate' in thread.post && thread.post.threadgate) {
+      this.hiddenReplies = thread.post.threadgate?.record?.hiddenReplies ?? [];
+    }
   }
 
   shouldFilterComment(comment) {
     if (!comment?.post?.record?.text) return true;
+
+    if (this.hiddenReplies && this.hiddenReplies.includes(comment.post.uri)) {
+      return true;
+    }
+
+    if ('blocked' in comment && comment.blocked) {
+      return true;
+    }
+
+    if ('notFound' in comment && comment.notFound) {
+      return true;
+    }
 
     // Check muted users
     if (this.filterConfig.muteUsers?.includes(comment.post.author.did)) {
@@ -301,7 +317,7 @@ class BlueskyComments extends HTMLElement {
       this.postVisibilityCounts.get(comment.post.uri) || this.nShowInit;
 
     const visibleReplies = replies.slice(0, visibleCount);
-    const hiddenReplies = replies.slice(visibleCount);
+    const notVisibleReplies = replies.slice(visibleCount);
 
     const warningHtml = this.#renderWarning(comment.post);
 
@@ -338,7 +354,7 @@ class BlueskyComments extends HTMLElement {
           })}</div>
         </div>
         ${this.renderReplies(visibleReplies, depth + 1)}
-        ${this.renderShowMoreButton(comment.post.uri, hiddenReplies.length)}
+        ${this.renderShowMoreButton(comment.post.uri, notVisibleReplies.length)}
       </div>`;
   }
 

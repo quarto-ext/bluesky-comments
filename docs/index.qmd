@@ -120,7 +120,15 @@ bluesky-comments:
 - `n-show-init`: Number of top-level comments to show initially (default: `3`)
 - `n-show-more`: Number of replies to reveal when the user clicks on the "Show more" button (default: `2`)
 
-Users can click "Show more" buttons to reveal additional comments and replies beyond these initial limits. Filtered comments are counted and displayed at the top of the comments section to maintain transparency about moderation.
+Users can click "Show more" buttons to reveal additional comments and replies beyond these initial limits.
+
+## Moderation
+
+In addition to the `mute-patterns` and `mute-users` options, which can be set globally in `_quarto.yml` or in the front matter of an individual page, you can also use tools available on Bluesky to hide comments from your website without having to re-render your site for moderation changes to take effect.
+
+To moderate unruly or disruptive commenters, navigate to your Bluesky post and find the unwanted comment(s) in the replies. Click the post menu ⋯ on the reply and select **Hide reply for everyone**. Hidden posts and their replies are immediately hidden for any new visitors.
+
+Comments filtered due to moderation settings are not shown on your site or included in the reply counts, but users can still find the replies on the original thread on Bluesky.
 
 ## Styling
 
