@@ -196,7 +196,11 @@ class BlueskyComments extends HTMLElement {
 
     const { thread } = await res.json();
     this.thread = thread;
-    if ('post' in thread && 'threadgate' in thread.post && thread.post.threadgate) {
+    if (
+      'post' in thread &&
+      'threadgate' in thread.post &&
+      thread.post.threadgate
+    ) {
       this.hiddenReplies = thread.post.threadgate?.record?.hiddenReplies ?? [];
     }
   }
@@ -350,7 +354,7 @@ class BlueskyComments extends HTMLElement {
             postUrl,
             showIcons: false,
             showZero: false,
-            includeReplyLink: true
+            includeReplyLink: true,
           })}</div>
         </div>
         ${this.renderReplies(visibleReplies, depth + 1)}
@@ -411,7 +415,9 @@ class BlueskyComments extends HTMLElement {
 
     const contentHtml = `
       <h2>Comments</h2>
-      <div class="stats">${this.#renderStatsBar(this.thread.post, { adjustReplies: -1 * filteredCount })}</div>
+      <div class="stats">${this.#renderStatsBar(this.thread.post, {
+        adjustReplies: -1 * filteredCount,
+      })}</div>
       <p class="reply-prompt">
         <a href="${this.postUrl}"
           target="_blank"
@@ -456,7 +462,6 @@ class BlueskyComments extends HTMLElement {
       '!hide': 'content warning',
     };
 
-
     let formattedLabels = labels
       .map(l => l.val)
       .reduce((acc, l) => {
@@ -478,8 +483,7 @@ class BlueskyComments extends HTMLElement {
       .reduce((acc, l) => {
         if (acc.includes(l)) return acc;
         return [...acc, l];
-      }, [])
-
+      }, []);
 
     return formattedLabels;
   }
@@ -513,7 +517,8 @@ class BlueskyComments extends HTMLElement {
     postUrl = postUrl || this.postUrl;
     showIcons = typeof showIcons === 'boolean' ? showIcons : true;
     showZero = typeof showZero === 'boolean' ? showZero : true;
-    includeReplyLink = typeof includeReplyLink === 'boolean' ? includeReplyLink : false;
+    includeReplyLink =
+      typeof includeReplyLink === 'boolean' ? includeReplyLink : false;
     adjustReplies = adjustReplies || 0;
 
     const plurals = {
@@ -594,8 +599,8 @@ class BlueskyComments extends HTMLElement {
       '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-blue, blue)" class="bi bi-chat-dots-fill" viewBox="0 0 16 16"><path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>',
     quote:
       '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-purple, purple)" class="bi bi-quote" viewBox="0 0 16 16"><path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/></svg>',
-    "reply-to":
-      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16"><path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/></svg>'
+    'reply-to':
+      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16"><path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/></svg>',
   };
 }
 
