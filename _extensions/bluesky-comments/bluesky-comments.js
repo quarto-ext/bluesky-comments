@@ -332,16 +332,16 @@ class BlueskyComments extends HTMLElement {
       <div class="comment" id="${commentId}">
         <div class="comment-header">
           ${avatarHtml}
-          <a href="https://bsky.app/profile/${
+          <div><a href="https://bsky.app/profile/${
             author.did
           }" target="_blank" class="author-link">
             <span>${author.displayName || '@' + author.handle}</span>
-          </a>
-          <a href="${postUrl}"
+          </a></div>
+          <div><a href="${postUrl}"
               class="timestamp-link"
               target="_blank">
             ${this.#formatTimestamp(comment.post.record.createdAt)}
-          </a>
+          </a></div>
         </div>
         ${warningHtml}
         <div

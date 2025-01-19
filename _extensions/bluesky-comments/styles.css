@@ -173,9 +173,6 @@
 /* Author Information
  * Styles for user identification */
 .author-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   text-decoration: none;
   color: var(--_text-color);
 }
