@@ -444,10 +444,10 @@ class BlueskyComments extends HTMLElement {
     });
   }
 
-  #renderWarning(post) {
+  getPostLabels(post) {
     const { labels } = post;
 
-    if (!labels?.length) return '';
+    if (!labels?.length) return null;
 
     const labelDisplay = {
       sexual: 'adult content',
@@ -456,18 +456,42 @@ class BlueskyComments extends HTMLElement {
       '!hide': 'content warning',
     };
 
-    // TODO: Filter out negated labels, see https://atproto.blue/en/latest/atproto/atproto_client.models.com.atproto.label.defs.html
 
     let formattedLabels = labels
-      .map(l => labelDisplay[l.val] || l.val)
+      .map(l => l.val)
+      .reduce((acc, l) => {
+        if (acc.includes(l)) return acc;
+        return [...acc, l];
+      }, [])
+      .reduce((acc, l) => {
+        // Filter out negated labels
+        // See https://atproto.blue/en/latest/atproto/atproto_client.models.com.atproto.label.defs.html
+        if (l.startsWith('!neg.')) {
+          const negatedLabel = l.slice(5);
+          return acc.filter(label => label !== negatedLabel);
+        }
+        return [...acc, l];
+      }, [])
+      .map(l => labelDisplay[l] || l)
       .map(l => l.replaceAll('-', ' '))
       .sort()
       .reduce((acc, l) => {
         if (acc.includes(l)) return acc;
         return [...acc, l];
       }, [])
-      .join(', ');
 
+
+    return formattedLabels;
+  }
+
+  #renderWarning(post) {
+    const labels = this.getPostLabels(post);
+
+    if (!labels) {
+      return '';
+    }
+
+    let formattedLabels = labels.join(', ');
     formattedLabels =
       formattedLabels.charAt(0).toUpperCase() + formattedLabels.slice(1);
 
