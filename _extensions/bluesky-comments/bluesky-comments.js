@@ -310,8 +310,65 @@ class BlueskyComments extends HTMLElement {
       ? `<img src="${author.avatar}" alt="avatar" class="avatar"/>`
       : `<div class="avatar-placeholder"></div>`;
 
-    // Generate a stable comment ID based on author and text
     const commentId = `comment-${this.#postId(comment.post)}`;
+
+    // Process text with facets
+    let commentText = '';
+    const record = comment.post.record;
+
+    // Handle facets if they exist
+    if (record.facets?.length) {
+      // Thank you to https://capscollective.com/blog/bluesky-blog-comments/
+      const textEncoder = new TextEncoder();
+      const utf8Decoder = new TextDecoder();
+      const utf8Text = new Uint8Array(record.text.length * 3);
+      textEncoder.encodeInto(record.text, utf8Text);
+
+      let charIdx = 0;
+      for (const facet of record.facets) {
+        const feature = facet.features[0];
+        let facetLink = '#';
+        let cssClass = '';
+
+        // Determine link and CSS class based on facet type
+        if (feature.$type === 'app.bsky.richtext.facet#mention') {
+          facetLink = `https://bsky.app/profile/${feature.did}`;
+          cssClass = 'bc-comment-body-mention';
+        } else if (feature.$type === 'app.bsky.richtext.facet#link') {
+          facetLink = feature.uri;
+          cssClass = 'bc-comment-body-link';
+        } else if (feature.$type === 'app.bsky.richtext.facet#tag') {
+          facetLink = `https://bsky.app/hashtag/${feature.tag}`;
+          cssClass = 'bc-comment-body-tag';
+        }
+
+        // Add text before the facet
+        if (charIdx < facet.index.byteStart) {
+          const preFacetText = utf8Text.slice(charIdx, facet.index.byteStart);
+          commentText += utf8Decoder.decode(preFacetText);
+        }
+
+        // Add the facet with appropriate link and class
+        const facetText = utf8Text.slice(
+          facet.index.byteStart,
+          facet.index.byteEnd,
+        );
+        commentText += `<a href="${facetLink}" class="${cssClass}" target="_blank">${utf8Decoder.decode(
+          facetText,
+        )}</a>`;
+
+        charIdx = facet.index.byteEnd;
+      }
+
+      // Add remaining text after last facet
+      if (charIdx < utf8Text.length) {
+        const postFacetText = utf8Text.slice(charIdx, utf8Text.length);
+        commentText += utf8Decoder.decode(postFacetText);
+      }
+    } else {
+      // No facets, just use the text directly
+      commentText = record.text;
+    }
 
     const replies = (comment.replies || []).filter(
       reply => !this.shouldFilterComment(reply),
@@ -349,7 +406,7 @@ class BlueskyComments extends HTMLElement {
           id="${postId}"
           ${warningHtml ? 'hidden' : ''}
         >
-          <p>${comment.post.record.text}</p>
+          <p>${commentText}</p>
           <div class="comment-stats">${this.#renderStatsBar(comment.post, {
             postUrl,
             showIcons: false,
