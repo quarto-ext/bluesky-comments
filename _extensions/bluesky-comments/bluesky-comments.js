@@ -129,7 +129,7 @@ class BlueskyComments extends HTMLElement {
   #convertToAtProtoUri(uri) {
     if (uri.startsWith('at://')) return uri;
 
-    const match = uri.match(/profile\/([\w.]+)\/post\/([\w]+)/);
+    const match = uri.match(/profile\/([a-zA-Z0-9._:%-]+)\/post\/([\w]+)/);
     if (match) {
       const [, did, rkey] = match;
       return this.createAtProtoUri({ did, rkey });
