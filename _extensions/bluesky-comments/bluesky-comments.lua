@@ -218,9 +218,7 @@ function shortcode(args, kwargs, meta)
     postUri = atUri
   end
 
-  quarto.log.output(kwargsWithMeta)
   local attrs = attrsFromKwargsMeta(kwargsWithMeta)
-  quarto.log.output("attrs: " .. attrs)
 
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
