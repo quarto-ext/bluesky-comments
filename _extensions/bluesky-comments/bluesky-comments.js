@@ -14,6 +14,7 @@ class BlueskyComments extends HTMLElement {
     this.profile = null;
     this.nShowInit = 3;
     this.nShowMore = 2;
+    this.header = false;
     this.postVisibilityCounts = new Map();
     this.hiddenReplies = []; // Replies moderated via Bluesky
 
@@ -60,6 +61,10 @@ class BlueskyComments extends HTMLElement {
     });
 
     this.profile = this.getAttribute('profile');
+
+    if (this.hasAttribute('header')) {
+      this.header = this.getAttribute('header');
+    }
 
     this.#setPostUri(this.getAttribute('post'));
 
@@ -472,8 +477,17 @@ class BlueskyComments extends HTMLElement {
     const remainingCount = filteredReplies.length - visibleCount;
     const filteredCount = this.countFilteredComments(this.thread.replies);
 
+    let headerHtml = '';
+    if (this.header !== false) {
+      if (['true', ''].includes(this.header)) {
+        headerHtml = '<h2>Comments</h2>';
+      } else {
+        headerHtml = `<h2>${this.header}</h2>`;
+      }
+    }
+
     const contentHtml = `
-      <h2>Comments</h2>
+      ${headerHtml}
       <div class="stats">${this.#renderStatsBar(this.thread.post, {
         adjustReplies: -1 * filteredCount,
       })}</div>

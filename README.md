@@ -79,6 +79,7 @@ bluesky-comments:
 - `filter-empty-replies`: Boolean flag to filter out empty or very short replies, including bookmarking (📌) replies (default: `true`)
 - `n-show-init`: Number of top-level comments to show initially (default: `3`)
 - `n-show-more`: Number of replies to reveal when the user clicks on the "Show more" button (default: `2`)
+- `header`: Whether or not to add a level-2 header above the comments. Use `header="true"` as a shortcut for `header="Comments"` (default: `false`).
 
 Users can click "Show more" buttons to reveal additional comments and replies beyond these initial limits.
 
