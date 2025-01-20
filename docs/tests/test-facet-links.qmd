@@ -6,6 +6,9 @@ bluesky-comments:
   n-show-init: 2
 ---
 
+Also tests `header="true"`.
+
 Source: <https://bsky.app/profile/grrrck.xyz/post/3lg6fjlw2n225>.
 
-{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lg6fjlw2n225 >}}
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lg6fjlw2n225 header="true" >}}
