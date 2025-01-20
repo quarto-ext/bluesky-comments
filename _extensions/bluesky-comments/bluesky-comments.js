@@ -62,9 +62,9 @@ class BlueskyComments extends HTMLElement {
 
     this.profile = this.getAttribute('profile');
 
-    this.header = this.hasAttribute('header')
-      ? this.getAttribute('header')
-      : false;
+    if (this.hasAttribute('header')) {
+      this.header = this.getAttribute('header');
+    }
 
     this.#setPostUri(this.getAttribute('post'));
 
