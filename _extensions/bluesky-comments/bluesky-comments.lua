@@ -198,7 +198,7 @@ function shortcode(args, kwargs, meta)
 
   if postUri == nil then
     errorMsg = errorMsg or
-    "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
+        "Shortcode requires the Bluesky post URL, AT-proto URI, or post record key as an unnamed argument."
     utils.abort(errorMsg)
     return ""
   end
@@ -218,7 +218,9 @@ function shortcode(args, kwargs, meta)
     postUri = atUri
   end
 
+  quarto.log.output(kwargsWithMeta)
   local attrs = attrsFromKwargsMeta(kwargsWithMeta)
+  quarto.log.output("attrs: " .. attrs)
 
   -- Return the HTML div element with config
   return pandoc.RawBlock('html', string.format([[
