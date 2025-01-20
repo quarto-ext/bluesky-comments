@@ -370,6 +370,8 @@ class BlueskyComments extends HTMLElement {
       commentText = record.text;
     }
 
+    commentText = commentText.replace(/\n\n/g, '</p><p>');
+
     const replies = (comment.replies || []).filter(
       reply => !this.shouldFilterComment(reply),
     );
