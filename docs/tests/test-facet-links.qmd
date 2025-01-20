@@ -1,0 +1,11 @@
+---
+title: Facet links
+description: A thread with a link, hashtags, and a mention
+
+bluesky-comments:
+  n-show-init: 2
+---
+
+Source: <https://bsky.app/profile/grrrck.xyz/post/3lg6fjlw2n225>.
+
+{{< bluesky-comments at://did:plc:72jpccg3u3vbohc67rqrplei/app.bsky.feed.post/3lg6fjlw2n225 >}}
