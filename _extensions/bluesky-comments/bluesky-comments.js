@@ -317,13 +317,67 @@ class BlueskyComments extends HTMLElement {
 
     const commentId = `comment-${this.#postId(comment.post)}`;
 
-    // Process text with facets
-    let commentText = '';
-    const record = comment.post.record;
+    const commentText = this.#renderRichPostText(comment.post);
+
+    const replies = (comment.replies || []).filter(
+      reply => !this.shouldFilterComment(reply),
+    );
+
+    const visibleCount =
+      this.postVisibilityCounts.get(comment.post.uri) || this.nShowInit;
+
+    const visibleReplies = replies.slice(0, visibleCount);
+    const notVisibleReplies = replies.slice(visibleCount);
+
+    const warningHtml = this.#renderWarning(comment.post);
+    const embedHtml = this.#renderEmbeds(comment.post);
+
+    const postUrl = this.#convertToHttpUrl(comment.post.uri);
+    const postId = this.#postId(comment.post);
+
+    return `
+      <div class="comment" id="${commentId}">
+        <div class="comment-header">
+          ${avatarHtml}
+          <div><a href="https://bsky.app/profile/${
+            author.did
+          }" target="_blank" class="author-link">
+            <span>${author.displayName || '@' + author.handle}</span>
+          </a></div>
+          <div><a href="${postUrl}"
+              class="timestamp-link"
+              target="_blank">
+            ${this.#formatTimestamp(comment.post.record.createdAt)}
+          </a></div>
+        </div>
+        ${warningHtml}
+        <div
+          class="comment-body"
+          id="${postId}"
+          ${warningHtml ? 'hidden' : ''}
+        >
+          <p>${commentText}</p>
+          ${embedHtml}
+          <div class="comment-stats">${this.#renderStatsBar(comment.post, {
+            postUrl,
+            showIcons: false,
+            showZero: false,
+            includeReplyLink: true,
+          })}</div>
+        </div>
+        ${this.renderReplies(visibleReplies, depth + 1)}
+        ${this.renderShowMoreButton(comment.post.uri, notVisibleReplies.length)}
+      </div>`;
+  }
+
+  #renderRichPostText({ record }) {
+    // Use post text directly, unless facets exist
+    let commentText = record.text;
 
     // Handle facets if they exist
     if (record.facets?.length) {
       // Thank you to https://capscollective.com/blog/bluesky-blog-comments/
+      commentText = '';
       const textEncoder = new TextEncoder();
       const utf8Decoder = new TextDecoder();
       const utf8Text = new Uint8Array(record.text.length * 3);
@@ -370,60 +424,53 @@ class BlueskyComments extends HTMLElement {
         const postFacetText = utf8Text.slice(charIdx, utf8Text.length);
         commentText += utf8Decoder.decode(postFacetText);
       }
-    } else {
-      // No facets, just use the text directly
-      commentText = record.text;
     }
 
     commentText = commentText.replace(/\n\n/g, '</p><p>');
 
-    const replies = (comment.replies || []).filter(
-      reply => !this.shouldFilterComment(reply),
-    );
+    return commentText;
+  }
 
-    const visibleCount =
-      this.postVisibilityCounts.get(comment.post.uri) || this.nShowInit;
+  #renderEmbeds(post) {
+    let ret = '';
 
-    const visibleReplies = replies.slice(0, visibleCount);
-    const notVisibleReplies = replies.slice(visibleCount);
+    if (!post.embed) {
+      return ret;
+    }
 
-    const warningHtml = this.#renderWarning(comment.post);
+    if (post.embed.$type === 'app.bsky.embed.external#view') {
+      const { uri, title, description } = post.embed.external;
+      if (uri.includes('.gif')) {
+        ret += `<div class="bc-embed-image bc-embed-external"><img src="${uri}" title="${title}" alt="${description}"></div>`;
+      }
+    } else if (post.embed.$type === 'app.bsky.embed.images#view') {
+      const { images } = post.record.embed;
+      for (const { image, alt } of images) {
+        const hrefThumbnail = this.#getImageLinkFromBlob({
+          link: image.ref.$link,
+          author: post.author.did,
+          asThumbnail: true,
+        });
+        const hrefFull = this.#getImageLinkFromBlob({
+          link: image.ref.$link,
+          author: post.author.did,
+          asThumbnail: false,
+        });
+        ret += `<div class="bc-embed-image"><a href="${hrefFull}" target="_blank"><img src="${hrefThumbnail}" alt="${alt}"></a></div>`;
+      }
+    }
 
-    const postUrl = this.#convertToHttpUrl(comment.post.uri);
-    const postId = this.#postId(comment.post);
+    if (ret) {
+      ret = `<div class="comment-embed">${ret}</div>`;
+    }
 
-    return `
-      <div class="comment" id="${commentId}">
-        <div class="comment-header">
-          ${avatarHtml}
-          <div><a href="https://bsky.app/profile/${
-            author.did
-          }" target="_blank" class="author-link">
-            <span>${author.displayName || '@' + author.handle}</span>
-          </a></div>
-          <div><a href="${postUrl}"
-              class="timestamp-link"
-              target="_blank">
-            ${this.#formatTimestamp(comment.post.record.createdAt)}
-          </a></div>
-        </div>
-        ${warningHtml}
-        <div
-          class="comment-body"
-          id="${postId}"
-          ${warningHtml ? 'hidden' : ''}
-        >
-          <p>${commentText}</p>
-          <div class="comment-stats">${this.#renderStatsBar(comment.post, {
-            postUrl,
-            showIcons: false,
-            showZero: false,
-            includeReplyLink: true,
-          })}</div>
-        </div>
-        ${this.renderReplies(visibleReplies, depth + 1)}
-        ${this.renderShowMoreButton(comment.post.uri, notVisibleReplies.length)}
-      </div>`;
+    return ret;
+  }
+
+  #getImageLinkFromBlob({ link, author, asThumbnail }) {
+    return `https://cdn.bsky.app/img/${
+      asThumbnail ? 'feed_thumbnail' : 'feed_fullsize'
+    }/plain/${author}/${link}`;
   }
 
   renderReplies(replies, depth) {

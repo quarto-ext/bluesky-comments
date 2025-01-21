@@ -155,3 +155,4 @@ This extension builds upon the innovative work of:
 
 - [Emily Liu](https://emilyliu.me/blog/comments) - [Original concept](https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i)
 - [Samuel Newman](https://bsky.app/profile/samuel.bsky.team) - [Implementation details](https://graysky.app/blog/2024-02-05-adding-blog-comments)
+- [Jonathan Moallem](https://capscollective.com/) - [Rich text and image embedding](https://capscollective.com/blog/bluesky-blog-comments/)
