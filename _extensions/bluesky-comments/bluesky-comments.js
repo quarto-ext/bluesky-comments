@@ -330,6 +330,7 @@ class BlueskyComments extends HTMLElement {
     const notVisibleReplies = replies.slice(visibleCount);
 
     const warningHtml = this.#renderWarning(comment.post);
+    const embedHtml = this.#renderEmbeds(comment.post);
 
     const postUrl = this.#convertToHttpUrl(comment.post.uri);
     const postId = this.#postId(comment.post);
@@ -356,6 +357,7 @@ class BlueskyComments extends HTMLElement {
           ${warningHtml ? 'hidden' : ''}
         >
           <p>${commentText}</p>
+          ${embedHtml}
           <div class="comment-stats">${this.#renderStatsBar(comment.post, {
             postUrl,
             showIcons: false,
@@ -427,6 +429,48 @@ class BlueskyComments extends HTMLElement {
     commentText = commentText.replace(/\n\n/g, '</p><p>');
 
     return commentText;
+  }
+
+  #renderEmbeds(post) {
+    let ret = '';
+
+    if (!post.embed) {
+      return ret;
+    }
+
+    if (post.embed.$type === 'app.bsky.embed.external#view') {
+      const { uri, title, description } = post.embed.external;
+      if (uri.includes('.gif')) {
+        ret += `<div class="bc-embed-image bc-embed-external"><img src="${uri}" title="${title}" alt="${description}"></div>`;
+      }
+    } else if (post.embed.$type === 'app.bsky.embed.images#view') {
+      const { images } = post.record.embed;
+      for (const { image, alt } of images) {
+        const hrefThumbnail = this.#getImageLinkFromBlob({
+          link: image.ref.$link,
+          author: post.author.did,
+          asThumbnail: true,
+        });
+        const hrefFull = this.#getImageLinkFromBlob({
+          link: image.ref.$link,
+          author: post.author.did,
+          asThumbnail: false,
+        });
+        ret += `<div class="bc-embed-image"><a href="${hrefFull}" target="_blank"><img src="${hrefThumbnail}" alt="${alt}"></a></div>`;
+      }
+    }
+
+    if (ret) {
+      ret = `<div class="comment-embed">${ret}</div>`;
+    }
+
+    return ret;
+  }
+
+  #getImageLinkFromBlob({ link, author, asThumbnail }) {
+    return `https://cdn.bsky.app/img/${
+      asThumbnail ? 'feed_thumbnail' : 'feed_fullsize'
+    }/plain/${author}/${link}`;
   }
 
   renderReplies(replies, depth) {
