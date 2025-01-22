@@ -1,8 +1,5 @@
 ---
 title: "Bluesky Comments Extension"
-format:
-  html:
-    toc: false
 ---
 
 > Enable Bluesky social discussions in your Quarto documents

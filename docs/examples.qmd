@@ -1,6 +1,8 @@
 ---
 title: "Bluesky Comments Example"
-format: html
+format:
+  html:
+    toc-depth: 2
 callout-appearance: simple
 aliases:
   - qbluesky-comments-examples
@@ -13,112 +15,71 @@ bluesky-comments:
   n-show-more: 2
 ---
 
-This document shows an example of the Bluesky Comments extension in Quarto embedding comments from multiple Bluesky posts in a single document.
-
-## Usage
-
-To embed comments from a Bluesky post, use the `{{{< bluesky-comments >}}}` shortcode with a `uri` parameter. The URI should be in the format `at://did/app.bsky.feed.post/rkey`. To get the correct URI format, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html) to move from a Bluesky URL to an AT-URI for a post.
-
-:::{.callout-note}
-We've opted to require the `at-uri` for a post to ensure that the comments once embedded are not tied to a specific user URL that may change if the user changes their username.
-:::
-
-## Configuration
-
-The document header or `_quarto.yml` can include configuration options for the Bluesky Comments extension. For this example, we've set the following configuration options:
-
-```yml
-bluesky-comments:
-  mute-patterns:
-    - "📌"
-    - "🔥"
-  filter-empty-replies: true
-  n-show-init: 3
-  n-show-more: 2
-```
-
-We could also supply `mute-users` to mute specific users from the comments; however, we have not done so in this example.
-
-Note that each of these settings can also be added directly to the shortcode to be applied specifically to that comment section:
-
-```markdown
-{{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 mute-patterns='["📌", "🔥"]' filter-empty-replies="true" >}}}
-```
-
-# Multiple Comment Sections
-
-You can embed multiple comment sections in your document:
-
+This document shows an example of the Bluesky Comments extension in Quarto embedding comments from multiple Bluesky posts in a single document. For [installation](index.qmd#installation) and [configuration](index.qmd#configuration) instructions, see the [main page](index.qmd).
 
 ## Small Thread
 
-**Post URL:**
+### Post URL
 
-```default
-https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
-```
+<https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26>
 
-**Converted AT-URI:**
+### Converted AT URI
 
 ```default
 at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
 ```
 
-**Shortcode:**
+### Shortcode
 
 ```markdown
 {{{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 mute-patterns='["👍"]' >}}}
 ```
 
-**Live:**
+### Working example
 
 {{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 mute-patterns='["👍"]' >}}
 
 ## Medium Thread
 
-**Post URL:**
+### Post URL
 
-```default
-https://bsky.app/profile/nytimes.com/post/3lbvio3i5d22f
-```
+<https://bsky.app/profile/nytimes.com/post/3lbvio3i5d22f>
 
-**Converted AT-URI:**
+### Converted AT URI
 
 ```default
 at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f
 ```
 
-**Shortcode:**
+### Shortcode
 
 ```markdown
 {{{< bluesky-comments at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f >}}}
 ```
 
 
-**Live:**
+### Working example
 
 {{< bluesky-comments at://did:plc:eclio37ymobqex2ncko63h4r/app.bsky.feed.post/3lbvio3i5d22f >}}
 
 ## Massive Thread
 
-**Post URL:**
+### Post URL
 
-```default
-https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i
-```
+<https://bsky.app/profile/emilyliu.me/post/3lbqta5lnck2i>
 
-**Converted AT-URI:**
+### Converted AT URI
 
 ```default
 at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i
 ```
 
-**Shortcode:**
+### Shortcode
 
 ```markdown
 {{{< bluesky-comments at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i >}}}
 ```
 
-**Live:**
+### Working example
 
 {{< bluesky-comments at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3lbqta5lnck2i >}}
