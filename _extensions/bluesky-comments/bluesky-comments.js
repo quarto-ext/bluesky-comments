@@ -59,7 +59,7 @@ class BlueskyComments extends HTMLElement {
       if (typeof value !== 'number') {
         value = parseInt(value);
         if (!isNaN(value)) {
-          this[prop] = value;
+          this[prop] = Math.max(value, 1);
         }
       }
     });
