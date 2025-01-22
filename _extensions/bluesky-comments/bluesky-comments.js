@@ -14,12 +14,15 @@ class BlueskyComments extends HTMLElement {
     this.profile = null;
     this.nShowInit = 3;
     this.nShowMore = 2;
+    this.nShowDepth = 3;
     this.header = false;
     this.postVisibilityCounts = new Map();
+    this.postVisibilityDepths = new Set();
     this.hiddenReplies = []; // Replies moderated via Bluesky
 
     // Bind methods
     this.showMoreReplies = this.showMoreReplies.bind(this);
+    this.showMoreDepth = this.showMoreDepth.bind(this);
   }
 
   get postUrl() {
@@ -49,13 +52,14 @@ class BlueskyComments extends HTMLElement {
     [
       { attr: 'n-show-init', prop: 'nShowInit' },
       { attr: 'n-show-more', prop: 'nShowMore' },
+      { attr: 'n-show-depth', prop: 'nShowDepth' },
     ].forEach(({ attr, prop }) => {
       let value = this.getAttribute(attr);
       if (!value) return;
       if (typeof value !== 'number') {
         value = parseInt(value);
         if (!isNaN(value)) {
-          this[prop] = value;
+          this[prop] = Math.max(value, 1);
         }
       }
     });
@@ -277,6 +281,19 @@ class BlueskyComments extends HTMLElement {
     return count;
   }
 
+  countHiddenByDepth(replies) {
+    let count = 0;
+    for (const reply of replies) {
+      if (!this.shouldFilterComment(reply)) {
+        count++; // Count this reply
+        if (reply.replies?.length) {
+          count += this.countHiddenByDepth(reply.replies); // Count nested replies
+        }
+      }
+    }
+    return count;
+  }
+
   showMoreReplies(event) {
     const button = event.target;
     const postId = button.getAttribute('data-post-id');
@@ -287,6 +304,22 @@ class BlueskyComments extends HTMLElement {
       this.postVisibilityCounts.get(postId) || this.nShowInit;
     const newCount = currentCount + this.nShowMore;
     this.postVisibilityCounts.set(postId, newCount);
+
+    // Re-render the comment with updated visibility
+    this.render();
+  }
+
+  showMoreDepth(event) {
+    const button = event.target;
+    const postId = button.getAttribute('data-post-id');
+    if (!postId) return;
+
+    if (this.postVisibilityCounts.has(postId)) {
+      // Nothing to do, already expanded
+      return;
+    }
+
+    this.postVisibilityDepths.add(postId);
 
     // Re-render the comment with updated visibility
     this.render();
@@ -476,6 +509,21 @@ class BlueskyComments extends HTMLElement {
   renderReplies(replies, depth) {
     if (!replies?.length) return '';
 
+    const parentId = replies[0].post.record.reply.parent.uri;
+
+    if (this.postVisibilityDepths.has(parentId)) {
+      depth = depth - 1;
+    }
+
+    // If we're beyond or at depth limit, show the "show more depth" button
+    if (depth >= this.nShowDepth) {
+      const hiddenCount = this.countHiddenByDepth(replies);
+      if (hiddenCount > 0) {
+        return this.renderShowMoreDepthButton(parentId, hiddenCount);
+      }
+      return '';
+    }
+
     return `
       <div class="replies">
         ${replies
@@ -498,6 +546,17 @@ class BlueskyComments extends HTMLElement {
 
     return `
       <button class="show-more-replies" data-post-id="${postId}">${txtButton}</button>
+    `;
+  }
+
+  renderShowMoreDepthButton(postId, count) {
+    const txtComment =
+      count === 1 ? 'nested reply' : `of ${count} nested replies`;
+    const txtOfCount = count === 1 ? '' : `of ${count}`;
+    return `
+      <button class="show-more show-more-depth" data-post-id="${postId}">
+        Show 1 more ${txtComment}
+      </button>
     `;
   }
 
@@ -567,6 +626,11 @@ class BlueskyComments extends HTMLElement {
     // Add event listeners for reply buttons
     this.querySelectorAll('.show-more-replies').forEach(button => {
       button.addEventListener('click', this.showMoreReplies);
+    });
+
+    // Add event listeners for depth buttons
+    this.querySelectorAll('.show-more-depth').forEach(button => {
+      button.addEventListener('click', this.showMoreDepth);
     });
   }
 

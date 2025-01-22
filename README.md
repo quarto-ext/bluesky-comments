@@ -54,12 +54,15 @@ For example:
 
 ## Configuration
 
+### How to configure Bluesky comments
+
 The extension can be configured through your document's YAML frontmatter or the `_quarto.yml` configuration file. Add configuration options under the `bluesky-comments` key:
 
 ```yaml
 ---
 title: "My Document"
 bluesky-comments:
+  profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b  # coatless.bsky.social
   mute-patterns:
     - "📌"
     - "🔥"
@@ -69,19 +72,34 @@ bluesky-comments:
   filter-empty-replies: true
   n-show-init: 3
   n-show-more: 2
+  n-show-depth: 3
 ---
 ```
 
+Each of these options can also be set directly for a single comments section by providing the option as an inline attribute in the shortcode, e.g. `{{{< bluesky-comments n-show-init=3 >}}}`. These values take precedence over the above settings.
+
 ### Available Options
 
-- `mute-patterns`: An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text
-- `mute-users`: An array of Bluesky DIDs to filter out comments from specific users
-- `filter-empty-replies`: Boolean flag to filter out empty or very short replies, including bookmarking (📌) replies (default: `true`)
-- `n-show-init`: Number of top-level comments to show initially (default: `3`)
-- `n-show-more`: Number of replies to reveal when the user clicks on the "Show more" button (default: `2`)
-- `header`: Whether or not to add a level-2 header above the comments. Use `header="true"` as a shortcut for `header="Comments"` (default: `false`).
+`mute-patterns`
+:    An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text.
 
-Users can click "Show more" buttons to reveal additional comments and replies beyond these initial limits.
+`mute-users`
+:    An array of Bluesky DIDs to filter out comments from specific users.
+
+`filter-empty-replies`
+:    Boolean flag to filter out empty or very short replies, including bookmarking (📌) replies (default: `true`).
+
+`n-show-init`
+:    Number of top-level comments to show initially (default: `3`).
+
+`n-show-more`
+:    Number of replies to reveal when the user clicks on the "Show more" button (default: `2`).
+
+`n-show-depth`
+:    Maximum depth of replies to show initially. Additional nested replies are revealed when the user clicks on the "Show nested replies" button.
+
+`header`
+:    Whether or not to add a level-2 header above the comments. Use `header="true"` as a shortcut for `header="Comments"` (default: `false`).
 
 ## Moderation
 
