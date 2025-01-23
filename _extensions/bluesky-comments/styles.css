@@ -51,86 +51,82 @@
   --_border-radius: var(--bc-border-radius, var(--bs-border-radius, 4px));
 
   /* Base Container Styles */
-  font-family: system-ui, -apple-system, sans-serif;
-  max-width: 800px;
-  margin: 2rem auto;
+  display: block;
+  margin: 1rem auto;
+  max-width: var(--bc-max-width, 800px);
   color: var(--_text-color);
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 /* Statistics Display
  * Shows post engagement metrics */
-.stats {
+.bc-stats {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.stats a {
-  display: flex;
-  gap: 1rem;
-  text-decoration: none;
+.bc-stats a {
   color: var(--_text-color);
 }
 
-.stats a:hover,
-.comment-actions a:hover {
+.bc-stats a:hover,
+.bc-comment__actions a:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
 }
 
 /* Action Links
- * Styles for interactive elements */
-.stat-link,
-.action-link {
+* Styles for interactive elements */
+.bc-stats__link {
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s;
 }
 
-.stat-link:hover,
-.action-link:hover {
+.bc-stats__link:hover {
   opacity: 0.8;
 }
 
-.action-text {
+.bc-no-wrap {
   white-space: nowrap;
 }
 
-.action-item {
+.bc-stats__link {
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
-.action-item svg {
+.bc-stats__link svg {
   height: 1em;
   width: 1em;
   flex-shrink: 0;
 }
 
-.stat-link svg {
+.bc-stats__link svg {
   vertical-align: -.125em;
 }
 
 /* Avatar Styles
  * User profile pictures and placeholders */
-.avatar,
-.avatar-placeholder {
+.bc-comment__header__avatar,
+.bc-comment__header__avatar--placeholder {
   width: var(--_avatar-size);
   height: var(--_avatar-size);
   border-radius: 50%;
   background-color: var(--_bg-avatar);
 }
 
-.avatar {
+.bc-comment__header__avatar {
   position: absolute;
   left: calc(-1 * (var(--_avatar-size) + var(--_thread-line-width) + var(--_comment-padding-inline)));
 }
 
-
 /* Comment Styles
  * Individual comment containers and their components */
-.comment {
+.bc-comment {
   --_comment-padding-inline: 0.5rem;
   margin: 0;
   padding: 0;
@@ -141,22 +137,22 @@
   position: relative;
 }
 
-.comment p {
+.bc-comment p {
   margin-bottom: min(var(--_comment-padding-inline), 1rem);
 }
 
-.comment-header {
+.bc-comment__header {
   position: relative;
   display: flex;
   flex-direction: column;
   padding-bottom: 0.5rem;
 }
 
-.comment-body > :last-child {
-  margin-bottom: 0;
+.bc-comment__body {
+  margin-bottom: min(var(--_comment-padding-inline), 1rem);
 }
 
-.comment-stats {
+.bc-comment__stats {
   display: flex;
   gap: 1rem;
   margin-top: 0.25rem;
@@ -165,40 +161,39 @@
 }
 
 /* Timestamp Display */
-.timestamp-link {
+.bc-timestamp-link {
   color: var(--_muted-fg);
   font-size: 0.8rem;
   text-decoration: none;
 }
 
-.timestamp-link:hover {
+.bc-timestamp-link:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
 }
 
 /* Author Information
  * Styles for user identification */
-.author-link {
+.bc-author-link {
   text-decoration: none;
   color: var(--_text-color);
 }
 
-.author-link:hover {
+.bc-author-link:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
 }
 
 /* Reply Thread Styles
  * Visual hierarchy for comment threads */
-.replies {
+.bc-comment__replies {
   margin-top: 1rem;
   margin-left: calc(var(--_avatar-size));
 }
 
 /* Load More Buttons
  * Controls for expanding comment threads */
-.show-more,
-.show-more-replies {
+.bc-comment__show-more {
   background: none;
   border: none;
   color: var(--_link-color);
@@ -207,20 +202,19 @@
   font-size: 0.9rem;
 }
 
-.show-more:hover,
-.show-more-replies:hover {
+.bc-comment__show-more:hover {
   text-decoration: underline;
   color: var(--_link-hover-color);
 }
 
 /* Status Messages
  * Error and loading state displays */
-.error {
+.bc-error {
   color: var(--_warning-text);
   text-align: center;
 }
 
-.loading {
+.bc-loading {
   color: var(--_muted-text);
   animation: bc-fade-in-out 2s ease-in-out infinite;
 }
@@ -239,11 +233,11 @@
 
 /* Content Warning System
  * Styles for content warning labels and interactions */
-.content-warning {
+.bc-comment__content-warning {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: min(var(--_comment-padding-inline), 1rem);
   padding: 0.25rem 0.5rem;
   background: var(--_warning-bg);
   border: 1px solid var(--_border-color);
@@ -251,12 +245,12 @@
   font-size: 0.8rem;
 }
 
-.warning-label {
+.bc-comment__content-warning__label {
   color: var(--_warning-text);
   font-weight: 500;
 }
 
-.warning-button {
+.bc-comment__content-warning__button {
   padding: 0.25rem 0.5rem;
   color: var(--_warning-text);
 }
@@ -282,7 +276,7 @@
 }
 
 /* ---- Embedded Media ---- */
-.comment-embed {
+.bc-comment__embed {
   display: grid;
   gap: 0.25rem;
   max-height: 400px;
@@ -291,36 +285,36 @@
 }
 
 /* Single image takes full width */
-.comment-embed:has(.bc-embed-image:only-child) {
+.bc-comment__embed:has(.bc-comment__embed__item:only-child) {
   grid-template-columns: 1fr;
 }
 
 /* Two images split 50/50 */
-.comment-embed:has(.bc-embed-image:first-child:nth-last-child(2)) {
+.bc-comment__embed:has(.bc-comment__embed__item:first-child:nth-last-child(2)) {
   grid-template-columns: 1fr 1fr;
 }
 
 /* Three images: first takes left half, others stack on right */
-.comment-embed:has(.bc-embed-image:first-child:nth-last-child(3)) {
+.bc-comment__embed:has(.bc-comment__embed__item:first-child:nth-last-child(3)) {
   grid-template-columns: 1fr 1fr;
 }
-.comment-embed:has(.bc-embed-image:first-child:nth-last-child(3)) .bc-embed-image:first-child {
+.bc-comment__embed:has(.bc-comment__embed__item:first-child:nth-last-child(3)) .bc-comment__embed__item:first-child {
   grid-row: 1 / span 2;
 }
 
 /* Four images in 2x2 grid */
-.comment-embed:has(.bc-embed-image:first-child:nth-last-child(4)) {
+.bc-comment__embed:has(.bc-comment__embed__item:first-child:nth-last-child(4)) {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
 
-.bc-embed-image {
+.bc-comment__embed__item {
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.bc-embed-image img {
+.bc-comment__embed__item img {
   width: 100%;
   height: 100%;
   object-fit: cover;

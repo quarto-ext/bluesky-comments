@@ -327,7 +327,7 @@ class BlueskyComments extends HTMLElement {
 
   #handleWarningClick(event) {
     const button = event.target;
-    const warningBox = button.closest('.content-warning');
+    const warningBox = button.closest('.bc-comment__content-warning');
     const contentElement = warningBox.nextElementSibling;
 
     if (warningBox && contentElement) {
@@ -345,8 +345,8 @@ class BlueskyComments extends HTMLElement {
 
     const author = comment.post.author;
     const avatarHtml = author.avatar
-      ? `<img src="${author.avatar}" alt="avatar" class="avatar"/>`
-      : `<div class="avatar-placeholder"></div>`;
+      ? `<img src="${author.avatar}" alt="avatar" class="bc-comment__header__avatar"/>`
+      : `<div class="bc-comment__header__avatar--placeholder"></div>`;
 
     const commentId = `comment-${this.#postId(comment.post)}`;
 
@@ -369,30 +369,30 @@ class BlueskyComments extends HTMLElement {
     const postId = this.#postId(comment.post);
 
     return `
-      <article class="comment" id="${commentId}">
-        <header class="comment-header">
+      <article class="bc-comment" id="${commentId}">
+        <header class="bc-comment__header">
           ${avatarHtml}
           <div><a href="https://bsky.app/profile/${
             author.did
-          }" target="_blank" class="author-link">
+          }" target="_blank" class="bc-author-link">
             <span>${author.displayName || '@' + author.handle}</span>
           </a></div>
           <div><a href="${postUrl}"
-              class="timestamp-link"
+              class="bc-timestamp-link"
               target="_blank">
             ${this.#formatTimestamp(comment.post.record.createdAt)}
           </a></div>
         </header>
         ${warningHtml}
         <div
-          class="comment-body"
+          class="bc-comment__body"
           id="${postId}"
           ${warningHtml ? 'hidden' : ''}
         >
           <p>${commentText}</p>
           ${embedHtml}
           </div>
-        <footer class="comment-stats">${this.#renderStatsBar(comment.post, {
+        <footer class="bc-comment__stats">${this.#renderStatsBar(comment.post, {
           postUrl,
           showIcons: false,
           showZero: false,
@@ -425,13 +425,13 @@ class BlueskyComments extends HTMLElement {
         // Determine link and CSS class based on facet type
         if (feature.$type === 'app.bsky.richtext.facet#mention') {
           facetLink = `https://bsky.app/profile/${feature.did}`;
-          cssClass = 'bc-comment-body-mention';
+          cssClass = 'bc-comment__body__mention';
         } else if (feature.$type === 'app.bsky.richtext.facet#link') {
           facetLink = feature.uri;
-          cssClass = 'bc-comment-body-link';
+          cssClass = 'bc-comment__body__link';
         } else if (feature.$type === 'app.bsky.richtext.facet#tag') {
           facetLink = `https://bsky.app/hashtag/${feature.tag}`;
-          cssClass = 'bc-comment-body-tag';
+          cssClass = 'bc-comment__body__tag';
         }
 
         // Add text before the facet
@@ -475,7 +475,7 @@ class BlueskyComments extends HTMLElement {
       const { uri, title, description } = post.embed.external;
       if (uri.includes('.gif')) {
         const alt = this.#escapeHtml(description.replace(/^Alt: /, ''));
-        ret += `<div class="bc-embed-image bc-embed-external"><img src="${uri}" title="${title}" alt="${alt}"></div>`;
+        ret += `<div class="bc-comment__embed__item bc-bc-comment__embed__item--external"><img src="${uri}" title="${title}" alt="${alt}"></div>`;
       }
     } else if (post.embed.$type === 'app.bsky.embed.images#view') {
       const { images } = post.record.embed;
@@ -490,14 +490,14 @@ class BlueskyComments extends HTMLElement {
           author: post.author.did,
           asThumbnail: false,
         });
-        ret += `<div class="bc-embed-image"><a href="${hrefFull}" target="_blank"><img src="${hrefThumbnail}" alt="${this.#escapeHtml(
+        ret += `<div class="bc-comment__embed__item bc-comment__embed__item--image"><a href="${hrefFull}" target="_blank"><img src="${hrefThumbnail}" alt="${this.#escapeHtml(
           alt,
         )}"></a></div>`;
       }
     }
 
     if (ret) {
-      ret = `<div class="comment-embed">${ret}</div>`;
+      ret = `<div class="bc-comment__embed">${ret}</div>`;
     }
 
     return ret;
@@ -528,7 +528,7 @@ class BlueskyComments extends HTMLElement {
     }
 
     return `
-      <div class="replies">
+      <div class="bc-comment__replies">
         ${replies
           .filter(reply => !this.shouldFilterComment(reply))
           .map(reply => this.renderComment(reply, depth))
@@ -548,7 +548,7 @@ class BlueskyComments extends HTMLElement {
     }
 
     return `
-      <button class="show-more-replies" data-post-id="${postId}">${txtButton}</button>
+      <button class="bc-comment__show-more bc-comment__show-more--replies" data-post-id="${postId}">${txtButton}</button>
     `;
   }
 
@@ -557,7 +557,7 @@ class BlueskyComments extends HTMLElement {
       count === 1 ? 'nested reply' : `of ${count} nested replies`;
     const txtOfCount = count === 1 ? '' : `of ${count}`;
     return `
-      <button class="show-more show-more-depth" data-post-id="${postId}">
+      <button class="bc-comment__show-more bc-comment__show-more--depth" data-post-id="${postId}">
         Show 1 more ${txtComment}
       </button>
     `;
@@ -565,12 +565,12 @@ class BlueskyComments extends HTMLElement {
 
   render() {
     if (this.error) {
-      this.innerHTML = `<p class="error">${this.error}</p>`;
+      this.innerHTML = `<p class="bc-error">${this.error}</p>`;
       return;
     }
 
     if (!this.thread) {
-      this.innerHTML = '<p class="loading">Loading comments...</p>';
+      this.innerHTML = '<p class="bc-loading">Loading comments...</p>';
       return;
     }
 
@@ -589,23 +589,23 @@ class BlueskyComments extends HTMLElement {
     let headerHtml = '';
     if (this.header !== false) {
       if (['true', ''].includes(this.header)) {
-        headerHtml = '<h2>Comments</h2>';
+        headerHtml = '<h2 class="bc-header">Comments</h2>';
       } else {
-        headerHtml = `<h2>${this.header}</h2>`;
+        headerHtml = `<h2 class="bc-header">${this.header}</h2>`;
       }
     }
 
     const contentHtml = `
       ${headerHtml}
-      <div class="stats">${this.#renderStatsBar(this.thread.post, {
+      <div class="bc-stats">${this.#renderStatsBar(this.thread.post, {
         adjustReplies: -1 * filteredCount,
       })}</div>
-      <p class="reply-prompt">
+      <p class="bc-reply-prompt">
         <a href="${this.postUrl}"
           target="_blank"
         >Reply on Bluesky</a> to join the conversation.
       </p>
-      <div class="comments-list">
+      <div class="bc-comments">
         ${visibleReplies.map(reply => this.renderComment(reply, 0)).join('')}
       </div>
       ${this.renderShowMoreButton('root', remainingCount)}
@@ -614,25 +614,19 @@ class BlueskyComments extends HTMLElement {
     this.innerHTML = contentHtml;
 
     // Simplified warning button event listeners
-    this.querySelectorAll('.warning-button').forEach(button => {
-      button.addEventListener('click', e => this.#handleWarningClick(e));
-    });
-
-    // Add other event listeners
-    if (remainingCount > 0) {
-      const showMoreButton = this.querySelector('.show-more-replies');
-      if (showMoreButton) {
-        showMoreButton.addEventListener('click', this.showMoreReplies);
-      }
-    }
+    this.querySelectorAll('.bc-comment__content-warning__button').forEach(
+      button => {
+        button.addEventListener('click', e => this.#handleWarningClick(e));
+      },
+    );
 
     // Add event listeners for reply buttons
-    this.querySelectorAll('.show-more-replies').forEach(button => {
+    this.querySelectorAll('.bc-comment__show-more--replies').forEach(button => {
       button.addEventListener('click', this.showMoreReplies);
     });
 
     // Add event listeners for depth buttons
-    this.querySelectorAll('.show-more-depth').forEach(button => {
+    this.querySelectorAll('.bc-comment__show-more--depth').forEach(button => {
       button.addEventListener('click', this.showMoreDepth);
     });
   }
@@ -687,10 +681,10 @@ class BlueskyComments extends HTMLElement {
       formattedLabels.charAt(0).toUpperCase() + formattedLabels.slice(1);
 
     return `
-    <div class="content-warning">
-      <span class="warning-label">${formattedLabels}</span>
+    <div class="bc-comment__content-warning">
+      <span class="bc-comment__content-warning__label">${formattedLabels}</span>
       <button
-        class="warning-button btn btn-sm btn-soft ms-auto"
+        class="bc-comment__content-warning__button btn btn-sm btn-soft ms-auto"
         aria-expanded="false"
         aria-controls="${this.#postId(post)}"
       >Show content</button>
@@ -741,13 +735,9 @@ class BlueskyComments extends HTMLElement {
 
       return `<a href="${postUrl}${
         bskyPaths[type]
-      }" target="_blank" class="stat-link">
-        <span class="action-item">
-          ${showIcons ? this.statsIcons[type] : ''}
-          <span class="action-text">${stats[type].count} ${
-        stats[type].text
-      }</span>
-        </span>
+      }" target="_blank" class="bc-stats__link">
+        ${showIcons ? this.statsIcons[type] : ''}
+        <span class="bc-no-wrap">${stats[type].count} ${stats[type].text}</span>
       </a>`;
     });
 
@@ -755,7 +745,7 @@ class BlueskyComments extends HTMLElement {
       return statsHtml.join('');
     }
 
-    const replyLink = `<a href="${postUrl}" target="_blank" class="stat-link">${this.statsIcons['reply-to']} Reply</a>`;
+    const replyLink = `<a href="${postUrl}" target="_blank" class="bc-stats__link">${this.statsIcons['reply-to']} Reply</a>`;
 
     return `${statsHtml.join('')}${replyLink}`;
   }
@@ -787,15 +777,15 @@ class BlueskyComments extends HTMLElement {
 
   // Define SVG icons
   statsIcons = {
-    like: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-pink, pink)" class="bi bi-heart-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/></svg>',
+    like: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-pink, pink)" class="bc-icon bi bi-heart-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/></svg>',
     repost:
-      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-green, green)" class="bi bi-recycle" viewBox="0 0 16 16"><path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z"/></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-green, green)" class="bc-icon bi bi-recycle" viewBox="0 0 16 16"><path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z"/></svg>',
     reply:
-      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-blue, blue)" class="bi bi-chat-dots-fill" viewBox="0 0 16 16"><path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-blue, blue)" class="bc-icon bi bi-chat-dots-fill" viewBox="0 0 16 16"><path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>',
     quote:
-      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-purple, purple)" class="bi bi-quote" viewBox="0 0 16 16"><path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--bs-purple, purple)" class="bc-icon bi bi-quote" viewBox="0 0 16 16"><path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/></svg>',
     'reply-to':
-      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16"><path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bc-icon bi bi-reply-fill" viewBox="0 0 16 16"><path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/></svg>',
   };
 }
 
