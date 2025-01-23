@@ -369,8 +369,8 @@ class BlueskyComments extends HTMLElement {
     const postId = this.#postId(comment.post);
 
     return `
-      <div class="comment" id="${commentId}">
-        <div class="comment-header">
+      <article class="comment" id="${commentId}">
+        <header class="comment-header">
           ${avatarHtml}
           <div><a href="https://bsky.app/profile/${
             author.did
@@ -382,7 +382,7 @@ class BlueskyComments extends HTMLElement {
               target="_blank">
             ${this.#formatTimestamp(comment.post.record.createdAt)}
           </a></div>
-        </div>
+        </header>
         ${warningHtml}
         <div
           class="comment-body"
@@ -391,16 +391,16 @@ class BlueskyComments extends HTMLElement {
         >
           <p>${commentText}</p>
           ${embedHtml}
-          <div class="comment-stats">${this.#renderStatsBar(comment.post, {
-            postUrl,
-            showIcons: false,
-            showZero: false,
-            includeReplyLink: true,
-          })}</div>
-        </div>
+          </div>
+        <footer class="comment-stats">${this.#renderStatsBar(comment.post, {
+          postUrl,
+          showIcons: false,
+          showZero: false,
+          includeReplyLink: true,
+        })}</footer>
         ${this.renderReplies(visibleReplies, depth + 1)}
         ${this.renderShowMoreButton(comment.post.uri, notVisibleReplies.length)}
-      </div>`;
+      </article>`;
   }
 
   #renderRichPostText({ record }) {

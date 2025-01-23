@@ -122,15 +122,27 @@
   background-color: var(--_bg-avatar);
 }
 
+.avatar {
+  position: absolute;
+  left: calc(-1 * (var(--_avatar-size) + var(--_thread-line-width) + var(--_comment-padding-inline)));
+}
+
+
 /* Comment Styles
  * Individual comment containers and their components */
 .comment {
+  --_comment-padding-inline: 0.5rem;
   margin: 0;
   padding: 0;
-  padding-right: 0.5rem;
+  padding-left: calc(var(--_comment-padding-inline) + var(--_avatar-size, 0) / 2);
+  padding-right: var(--_comment-padding-inline);
   border-left: var(--_thread-line-width, 2px) solid var(--_thread-line);
   margin-bottom: 1rem;
   position: relative;
+}
+
+.comment p {
+  margin-bottom: min(var(--_comment-padding-inline), 1rem);
 }
 
 .comment-header {
@@ -140,7 +152,7 @@
   padding-bottom: 0.5rem;
 }
 
-.comment-body > p:last-of-type {
+.comment-body > :last-child {
   margin-bottom: 0;
 }
 
@@ -150,12 +162,6 @@
   margin-top: 0.25rem;
   color: var(--_muted-fg);
   font-size: 0.8em;
-}
-
-.comment-header,
-.comment-body,
-.content-warning {
-  padding-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
 }
 
 /* Timestamp Display */
@@ -175,11 +181,6 @@
 .author-link {
   text-decoration: none;
   color: var(--_text-color);
-}
-
-.avatar {
-  position: absolute;
-  left: calc((var(--_avatar-size, 0) + var(--_thread-line-width, 2px)) / -2);
 }
 
 .author-link:hover {
@@ -242,7 +243,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-left: calc(0.5rem + var(--_avatar-size, 0) / 2);
   margin-bottom: 0.25rem;
   padding: 0.25rem 0.5rem;
   background: var(--_warning-bg);
