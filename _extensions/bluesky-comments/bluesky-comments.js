@@ -474,7 +474,8 @@ class BlueskyComments extends HTMLElement {
     if (post.embed.$type === 'app.bsky.embed.external#view') {
       const { uri, title, description } = post.embed.external;
       if (uri.includes('.gif')) {
-        ret += `<div class="bc-embed-image bc-embed-external"><img src="${uri}" title="${title}" alt="${description}"></div>`;
+        const alt = this.#escapeHtml(description.replace(/^Alt: /, ''));
+        ret += `<div class="bc-embed-image bc-embed-external"><img src="${uri}" title="${title}" alt="${alt}"></div>`;
       }
     } else if (post.embed.$type === 'app.bsky.embed.images#view') {
       const { images } = post.record.embed;
@@ -489,7 +490,9 @@ class BlueskyComments extends HTMLElement {
           author: post.author.did,
           asThumbnail: false,
         });
-        ret += `<div class="bc-embed-image"><a href="${hrefFull}" target="_blank"><img src="${hrefThumbnail}" alt="${alt}"></a></div>`;
+        ret += `<div class="bc-embed-image"><a href="${hrefFull}" target="_blank"><img src="${hrefThumbnail}" alt="${this.#escapeHtml(
+          alt,
+        )}"></a></div>`;
       }
     }
 
@@ -772,6 +775,14 @@ class BlueskyComments extends HTMLElement {
       minute: '2-digit',
       hour12: true,
     });
+  }
+
+  #escapeHtml(x) {
+    return x
+      .replace(/"/g, '&quot;')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   // Define SVG icons
