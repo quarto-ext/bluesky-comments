@@ -425,13 +425,13 @@ class BlueskyComments extends HTMLElement {
         // Determine link and CSS class based on facet type
         if (feature.$type === 'app.bsky.richtext.facet#mention') {
           facetLink = `https://bsky.app/profile/${feature.did}`;
-          cssClass = 'bc-comment__body__mention';
+          cssClass = 'bc-comment__body__facet--mention';
         } else if (feature.$type === 'app.bsky.richtext.facet#link') {
           facetLink = feature.uri;
-          cssClass = 'bc-comment__body__link';
+          cssClass = 'bc-comment__body__facet--link';
         } else if (feature.$type === 'app.bsky.richtext.facet#tag') {
           facetLink = `https://bsky.app/hashtag/${feature.tag}`;
-          cssClass = 'bc-comment__body__tag';
+          cssClass = 'bc-comment__body__facet--tag';
         }
 
         // Add text before the facet
