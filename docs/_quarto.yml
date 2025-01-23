@@ -5,29 +5,42 @@ website:
   title: "BlueSky Comments"
   reader-mode: true
   repo-url: https://github.com/quarto-ext/bluesky-comments/
+  repo-subdir: docs
   repo-actions: [edit, issue]
   sidebar:
-    logo: "https://github.com/user-attachments/assets/260e97ce-6941-4f3a-8dc8-b7125522ebc0"
-    logo-alt: "A hexagon logo for the BlueSky Comments Quarto extension."
-    style: "floating"
-    search: true
-    tools:
-      - icon: github
-        href: https://github.com/quarto-ext/bluesky-comments/
-    contents:
-      - text: "Home"
-        file: index.qmd
-      - text: "Examples"
-        file: examples.qmd
-      - section: "Support"
-        contents:
-        - text: "FAQ"
-          href: faq.qmd
-        - text: "Submit an issue"
-          href: https://github.com/quarto-ext/bluesky-comments/issues/new/choose
-      - section: "Extra"
-        contents:
-        - news.qmd
+    - id: main
+      logo: "https://github.com/user-attachments/assets/260e97ce-6941-4f3a-8dc8-b7125522ebc0"
+      logo-alt: "A hexagon logo for the BlueSky Comments Quarto extension."
+      style: "floating"
+      search: true
+      tools:
+        - icon: github
+          href: https://github.com/quarto-ext/bluesky-comments/
+      contents:
+        - text: "Home"
+          file: index.qmd
+        - text: "Examples"
+          file: examples.qmd
+        - section: "Support"
+          contents:
+          - text: "FAQ"
+            href: faq.qmd
+          - text: "Submit an issue"
+            href: https://github.com/quarto-ext/bluesky-comments/issues/new/choose
+        - section: "Extras"
+          contents:
+          - news.qmd
+          - tests/index.qmd
+    - id: tests
+      contents:
+        - text: Home
+          file: index.qmd
+        - text: Examples
+          file: examples.qmd
+        - text: Support
+          file: faq.qmd
+        - section: Tests cases
+          contents: "tests/*.qmd"
 
 format:
   html:
