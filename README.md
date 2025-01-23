@@ -16,150 +16,25 @@ You can install this extension using Quarto's extension management system:
 quarto add quarto-ext/bluesky-comments
 ```
 
-This will install the extension under the `_extensions` directory of your Quarto project.
-
-### Requirements
-
-- Quarto version 1.5.0 or higher
-- A web browser with JavaScript enabled
+This will install the extension under the `_extensions` directory of your Quarto project. If you're using version control, you should commit this directory.
 
 ## Usage
 
 To embed comments from a Bluesky post, use the `bluesky-comments` shortcode in your Quarto document:
 
 ````markdown
-{{< bluesky-comments at://did.plc/rkey >}}
+{{< bluesky-comments https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26 >}}
 ````
 
-### Converting Bluesky URLs to AT Protocol URIs
+When someone visits your web page, any replies to the linked post are pulled from Bluesky and shown directly in the page.
 
-To get the correct URI format, use the [Bluesky/AT Protocol URL ↔ Identifier Converter](https://web-apps.thecoatlessprofessor.com/bluesky/profile-or-post-to-did-at-uri.html).
+Learn more about the Bluesky comments extension:
 
-For example:
-
-1. **Original URL:**
-   ```
-   https://bsky.app/profile/coatless.bsky.social/post/3lbtwdydxrk26
-   ```
-
-2. **Converted AT-URI:**
-   ```
-   at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26
-   ```
-
-3. **Final shortcode:**
-   ````markdown
-   {{< bluesky-comments at://did:plc:fgeozid7uyx2lfz3yo7zvm3b/app.bsky.feed.post/3lbtwdydxrk26 >}}
-   ````
-
-## Configuration
-
-### How to configure Bluesky comments
-
-The extension can be configured through your document's YAML frontmatter or the `_quarto.yml` configuration file. Add configuration options under the `bluesky-comments` key:
-
-```yaml
----
-title: "My Document"
-bluesky-comments:
-  profile: did:plc:fgeozid7uyx2lfz3yo7zvm3b  # coatless.bsky.social
-  mute-patterns:
-    - "📌"
-    - "🔥"
-    - "/\\bspam\\b/i"  # regex pattern
-  mute-users:
-    - "did:plc:1234abcd"
-  filter-empty-replies: true
-  n-show-init: 3
-  n-show-more: 2
-  n-show-depth: 3
----
-```
-
-Each of these options can also be set directly for a single comments section by providing the option as an inline attribute in the shortcode, e.g. `{{{< bluesky-comments n-show-init=3 >}}}`. These values take precedence over the above settings.
-
-### Available Options
-
-`mute-patterns`
-:    An array of strings or regex patterns (enclosed in `/`) to filter out comments containing specific text.
-
-`mute-users`
-:    An array of Bluesky DIDs to filter out comments from specific users.
-
-`filter-empty-replies`
-:    Boolean flag to filter out empty or very short replies, including bookmarking (📌) replies (default: `true`).
-
-`n-show-init`
-:    Number of top-level comments to show initially (default: `3`).
-
-`n-show-more`
-:    Number of replies to reveal when the user clicks on the "Show more" button (default: `2`).
-
-`n-show-depth`
-:    Maximum depth of replies to show initially. Additional nested replies are revealed when the user clicks on the "Show nested replies" button.
-
-`header`
-:    Whether or not to add a level-2 header above the comments. Use `header="true"` as a shortcut for `header="Comments"` (default: `false`).
-
-## Moderation
-
-In addition to the `mute-patterns` and `mute-users` options, which can be set globally in `_quarto.yml` or in the front matter of an individual page, you can also use tools available on Bluesky to hide comments from your website without having to re-render your site for moderation changes to take effect.
-
-To moderate unruly or disruptive commenters, navigate to your Bluesky post and find the unwanted comment(s) in the replies. Click the post menu ⋯ on the reply and select **Hide reply for everyone**. Hidden posts and their replies are immediately hidden for any new visitors.
-
-Comments filtered due to moderation settings are not shown on your site or included in the reply counts, but users can still find the replies on the original thread on Bluesky.
-
-## Styling
-
-The extension uses Bootstrap theme variables if set by default. For further customization, you can override these variables in your document's or theme CSS. We also offer the ability to use component-specific variables to style the comments slightly different than your original website.
-
-### Using Bootstrap Variables
-
-By default, the component inherits from Bootstrap's theme. You can override the following variables to affect all Bootstrap-styled components:
-
-```css
-:root {
-  --bs-body-color: #333;
-  --bs-link-color: #0070f3;
-  --bs-border-color: #eaeaea;
-}
-```
-
-### Using Component Variables
-
-For more targeted styling, override the component's custom properties either in your document's CSS or in a custom CSS file under the theme:
-
-```css
-:root {
-  --bc-text-color: #333;        /* Main text color */
-  --bc-muted-text: #666;        /* Secondary text */
-  --bc-link-color: #0070f3;     /* Links */
-  --bc-border-color: #eaeaea;   /* Borders */
-  --bc-thread-line: #e1e1e1;    /* Reply thread line color */
-}
-```
-
-#### Available CSS Variables
-
-You may specify these variables in your document's CSS or in a custom CSS file under the theme to customize the appearance of the comments section.
-
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `--bc-text-color` | Primary text | `var(--bs-body-color)` |
-| `--bc-muted-text` | Secondary text | `var(--bs-secondary-color)` |
-| `--bc-link-color` | Link color | `var(--bs-link-color)` |
-| `--bc-link-hover-color` | Link hover color | `var(--bs-link-hover-color)` |
-| `--bc-avatar-bg` | Avatar placeholder | `var(--bs-secondary-bg)` |
-| `--bc-avatar-size` | Avatar size | `24px` |
-| `--bc-border-color` | General borders | `var(--bs-border-color)` |
-| `--bc-border-radius` | General border radius | `var(--bs-border-radius)` |
-| `--bc-thread-line` | Reply thread lines | `var(--bs-border-color)` |
-| `--bc-thread-line-width` | Reply thread line width | `2px` |
-| `--bc-warning-text` | Content warning text | `var(--bc-muted-fg)` |
-| `--bc-warning-bg` | Warning background | `var(--bc-muted-bg)` |
-| `--bc-warning-button` | Warning button | `var(--bs-primary)` |
-| `--bc-muted-bg` | Muted background | `--bs-emphasis-color-rgb` at 0.5% alpha |
-| `--bc-muted-fg` | Muted foreground | `--bs-emphasis-color-rgb` at 65% alpha |
+* [Usage](https://quarto-ext.github.io/bluesky-comments/index.html#usage)
+* [Configuration](https://quarto-ext.github.io/bluesky-comments/index.html#configuration)
+* [Moderation](https://quarto-ext.github.io/bluesky-comments/index.html#moderation)
+* [Styling](https://quarto-ext.github.io/bluesky-comments/index.html#styling)
+* [Examples](https://quarto-ext.github.io/bluesky-comments/examples.html)
 
 
 ## Limitations
