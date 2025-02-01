@@ -4,7 +4,7 @@ on:
     release:
         types: [published]
     workflow_dispatch: {}
-      
+
 name: demo-website
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
             pages: write
             id-token: write
         steps:
-        
+
         - name: "Check out repository"
           uses: actions/checkout@v4
 
@@ -38,12 +38,12 @@ jobs:
         # Make sure to set a retention day to avoid running into a cap
         # This artifact shouldn't be required after deployment onto pages was a success.
         - name: Upload Pages artifact
-          uses: actions/upload-pages-artifact@v2
-          with: 
+          uses: actions/upload-pages-artifact@v3
+          with:
             retention-days: 1
             path: 'docs/_site'
 
-        
+
         # Use an Action deploy to push the artifact onto GitHub Pages
         # This requires the `Action` tab being structured to allow for deployment
         # instead of using `docs/` or the `gh-pages` branch of the repository
