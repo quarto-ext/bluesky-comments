@@ -55,10 +55,10 @@ class BlueskyComments extends HTMLElement {
 
   /**
    * Gets the HTTP URL of the post.
-   * @returns {string}
+   * @returns {string|null}
    */
   get postUrl() {
-    return this.#convertToHttpUrl(this.post);
+    return this.post ? this.#convertToHttpUrl(this.post) : null;
   }
 
   /**
@@ -98,9 +98,9 @@ class BlueskyComments extends HTMLElement {
       let value = this.getAttribute(attr);
       if (!value) return;
       if (typeof value !== 'number') {
-        value = parseInt(value);
-        if (!isNaN(value)) {
-          this[prop] = Math.max(value, 1);
+        const valueInt = parseInt(value);
+        if (!isNaN(valueInt)) {
+          this[prop] = Math.max(valueInt, 1);
         }
       }
     });
@@ -108,7 +108,7 @@ class BlueskyComments extends HTMLElement {
     this.profile = this.getAttribute('profile');
 
     if (this.hasAttribute('header')) {
-      this.header = this.getAttribute('header');
+      this.header = this.getAttribute('header') || false;
     }
 
     this.#setPostUri(this.getAttribute('post'));
@@ -150,7 +150,8 @@ class BlueskyComments extends HTMLElement {
    * @param {string|null} newValue - The new post attribute value.
    */
   #setPostUri(newValue) {
-    if (newValue && !/^(https?|at):\/\//.test(newValue)) {
+    if (!newValue) return;
+    if (!/^(https?|at):\/\//.test(newValue)) {
       const rkey = newValue;
       if (this.profile) {
         if (this.profile.startsWith('did:')) {
@@ -220,17 +221,21 @@ class BlueskyComments extends HTMLElement {
   /**
    * Converts a given URI to its HTTP URL.
    * @param {string} uri - The input URI.
-   * @returns {string} The HTTP URL.
+   * @returns {string|void} The HTTP URL.
    */
   #convertToHttpUrl(uri) {
-    uri = this.#convertToAtProtoUri(uri);
-    const [, , profile, , rkey] = uri.split('/');
+    const uriConverted = this.#convertToAtProtoUri(uri);
+    if (!uriConverted) {
+      // the conversion errored and the error is rendered from there
+      return;
+    }
+    const [, , profile, , rkey] = uriConverted.split('/');
     return this.createPostUrl({ profile, rkey });
   }
 
   /**
    * Creates a post URL using the provided profile and rkey.
-   * @param {{profile: string, rkey: string}} param0 - Contains the profile and rkey.
+   * @param {{profile: string|null, rkey: string}} param0 - Contains the profile and rkey.
    * @returns {string} The created URL.
    */
   createPostUrl({ profile, rkey }) {
